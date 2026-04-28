@@ -384,12 +384,28 @@ def issue_row_html(r, show_minp=True):
 
 
 def today_section_html(issuances):
-    """금일 발행현황 섹션"""
-    today_str = last_biz().strftime("%Y-%m-%d")
-    today_all = [r for r in issuances if r["date"] == today_str]
+    """금일 발행현황 섹션 — 금일 데이터 없으면 전일 표시"""
+    today     = last_biz()
+    yesterday = prev_biz(today)
+    today_str = today.strftime("%Y-%m-%d")
+    yest_str  = yesterday.strftime("%Y-%m-%d")
 
-    kepco_today  = [r for r in today_all if r["is_kepco"]]
-    others_today = [r for r in today_all if not r["is_kepco"]]
+    today_all = [r for r in issuances if r["date"] == today_str]
+    has_today = len(today_all) > 0
+
+    # 금일 데이터 없으면 전일 데이터로 대체
+    if has_today:
+        display_rows = today_all
+        section_date = today.strftime("%Y년 %m월 %d일")
+        update_note  = '📍 오후 3시 업데이트 기준'
+    else:
+        display_rows = [r for r in issuances if r["date"] == yest_str]
+        section_date = yesterday.strftime("%Y년 %m월 %d일")
+        update_note  = '⏰ 금일 발행 데이터는 <strong>오후 3시</strong> 업데이트 예정 · 현재 전일({}일) 기준'.format(
+            yesterday.strftime("%m/%d"))
+
+    kepco_rows  = [r for r in display_rows if r["is_kepco"]]
+    others_rows = [r for r in display_rows if not r["is_kepco"]]
 
     def mini_table(rows, empty_msg):
         if not rows:
@@ -402,13 +418,13 @@ def today_section_html(issuances):
         tbody = "\n".join(issue_row_html(r) for r in rows)
         return f'<div class="table-wrap"><table>{thead}<tbody>{tbody}</tbody></table></div>'
 
-    kepco_html  = mini_table(kepco_today,  "금일 한전 발행 없음")
-    others_html = mini_table(others_today, "금일 타기관 발행 없음")
+    kepco_html  = mini_table(kepco_rows,  "발행 없음")
+    others_html = mini_table(others_rows, "발행 없음")
 
-    today_label = last_biz().strftime("%Y년 %m월 %d일")
     return f"""
 <section>
-  <h2 style="border-left-color:#f97316">🔔 금일 발행현황 ({today_label})</h2>
+  <h2 style="border-left-color:#f97316">🔔 발행현황 ({section_date})</h2>
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{update_note}</p>
   <div class="today-grid">
     <div>
       <h3 class="sub-h3" style="color:#f97316">⚡ 한국전력공사</h3>

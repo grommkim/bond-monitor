@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.kofiabond.or.kr)",
+      "WebFetch(domain:finance.naver.com)",
+      "WebFetch(domain:markets.ft.com)",
+      "WebFetch(domain:ecos.bok.or.kr)",
+      "WebFetch(domain:seibro.or.kr)",
+      "WebFetch(domain:kofiabond.or.kr)",
+      "Bash(pip3 --version)",
+      "Bash(curl -s -I \"https://ecos.bok.or.kr/api/StatisticSearch/sample/json/kr/1/10/817Y002/D/20260415/20260427/010200000\")",
+      "Bash(curl -s -v \"https://ecos.bok.or.kr/api/StatisticSearch/sample/json/kr/1/5/817Y002/D/20260420/20260427/010200000\")",
+      "Bash(python3 *)",
+      "Bash(open *)",
+      "Bash(pip3 install *)",
+      "Bash(brew list *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  }
+}
