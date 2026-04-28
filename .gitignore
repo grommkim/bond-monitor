@@ -1,0 +1,8 @@
+cron.log
+*.pyc
+__pycache__/
+.DS_Store
+kofia_screen.png
+kofia_data.png
+iss_page.png
+iss_full.png
