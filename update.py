@@ -282,7 +282,7 @@ def collect_issuance(days=7):
             "minp_date": "",
         })
 
-    result.sort(key=lambda x: x["date"], reverse=True)
+    result.sort(key=lambda x: (x["date"], x["org"]))
 
     # 민평금리 매핑 (발행일 전 영업일 기준)
     dates_needed = {}
