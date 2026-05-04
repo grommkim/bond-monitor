@@ -5,7 +5,7 @@
 """
 
 import json, os, re, sys
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 try:
     import requests
@@ -393,7 +393,8 @@ def today_section_html(issuances):
 
     today_all = [r for r in issuances if r["date"] == today_str]
     has_today = len(today_all) > 0
-    is_afternoon = datetime.now().hour >= 15
+    KST = timezone(timedelta(hours=9))
+    is_afternoon = datetime.now(KST).hour >= 15
 
     if has_today:
         display_rows = today_all
