@@ -397,13 +397,13 @@ def today_section_html(issuances):
 
     if has_today:
         display_rows = today_all
-        update_note  = '📍 오후 3시 업데이트 기준'
+        update_note  = ''
     elif is_afternoon:
         display_rows = []
-        update_note  = '📋 금일 공사채 발행 없음'
+        update_note  = ''
     else:
         display_rows = [r for r in issuances if r["date"] == yest_str]
-        update_note  = '⏰ 금일 발행내역 오후 3시 업데이트 예정 · 현재 전일({}) 기준'.format(yesterday.strftime("%m/%d"))
+        update_note  = '⏰ 금일 발행 데이터는 오후 3시 업데이트 예정 · 현재 전일({}) 기준'.format(yesterday.strftime("%m/%d"))
 
     kepco_rows  = [r for r in display_rows if r["is_kepco"]]
     others_rows = [r for r in display_rows if not r["is_kepco"]]
@@ -422,10 +422,11 @@ def today_section_html(issuances):
     kepco_html  = mini_table(kepco_rows,  "발행 없음")
     others_html = mini_table(others_rows, "발행 없음")
 
+    note_html = f'<p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{update_note}</p>' if update_note else ''
     return f"""
 <section>
   <h2 style="border-left-color:#f97316">🔔 발행현황 ({section_date})</h2>
-  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{update_note}</p>
+  {note_html}
   <div class="today-grid">
     <div>
       <h3 class="sub-h3" style="color:#f97316">⚡ 한국전력공사</h3>
