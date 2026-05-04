@@ -384,25 +384,20 @@ def issue_row_html(r, show_minp=True):
 
 
 def today_section_html(issuances):
-    """금일 발행현황 섹션 — 금일 데이터 없으면 전일 표시"""
+    """금일 발행현황 섹션 — 항상 오늘 날짜 표시"""
     today     = last_biz()
-    yesterday = prev_biz(today)
     today_str = today.strftime("%Y-%m-%d")
-    yest_str  = yesterday.strftime("%Y-%m-%d")
+    section_date = today.strftime("%Y년 %m월 %d일")
 
     today_all = [r for r in issuances if r["date"] == today_str]
     has_today = len(today_all) > 0
 
-    # 금일 데이터 없으면 전일 데이터로 대체
     if has_today:
         display_rows = today_all
-        section_date = today.strftime("%Y년 %m월 %d일")
         update_note  = '📍 오후 3시 업데이트 기준'
     else:
-        display_rows = [r for r in issuances if r["date"] == yest_str]
-        section_date = yesterday.strftime("%Y년 %m월 %d일")
-        update_note  = '⏰ 금일 발행 데이터는 <strong>오후 3시</strong> 업데이트 예정 · 현재 전일({}일) 기준'.format(
-            yesterday.strftime("%m/%d"))
+        display_rows = []
+        update_note  = '⏰ 금일 공사채 발행 없음 또는 오후 3시 업데이트 예정'
 
     kepco_rows  = [r for r in display_rows if r["is_kepco"]]
     others_rows = [r for r in display_rows if not r["is_kepco"]]
