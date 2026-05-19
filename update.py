@@ -267,18 +267,20 @@ def collect_issuance(days=7):
         if "MBS" in name or "유동화" in name:
             continue
 
-        tenor = issue_tenor_label(iss_dt, mat_dt)
+        tenor   = issue_tenor_label(iss_dt, mat_dt)
         iss_fmt = f"{iss_dt[:4]}-{iss_dt[4:6]}-{iss_dt[6:]}" if len(iss_dt)==8 else iss_dt
+        mat_fmt = f"{mat_dt[:4]}-{mat_dt[4:6]}-{mat_dt[6:]}" if len(mat_dt)==8 else ""
         result.append({
-            "org":    org,
+            "org":      org,
             "is_kepco": org == KEPCO,
-            "name":   name[:35],
-            "date":   iss_fmt,
-            "tenor":  tenor,
-            "remain": remain,
-            "amount": f"{int(amount):,}" if amount.isdigit() else amount,
-            "rate":   coupon,
-            "minp":   None,
+            "name":     name[:35],
+            "date":     iss_fmt,
+            "mat_dt":   mat_fmt,
+            "tenor":    tenor,
+            "remain":   remain,
+            "amount":   f"{int(amount):,}" if amount.isdigit() else amount,
+            "rate":     coupon,
+            "minp":     None,
             "minp_date": "",
         })
 
@@ -316,7 +318,124 @@ def collect_issuance(days=7):
     print(f"  → 발행실적 총 {len(result)}건 (한전 {sum(1 for r in result if r['is_kepco'])}건 포함)")
     return result
 
-# ── 3. HTML 생성 ────────────────────────────────────────────────────
+# ── 3. 차입금 현황 관리 ─────────────────────────────────────────────
+
+DEBT_FILE    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_positions.json")
+DEBT_HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_history.json")
+EXCEL_FILE   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "업로드 파일(26.5.19).xlsx")
+DEBT_BOND_CATS = {"전력채", "단기사채", "외화채권"}
+
+def debt_classify(name):
+    if name in {"전력채","단기사채","외화채권","중장기기업어음","은행차입"}:
+        return name
+    if name in {"나이지리아","남북협력기금","농어촌융자금"}:
+        return "기타"
+    return None
+
+def init_debt_from_excel():
+    try:
+        import openpyxl
+    except ImportError:
+        print("  openpyxl 없음 — pip3 install openpyxl"); return []
+    if not os.path.exists(EXCEL_FILE):
+        print(f"  엑셀 파일 없음: {EXCEL_FILE}"); return []
+    wb = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
+    ws = wb['raw']
+    positions = []
+    for row_idx, row in enumerate(ws.iter_rows(min_row=3, max_row=ws.max_row, values_only=True), start=3):
+        name = row[4]; bal = row[9]; cat = debt_classify(name)
+        if not cat or not bal or bal <= 0: continue
+        mat = row[16]; iss = row[15]; rate = row[8]
+        def _d(v):
+            if hasattr(v,"date"): return v.date().isoformat()
+            return v.isoformat() if v else None
+        mat_s, iss_s = _d(mat), _d(iss)
+        uid = f"{cat}|{iss_s}|{mat_s}|{int(bal)}|r{row_idx}"
+        positions.append({"id":uid,"category":cat,"amount":int(bal),
+            "issuance_date":iss_s,"maturity_date":mat_s,
+            "rate":float(rate) if isinstance(rate,(int,float)) and rate else None,
+            "source":"excel"})
+    print(f"  엑셀 초기화: {len(positions)}건 로드")
+    return positions
+
+def load_debt_positions():
+    if os.path.exists(DEBT_FILE):
+        with open(DEBT_FILE, encoding="utf-8") as f: return json.load(f)
+    print("[ 차입금 초기화: 엑셀에서 로드 ]")
+    positions = init_debt_from_excel()
+    save_debt_positions(positions)
+    return positions
+
+def save_debt_positions(positions):
+    with open(DEBT_FILE,"w",encoding="utf-8") as f:
+        json.dump(positions, f, ensure_ascii=False, indent=2)
+
+def get_debt_summary(positions):
+    from collections import defaultdict
+    by = defaultdict(int)
+    for p in positions: by[p["category"]] += p["amount"]
+    사채 = sum(by[c] for c in DEBT_BOND_CATS)
+    사채외 = sum(v for c,v in by.items() if c not in DEBT_BOND_CATS)
+    return {"전력채":by["전력채"],"단기사채":by["단기사채"],"외화채권":by["외화채권"],
+            "중장기기업어음":by["중장기기업어음"],"은행차입":by["은행차입"],"기타":by["기타"],
+            "사채":사채,"사채외":사채외,"합계":사채+사채외}
+
+def _load_history():
+    if not os.path.exists(DEBT_HISTORY): return {}
+    with open(DEBT_HISTORY,encoding="utf-8") as f: return json.load(f)
+
+def save_debt_snapshot(summary, date_str):
+    h = _load_history(); h[date_str] = summary
+    if len(h) > 90: del h[sorted(h)[0]]
+    with open(DEBT_HISTORY,"w",encoding="utf-8") as f: json.dump(h,f,ensure_ascii=False,indent=2)
+
+def get_snapshot(date_str): return _load_history().get(date_str)
+
+def update_debt_pm(positions, issuances):
+    today_s = last_biz().isoformat()
+    before  = len(positions)
+    positions = [p for p in positions if not p["maturity_date"] or p["maturity_date"] > today_s]
+    if before-len(positions): print(f"  만기 차감: {before-len(positions)}건")
+    existing_keys = {(p["category"], p.get("issuance_date",""), p.get("maturity_date","") or "", p["amount"])
+                     for p in positions}
+    added = 0
+    for iss in issuances:
+        if not iss.get("is_kepco"): continue
+        try: amt = int(iss["amount"].replace(",","")) * 100_000_000
+        except (ValueError,AttributeError): continue
+        mat_s = iss.get("mat_dt","") or ""
+        key   = ("전력채", iss["date"], mat_s, amt)
+        if key in existing_keys: continue
+        uid = f"전력채|{iss['date']}|{mat_s}|{amt}|kofia"
+        positions.append({"id":uid,"category":"전력채","amount":amt,
+            "issuance_date":iss["date"],"maturity_date":mat_s or None,
+            "rate":float(iss["rate"]) if iss.get("rate") else None,"source":"kofia"})
+        existing_keys.add(key); added += 1
+    if added: print(f"  신규 전력채 추가: {added}건")
+    return positions
+
+def collect_debt(issuances):
+    print("[ 차입금 현황 업데이트 ]")
+    KST   = timezone(timedelta(hours=9))
+    is_pm = datetime.now(KST).hour >= 15
+    today = last_biz(); yesterday = prev_biz(today)
+    positions = load_debt_positions()
+    if is_pm:
+        positions = update_debt_pm(positions, issuances)
+        save_debt_positions(positions)
+        summary = get_debt_summary(positions)
+        save_debt_snapshot(summary, today.isoformat())
+        as_of  = today.isoformat()
+        prev_s = get_snapshot(yesterday.isoformat())
+    else:
+        as_of  = yesterday.isoformat()
+        snap   = get_snapshot(yesterday.isoformat())
+        summary = snap if snap else get_debt_summary(positions)
+        prev_s  = get_snapshot(prev_biz(yesterday).isoformat())
+    return summary, prev_s, as_of, is_pm
+
+
+# ── 4. HTML 생성 ────────────────────────────────────────────────────
 
 def build_chart_data(chart):
     dates  = sorted(chart.keys())
@@ -448,7 +567,45 @@ def recent_section_html(issuances):
     return "\n".join(issue_row_html(r) for r in issuances)
 
 
-def generate_html(chart, latest, issuances):
+def debt_section_html(summary, prev_s, as_of, is_pm):
+    def 조(v): return f"{v/1e12:.2f}조원"
+    def diff_td(key, light=False):
+        if not prev_s: return '<td style="color:#94a3b8">–</td>'
+        d = summary[key] - prev_s.get(key, summary[key])
+        if d == 0: return f'<td style="color:{"rgba(255,255,255,.4)" if not light else "#94a3b8"}">±0</td>'
+        color = ("#fca5a5" if not light else "#dc2626") if d > 0 else ("#93c5fd" if not light else "#2563eb")
+        sign  = "+" if d > 0 else ""
+        return f'<td style="color:{color};font-weight:600;white-space:nowrap">{sign}{d/1e12:.2f}조</td>'
+
+    rows = (
+        f'<tr style="background:#eef2ff"><td colspan="3" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">전력채</td><td>{조(summary["전력채"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">단기사채</td><td>{조(summary["단기사채"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">외화채권</td><td>{조(summary["외화채권"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td><td>{조(summary["사채"])}</td>{diff_td("사채",True)}</tr>'
+        f'<tr style="background:#f0fdf4"><td colspan="3" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td>{조(summary["중장기기업어음"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">은행차입</td><td>{조(summary["은행차입"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td><td>{조(summary["사채외"])}</td>{diff_td("사채외",True)}</tr>'
+        f'<tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td>'
+        f'<td style="font-weight:700;font-size:1rem">{조(summary["합계"])}</td>{diff_td("합계")}</tr>'
+    )
+    note = "" if is_pm else "⏰ 전일 현황 기준 · 당일 발행 반영은 오후 3시 업데이트 예정"
+    note_html = f'<p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{note}</p>' if note else ""
+    return f"""
+<section>
+  <h2 style="border-left-color:#6366f1">💰 차입금 현황 ({as_of} 기준)</h2>
+  {note_html}
+  <div class="table-wrap" style="max-width:480px">
+    <table>
+      <thead><tr><th>구분</th><th>잔액</th><th>전일비</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </div>
+</section>"""
+
+
+def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False):
     today_str = date.today().strftime("%Y년 %m월 %d일")
     latest_dt = latest.get("날짜","–")
     ktb_v  = latest.get("국고채", 0)
@@ -471,6 +628,7 @@ def generate_html(chart, latest, issuances):
     labels_json, datasets_json = build_chart_data(chart)
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
+    debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm) if debt_summary else ""
 
     THEAD = ('<thead><tr>'
              '<th>발행일</th><th>발행기관</th><th>종목명</th>'
@@ -539,6 +697,8 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 
 {today_html}
 
+{debt_html}
+
 <section>
   <h2>국고채 3년 · 한전채 3년 · 스프레드 추이 (최근 약 4주, 민평 기준)</h2>
   <div class="chart-box">
@@ -603,8 +763,11 @@ if __name__ == "__main__":
 
     chart, latest = collect_kofia_history()
     issuances     = collect_issuance(days=7)
+    d_sum, d_prev, d_as_of, d_pm = collect_debt(issuances)
 
-    html = generate_html(chart, latest, issuances)
+    html = generate_html(chart, latest, issuances,
+                         debt_summary=d_sum, debt_prev=d_prev,
+                         debt_as_of=d_as_of, debt_is_pm=d_pm)
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(html)
 

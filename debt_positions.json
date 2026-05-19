@@ -1,0 +1,6788 @@
+[
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|20000000000|r526",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|50000000000|r527",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|100000000000|r528",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|10000000000|r529",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|10000000000|r530",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|60000000000|r531",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|20000000000|r532",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-30|2026-05-20|10000000000|r533",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-30",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|90000000000|r534",
+    "category": "단기사채",
+    "amount": 90000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|50000000000|r535",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|50000000000|r536",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|40000000000|r537",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|30000000000|r538",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|20000000000|r539",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|20000000000|r540",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-27|2026-05-20|10000000000|r541",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-27",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-20|70000000000|r542",
+    "category": "단기사채",
+    "amount": 70000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-20|50000000000|r543",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-20|40000000000|r544",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-20|100000000000|r545",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|40000000000|r546",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|30000000000|r547",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|20000000000|r548",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|20000000000|r549",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|10000000000|r550",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|100000000000|r551",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-23|2026-05-21|10000000000|r552",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-23",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|100000000000|r553",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|80000000000|r554",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|80000000000|r555",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|40000000000|r556",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|30000000000|r557",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|20000000000|r558",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|20000000000|r559",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-21|10000000000|r560",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|10000000000|r561",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|30000000000|r562",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|40000000000|r563",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|100000000000|r564",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|20000000000|r565",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|30000000000|r566",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|40000000000|r567",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|50000000000|r568",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|30000000000|r569",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|20000000000|r570",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-03-24|2026-05-22|20000000000|r571",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-03-24",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-05-22|2026-05-22|150000000000|r572",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2019-05-22",
+    "maturity_date": "2026-05-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|30000000000|r573",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|20000000000|r574",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|30000000000|r575",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|100000000000|r576",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|10000000000|r577",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|50000000000|r578",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|10000000000|r579",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|30000000000|r580",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|50000000000|r581",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-27|20000000000|r582",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "은행차입|2025-05-27|2026-05-27|1000000000000|r583",
+    "category": "은행차입",
+    "amount": 1000000000000,
+    "issuance_date": "2025-05-27",
+    "maturity_date": "2026-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|10000000000|r584",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|20000000000|r585",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|80000000000|r586",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|110000000000|r587",
+    "category": "단기사채",
+    "amount": 110000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|10000000000|r588",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|50000000000|r589",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|20000000000|r590",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|20000000000|r591",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-06|2026-05-28|30000000000|r592",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-06",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|30000000000|r593",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|30000000000|r594",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|150000000000|r595",
+    "category": "단기사채",
+    "amount": 150000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|50000000000|r596",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|10000000000|r597",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|10000000000|r598",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|40000000000|r599",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-28|30000000000|r600",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|10000000000|r601",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|30000000000|r602",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|10000000000|r603",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|50000000000|r604",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|30000000000|r605",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|10000000000|r606",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|10000000000|r607",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|50000000000|r608",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|30000000000|r609",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|90000000000|r610",
+    "category": "단기사채",
+    "amount": 90000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|10000000000|r611",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-02|2026-05-29|10000000000|r612",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2026-05-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|30000000000|r613",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|10000000000|r614",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|100000000000|r615",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|20000000000|r616",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|10000000000|r617",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|20000000000|r618",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|10000000000|r619",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|30000000000|r620",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|20000000000|r621",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-01|50000000000|r622",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|30000000000|r623",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|20000000000|r624",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|10000000000|r625",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|20000000000|r626",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|10000000000|r627",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|20000000000|r628",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|30000000000|r629",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|60000000000|r630",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|50000000000|r631",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|20000000000|r632",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-01|30000000000|r633",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|30000000000|r634",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|20000000000|r635",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|20000000000|r636",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|20000000000|r637",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|20000000000|r638",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|40000000000|r639",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|50000000000|r640",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|40000000000|r641",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|30000000000|r642",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-07|2026-06-02|30000000000|r643",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|30000000000|r644",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|90000000000|r645",
+    "category": "단기사채",
+    "amount": 90000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|30000000000|r646",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|20000000000|r647",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|20000000000|r648",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|20000000000|r649",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|10000000000|r650",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|10000000000|r651",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|20000000000|r652",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-03|2026-06-02|50000000000|r653",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-03",
+    "maturity_date": "2026-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-06-04|2026-06-04|200000000000|r654",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-06-04",
+    "maturity_date": "2026-06-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2023-06-05|2026-06-05|210000000000|r655",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2023-06-05",
+    "maturity_date": "2026-06-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|10000000000|r656",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|10000000000|r657",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|20000000000|r658",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|40000000000|r659",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|60000000000|r660",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|10000000000|r661",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|30000000000|r662",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|80000000000|r663",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|20000000000|r664",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-08|20000000000|r665",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2013-12-08|2026-06-08|307692300|r666",
+    "category": "기타",
+    "amount": 307692300,
+    "issuance_date": "2013-12-08",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2013-12-08|2026-06-08|134615400|r667",
+    "category": "기타",
+    "amount": 134615400,
+    "issuance_date": "2013-12-08",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2013-12-08|2026-06-08|828846150|r668",
+    "category": "기타",
+    "amount": 828846150,
+    "issuance_date": "2013-12-08",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2013-12-08|2026-06-08|153846150|r669",
+    "category": "기타",
+    "amount": 153846150,
+    "issuance_date": "2013-12-08",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2013-12-08|2026-06-08|48077000|r670",
+    "category": "기타",
+    "amount": 48077000,
+    "issuance_date": "2013-12-08",
+    "maturity_date": "2026-06-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|10000000000|r671",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|10000000000|r672",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|20000000000|r673",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|40000000000|r674",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|10000000000|r675",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|50000000000|r676",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|10000000000|r677",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|30000000000|r678",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|80000000000|r679",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|20000000000|r680",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-09|2026-06-09|20000000000|r681",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "은행차입|2025-06-09|2026-06-09|300000000000|r682",
+    "category": "은행차입",
+    "amount": 300000000000,
+    "issuance_date": "2025-06-09",
+    "maturity_date": "2026-06-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-06-12|2026-06-12|200000000000|r683",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-06-12",
+    "maturity_date": "2026-06-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2023-06-12|2026-06-12|140000000000|r684",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2023-06-12",
+    "maturity_date": "2026-06-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-06-14|2026-06-14|250000000000|r685",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2024-06-14",
+    "maturity_date": "2026-06-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|10000000000|r686",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|70000000000|r687",
+    "category": "단기사채",
+    "amount": 70000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|30000000000|r688",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|10000000000|r689",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|20000000000|r690",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|20000000000|r691",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|60000000000|r692",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|90000000000|r693",
+    "category": "단기사채",
+    "amount": 90000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-18|40000000000|r694",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|10000000000|r695",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|70000000000|r696",
+    "category": "단기사채",
+    "amount": 70000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|30000000000|r697",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|10000000000|r698",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|30000000000|r699",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|30000000000|r700",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|20000000000|r701",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|20000000000|r702",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|90000000000|r703",
+    "category": "단기사채",
+    "amount": 90000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-07|2026-06-19|40000000000|r704",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2026-06-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|20000000000|r705",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|30000000000|r706",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|30000000000|r707",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|100000000000|r708",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|10000000000|r709",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|30000000000|r710",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|50000000000|r711",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|90000000000|r712",
+    "category": "단기사채",
+    "amount": 90000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-22|10000000000|r713",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|40000000000|r714",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|10000000000|r715",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|10000000000|r716",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|150000000000|r717",
+    "category": "단기사채",
+    "amount": 150000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|30000000000|r718",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|50000000000|r719",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|50000000000|r720",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|40000000000|r721",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-22|60000000000|r722",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|20000000000|r723",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|30000000000|r724",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|60000000000|r725",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|30000000000|r726",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|50000000000|r727",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|100000000000|r728",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-04-27|2026-06-23|30000000000|r729",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-27",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|40000000000|r730",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|10000000000|r731",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|10000000000|r732",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|40000000000|r733",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|20000000000|r734",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|20000000000|r735",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|60000000000|r736",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|40000000000|r737",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|50000000000|r738",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "단기사채|2026-05-12|2026-06-23|50000000000|r739",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2023-06-23|2026-06-23|150000000000|r740",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2023-06-23",
+    "maturity_date": "2026-06-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-06-25|2026-06-25|300000000000|r741",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-06-25",
+    "maturity_date": "2026-06-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-04|2026-07-04|300000000000|r742",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-07-04",
+    "maturity_date": "2026-07-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "은행차입|2025-07-04|2026-07-04|1000000000000|r743",
+    "category": "은행차입",
+    "amount": 1000000000000,
+    "issuance_date": "2025-07-04",
+    "maturity_date": "2026-07-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-07-09|2026-07-09|200000000000|r744",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-07-09",
+    "maturity_date": "2026-07-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "은행차입|2025-07-11|2026-07-11|300000000000|r745",
+    "category": "은행차입",
+    "amount": 300000000000,
+    "issuance_date": "2025-07-11",
+    "maturity_date": "2026-07-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-07-12|2026-07-12|200000000000|r746",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-07-12",
+    "maturity_date": "2026-07-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-12|2026-07-12|300000000000|r747",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-07-12",
+    "maturity_date": "2026-07-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-25|2026-07-25|240000000000|r748",
+    "category": "전력채",
+    "amount": 240000000000,
+    "issuance_date": "2024-07-25",
+    "maturity_date": "2026-07-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|256000000000|r749",
+    "category": "외화채권",
+    "amount": 256000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|192000000000|r750",
+    "category": "외화채권",
+    "amount": 192000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|128000000000|r751",
+    "category": "외화채권",
+    "amount": 128000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|256000000000|r752",
+    "category": "외화채권",
+    "amount": 256000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|128000000000|r753",
+    "category": "외화채권",
+    "amount": 128000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|128000000000|r754",
+    "category": "외화채권",
+    "amount": 128000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2023-07-31|2026-07-31|192000000000|r755",
+    "category": "외화채권",
+    "amount": 192000000000,
+    "issuance_date": "2023-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-31|2026-07-31|200000000000|r756",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-07-31",
+    "maturity_date": "2026-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-04|2026-08-04|300000000000|r757",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2021-08-04",
+    "maturity_date": "2026-08-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-05|2026-08-05|400000000000|r758",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-08-05",
+    "maturity_date": "2026-08-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-10|2026-08-10|200000000000|r759",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-08-10",
+    "maturity_date": "2026-08-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-12|2026-08-12|300000000000|r760",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2021-08-12",
+    "maturity_date": "2026-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-12|2026-08-12|250000000000|r761",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2024-08-12",
+    "maturity_date": "2026-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-20|2026-08-20|200000000000|r762",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-08-20",
+    "maturity_date": "2026-08-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-25|2026-08-25|200000000000|r763",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-08-25",
+    "maturity_date": "2026-08-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-27|2026-08-27|240000000000|r764",
+    "category": "전력채",
+    "amount": 240000000000,
+    "issuance_date": "2024-08-27",
+    "maturity_date": "2026-08-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-03|2026-09-03|300000000000|r765",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2021-09-03",
+    "maturity_date": "2026-09-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-03|2026-09-03|200000000000|r766",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-09-03",
+    "maturity_date": "2026-09-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-09|2026-09-09|200000000000|r767",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-09-09",
+    "maturity_date": "2026-09-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-10|2026-09-10|300000000000|r768",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2021-09-10",
+    "maturity_date": "2026-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-10|2026-09-10|200000000000|r769",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-09-10",
+    "maturity_date": "2026-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2023-09-11|2026-09-11|190000000000|r770",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2023-09-11",
+    "maturity_date": "2026-09-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-23|2026-09-23|200000000000|r771",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-09-23",
+    "maturity_date": "2026-09-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-23|2026-09-23|300000000000|r772",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-09-23",
+    "maturity_date": "2026-09-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2021-09-24|2026-09-24|118170000000|r773",
+    "category": "외화채권",
+    "amount": 118170000000,
+    "issuance_date": "2021-09-24",
+    "maturity_date": "2026-09-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2021-09-24|2026-09-24|118170000000|r774",
+    "category": "외화채권",
+    "amount": 118170000000,
+    "issuance_date": "2021-09-24",
+    "maturity_date": "2026-09-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2021-09-24|2026-09-24|118170000000|r775",
+    "category": "외화채권",
+    "amount": 118170000000,
+    "issuance_date": "2021-09-24",
+    "maturity_date": "2026-09-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-01|2026-10-01|200000000000|r776",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-10-01",
+    "maturity_date": "2026-10-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-02|2026-10-02|400000000000|r777",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-10-02",
+    "maturity_date": "2026-10-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-07|2026-10-07|300000000000|r778",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-10-07",
+    "maturity_date": "2026-10-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-08|2026-10-08|100000000000|r779",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-10-08",
+    "maturity_date": "2026-10-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-15|2026-10-15|200000000000|r780",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-10-15",
+    "maturity_date": "2026-10-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-30|2026-10-30|400000000000|r781",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-10-30",
+    "maturity_date": "2026-10-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-10-31|2026-10-31|100000000000|r782",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2019-10-31",
+    "maturity_date": "2026-10-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-04|2026-11-04|100000000000|r783",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-11-04",
+    "maturity_date": "2026-11-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-04|2026-11-04|300000000000|r784",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-11-04",
+    "maturity_date": "2026-11-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-12|2026-11-12|300000000000|r785",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-11-12",
+    "maturity_date": "2026-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-11-14|2026-11-14|150000000000|r786",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2019-11-14",
+    "maturity_date": "2026-11-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-25|2026-11-25|400000000000|r787",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-11-25",
+    "maturity_date": "2026-11-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|1996-12-06|2026-12-01|76355335500|r788",
+    "category": "외화채권",
+    "amount": 76355335500,
+    "issuance_date": "1996-12-06",
+    "maturity_date": "2026-12-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-03|2026-12-03|300000000000|r789",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-12-03",
+    "maturity_date": "2026-12-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-12-04|2026-12-04|200000000000|r790",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-12-04",
+    "maturity_date": "2026-12-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-10|2026-12-10|340000000000|r791",
+    "category": "전력채",
+    "amount": 340000000000,
+    "issuance_date": "2024-12-10",
+    "maturity_date": "2026-12-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-12-12|2026-12-11|100000000000|r792",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2025-12-12",
+    "maturity_date": "2026-12-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-17|2026-12-17|330000000000|r793",
+    "category": "전력채",
+    "amount": 330000000000,
+    "issuance_date": "2024-12-17",
+    "maturity_date": "2026-12-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2026-12-20|3600000|r794",
+    "category": "기타",
+    "amount": 3600000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-09-25|2026-12-20|4110000|r795",
+    "category": "기타",
+    "amount": 4110000,
+    "issuance_date": "2003-09-25",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2026-12-20|900000|r796",
+    "category": "기타",
+    "amount": 900000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2026-12-20|1500000|r797",
+    "category": "기타",
+    "amount": 1500000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-02-16|2026-12-20|8100000|r798",
+    "category": "기타",
+    "amount": 8100000,
+    "issuance_date": "2004-02-16",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-05-19|2026-12-20|3000000|r799",
+    "category": "기타",
+    "amount": 3000000,
+    "issuance_date": "2004-05-19",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1991-12-27|2026-12-20|900000|r800",
+    "category": "기타",
+    "amount": 900000,
+    "issuance_date": "1991-12-27",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1991-10-11|2026-12-20|300000|r801",
+    "category": "기타",
+    "amount": 300000,
+    "issuance_date": "1991-10-11",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1992-03-25|2026-12-20|60000|r802",
+    "category": "기타",
+    "amount": 60000,
+    "issuance_date": "1992-03-25",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1992-01-17|2026-12-20|9300000|r803",
+    "category": "기타",
+    "amount": 9300000,
+    "issuance_date": "1992-01-17",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1993-02-05|2026-12-20|17700000|r804",
+    "category": "기타",
+    "amount": 17700000,
+    "issuance_date": "1993-02-05",
+    "maturity_date": "2026-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2006-12-26|2026-12-31|4958796699|r805",
+    "category": "기타",
+    "amount": 4958796699,
+    "issuance_date": "2006-12-26",
+    "maturity_date": "2026-12-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-12-27|2026-12-31|5795138672|r806",
+    "category": "기타",
+    "amount": 5795138672,
+    "issuance_date": "2007-12-27",
+    "maturity_date": "2026-12-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-12-27|2026-12-31|947714221|r807",
+    "category": "기타",
+    "amount": 947714221,
+    "issuance_date": "2007-12-27",
+    "maturity_date": "2026-12-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-12-29|2026-12-31|772547094|r808",
+    "category": "기타",
+    "amount": 772547094,
+    "issuance_date": "2008-12-29",
+    "maturity_date": "2026-12-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-12-29|2026-12-31|151056548|r809",
+    "category": "기타",
+    "amount": 151056548,
+    "issuance_date": "2008-12-29",
+    "maturity_date": "2026-12-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-12-29|2026-12-31|254251687|r810",
+    "category": "기타",
+    "amount": 254251687,
+    "issuance_date": "2008-12-29",
+    "maturity_date": "2026-12-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-04|2027-01-04|200000000000|r811",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2022-01-04",
+    "maturity_date": "2027-01-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-06|2027-01-06|200000000000|r812",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-01-06",
+    "maturity_date": "2027-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-01-10|2027-01-10|240000000000|r813",
+    "category": "전력채",
+    "amount": 240000000000,
+    "issuance_date": "2020-01-10",
+    "maturity_date": "2027-01-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-12|2027-01-12|280000000000|r814",
+    "category": "전력채",
+    "amount": 280000000000,
+    "issuance_date": "2022-01-12",
+    "maturity_date": "2027-01-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-14|2027-01-14|200000000000|r815",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-01-14",
+    "maturity_date": "2027-01-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-22|2027-01-22|200000000000|r816",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-01-22",
+    "maturity_date": "2027-01-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-25|2027-01-25|150000000000|r817",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2022-01-25",
+    "maturity_date": "2027-01-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2024-01-31|2027-01-31|133059999999|r818",
+    "category": "외화채권",
+    "amount": 133059999999,
+    "issuance_date": "2024-01-31",
+    "maturity_date": "2027-01-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2024-01-31|2027-01-31|133059999999|r819",
+    "category": "외화채권",
+    "amount": 133059999999,
+    "issuance_date": "2024-01-31",
+    "maturity_date": "2027-01-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2024-01-31|2027-01-31|864890000000|r820",
+    "category": "외화채권",
+    "amount": 864890000000,
+    "issuance_date": "2024-01-31",
+    "maturity_date": "2027-01-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2024-01-31|2027-01-31|133059999999|r821",
+    "category": "외화채권",
+    "amount": 133059999999,
+    "issuance_date": "2024-01-31",
+    "maturity_date": "2027-01-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2024-01-31|2027-01-31|133059999999|r822",
+    "category": "외화채권",
+    "amount": 133059999999,
+    "issuance_date": "2024-01-31",
+    "maturity_date": "2027-01-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2024-01-31|2027-01-31|199590000000|r823",
+    "category": "외화채권",
+    "amount": 199590000000,
+    "issuance_date": "2024-01-31",
+    "maturity_date": "2027-01-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|1997-01-31|2027-02-01|434976900000|r824",
+    "category": "외화채권",
+    "amount": 434976900000,
+    "issuance_date": "1997-01-31",
+    "maturity_date": "2027-02-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-04|2027-02-04|190000000000|r825",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2022-02-04",
+    "maturity_date": "2027-02-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-06|2027-02-06|190000000000|r826",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2025-02-06",
+    "maturity_date": "2027-02-06",
+    "rate": 190000000000.0,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-10|2027-02-10|300000000000|r827",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2022-02-10",
+    "maturity_date": "2027-02-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-12|2027-02-12|300000000000|r828",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2025-02-12",
+    "maturity_date": "2027-02-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-18|2027-02-18|110000000000|r829",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2022-02-18",
+    "maturity_date": "2027-02-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-22|2027-02-22|130000000000|r830",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2022-02-22",
+    "maturity_date": "2027-02-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-24|2027-02-24|300000000000|r831",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2025-02-24",
+    "maturity_date": "2027-02-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-02-25|2027-02-25|200000000000|r832",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2020-02-25",
+    "maturity_date": "2027-02-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-25|2027-02-25|40000000000|r833",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2022-02-25",
+    "maturity_date": "2027-02-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-02|2027-03-02|160000000000|r834",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2022-03-02",
+    "maturity_date": "2027-03-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-04|2027-03-04|90000000000|r835",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2022-03-04",
+    "maturity_date": "2027-03-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-06|2027-03-05|200000000000|r836",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-03-06",
+    "maturity_date": "2027-03-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-07|2027-03-07|90000000000|r837",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2022-03-07",
+    "maturity_date": "2027-03-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-03-10|2027-03-10|200000000000|r838",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2022-03-10",
+    "maturity_date": "2027-03-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-10|2027-03-10|130000000000|r839",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2022-03-10",
+    "maturity_date": "2027-03-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-03-12|2027-03-12|200000000000|r840",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2020-03-12",
+    "maturity_date": "2027-03-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-12|2027-03-12|220000000000|r841",
+    "category": "전력채",
+    "amount": 220000000000,
+    "issuance_date": "2025-03-12",
+    "maturity_date": "2027-03-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-03-15|2027-03-15|200000000000|r842",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2022-03-15",
+    "maturity_date": "2027-03-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-16|2027-03-16|130000000000|r843",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2022-03-16",
+    "maturity_date": "2027-03-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-17|2027-03-17|200000000000|r844",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-03-17",
+    "maturity_date": "2027-03-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-18|2027-03-18|180000000000|r845",
+    "category": "전력채",
+    "amount": 180000000000,
+    "issuance_date": "2022-03-18",
+    "maturity_date": "2027-03-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-24|2027-03-24|80000000000|r846",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2022-03-24",
+    "maturity_date": "2027-03-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-27|2027-03-26|100000000000|r847",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-03-27",
+    "maturity_date": "2027-03-26",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2012-03-27|2027-03-27|140000000000|r848",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2012-03-27",
+    "maturity_date": "2027-03-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-30|2027-03-30|30000000000|r849",
+    "category": "전력채",
+    "amount": 30000000000,
+    "issuance_date": "2022-03-30",
+    "maturity_date": "2027-03-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-04-01|2027-04-01|250000000000|r850",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2022-04-01",
+    "maturity_date": "2027-04-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-03|2027-04-02|300000000000|r851",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2025-04-03",
+    "maturity_date": "2027-04-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-04-04|2027-04-04|200000000000|r852",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2022-04-04",
+    "maturity_date": "2027-04-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-05|2027-04-05|70000000000|r853",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2022-04-05",
+    "maturity_date": "2027-04-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-04-05|2027-04-05|250000000000|r854",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2024-04-05",
+    "maturity_date": "2027-04-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-07|2027-04-07|20000000000|r855",
+    "category": "전력채",
+    "amount": 20000000000,
+    "issuance_date": "2022-04-07",
+    "maturity_date": "2027-04-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-04-08|2027-04-08|150000000000|r856",
+    "category": "중장기기업어음",
+    "amount": 150000000000,
+    "issuance_date": "2022-04-08",
+    "maturity_date": "2027-04-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-11|2027-04-09|200000000000|r857",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-04-11",
+    "maturity_date": "2027-04-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-04-11|2027-04-11|200000000000|r858",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2022-04-11",
+    "maturity_date": "2027-04-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-11|2027-04-11|10000000000|r859",
+    "category": "전력채",
+    "amount": 10000000000,
+    "issuance_date": "2022-04-11",
+    "maturity_date": "2027-04-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-04-11|2027-04-11|250000000000|r860",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2024-04-11",
+    "maturity_date": "2027-04-11",
+    "rate": 4.05,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-15|2027-04-15|10000000000|r861",
+    "category": "전력채",
+    "amount": 10000000000,
+    "issuance_date": "2022-04-15",
+    "maturity_date": "2027-04-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-16|2027-04-16|190000000000|r862",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2025-04-16",
+    "maturity_date": "2027-04-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2017-04-25|2027-04-25|90000000000|r863",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2017-04-25",
+    "maturity_date": "2027-04-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-26|2027-04-26|60000000000|r864",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2022-04-26",
+    "maturity_date": "2027-04-26",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-28|2027-04-28|30000000000|r865",
+    "category": "전력채",
+    "amount": 30000000000,
+    "issuance_date": "2022-04-28",
+    "maturity_date": "2027-04-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-05-02|2027-05-02|300000000000|r866",
+    "category": "중장기기업어음",
+    "amount": 300000000000,
+    "issuance_date": "2022-05-02",
+    "maturity_date": "2027-05-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-05-03|2027-05-03|200000000000|r867",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2022-05-03",
+    "maturity_date": "2027-05-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-08|2027-05-07|100000000000|r868",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-05-08",
+    "maturity_date": "2027-05-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-05-10|2027-05-10|150000000000|r869",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2022-05-10",
+    "maturity_date": "2027-05-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-05-12|2027-05-12|200000000000|r870",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2022-05-12",
+    "maturity_date": "2027-05-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-13|2027-05-13|100000000000|r871",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-05-13",
+    "maturity_date": "2027-05-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-05-17|2027-05-17|250000000000|r872",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2024-05-17",
+    "maturity_date": "2027-05-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2012-05-18|2027-05-18|120000000000|r873",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2012-05-18",
+    "maturity_date": "2027-05-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-05-18|2027-05-18|170000000000|r874",
+    "category": "전력채",
+    "amount": 170000000000,
+    "issuance_date": "2022-05-18",
+    "maturity_date": "2027-05-18",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-21|2027-05-21|100000000000|r875",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-05-21",
+    "maturity_date": "2027-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-05-24|2027-05-24|150000000000|r876",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2022-05-24",
+    "maturity_date": "2027-05-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-05-30|2027-05-30|150000000000|r877",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2022-05-30",
+    "maturity_date": "2027-05-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-06-02|2027-06-02|50000000000|r878",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-06-02",
+    "maturity_date": "2027-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-04|2027-06-04|180000000000|r879",
+    "category": "전력채",
+    "amount": 180000000000,
+    "issuance_date": "2025-06-04",
+    "maturity_date": "2027-06-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-06-07|2027-06-07|80000000000|r880",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2022-06-07",
+    "maturity_date": "2027-06-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-06-10|2027-06-10|300000000000|r881",
+    "category": "중장기기업어음",
+    "amount": 300000000000,
+    "issuance_date": "2022-06-10",
+    "maturity_date": "2027-06-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-12|2027-06-11|150000000000|r882",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2025-06-12",
+    "maturity_date": "2027-06-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2022-06-14|2027-06-14|128600000000|r883",
+    "category": "외화채권",
+    "amount": 128600000000,
+    "issuance_date": "2022-06-14",
+    "maturity_date": "2027-06-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2022-06-14|2027-06-14|128600000000|r884",
+    "category": "외화채권",
+    "amount": 128600000000,
+    "issuance_date": "2022-06-14",
+    "maturity_date": "2027-06-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2022-06-14|2027-06-14|128600000000|r885",
+    "category": "외화채권",
+    "amount": 128600000000,
+    "issuance_date": "2022-06-14",
+    "maturity_date": "2027-06-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-06-14|2027-06-14|250000000000|r886",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2024-06-14",
+    "maturity_date": "2027-06-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-16|2027-06-16|130000000000|r887",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2025-06-16",
+    "maturity_date": "2027-06-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-06-17|2027-06-17|60000000000|r888",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2022-06-17",
+    "maturity_date": "2027-06-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-06-22|2027-06-22|50000000000|r889",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-06-22",
+    "maturity_date": "2027-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-06-24|2027-06-24|110000000000|r890",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2022-06-24",
+    "maturity_date": "2027-06-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-06-25|2027-06-25|200000000000|r891",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-06-25",
+    "maturity_date": "2027-06-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2012-06-29|2027-06-29|70000000000|r892",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2012-06-29",
+    "maturity_date": "2027-06-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2005-03-04|2027-06-30|5800000|r893",
+    "category": "기타",
+    "amount": 5800000,
+    "issuance_date": "2005-03-04",
+    "maturity_date": "2027-06-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-07-04|2027-07-02|150000000000|r894",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2025-07-04",
+    "maturity_date": "2027-07-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-04|2027-07-04|50000000000|r895",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-07-04",
+    "maturity_date": "2027-07-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-04|2027-07-04|200000000000|r896",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-07-04",
+    "maturity_date": "2027-07-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-07|2027-07-07|30000000000|r897",
+    "category": "전력채",
+    "amount": 30000000000,
+    "issuance_date": "2022-07-07",
+    "maturity_date": "2027-07-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-07-11|2027-07-09|150000000000|r898",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2025-07-11",
+    "maturity_date": "2027-07-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-12|2027-07-12|90000000000|r899",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2022-07-12",
+    "maturity_date": "2027-07-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-12|2027-07-12|200000000000|r900",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-07-12",
+    "maturity_date": "2027-07-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-15|2027-07-15|110000000000|r901",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2022-07-15",
+    "maturity_date": "2027-07-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-20|2027-07-20|120000000000|r902",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2022-07-20",
+    "maturity_date": "2027-07-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2012-07-24|2027-07-24|300000000000|r903",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2012-07-24",
+    "maturity_date": "2027-07-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-25|2027-07-25|40000000000|r904",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2022-07-25",
+    "maturity_date": "2027-07-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-25|2027-07-25|260000000000|r905",
+    "category": "전력채",
+    "amount": 260000000000,
+    "issuance_date": "2024-07-25",
+    "maturity_date": "2027-07-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-07-27|2027-07-27|40000000000|r906",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2022-07-27",
+    "maturity_date": "2027-07-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2017-07-28|2027-07-28|100000000000|r907",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2017-07-28",
+    "maturity_date": "2027-07-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|1997-08-04|2027-08-01|21708206000|r908",
+    "category": "외화채권",
+    "amount": 21708206000,
+    "issuance_date": "1997-08-04",
+    "maturity_date": "2027-08-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-02|2027-08-02|110000000000|r909",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2022-08-02",
+    "maturity_date": "2027-08-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-04|2027-08-04|60000000000|r910",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2022-08-04",
+    "maturity_date": "2027-08-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-05|2027-08-05|300000000000|r911",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-08-05",
+    "maturity_date": "2027-08-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-08-05|2027-08-05|100000000000|r912",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-08-05",
+    "maturity_date": "2027-08-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-09|2027-08-09|80000000000|r913",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2022-08-09",
+    "maturity_date": "2027-08-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-12|2027-08-12|50000000000|r914",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-08-12",
+    "maturity_date": "2027-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-12|2027-08-12|250000000000|r915",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2024-08-12",
+    "maturity_date": "2027-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-08-12|2027-08-12|90000000000|r916",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2025-08-12",
+    "maturity_date": "2027-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2012-08-14|2027-08-14|70000000000|r917",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2012-08-14",
+    "maturity_date": "2027-08-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-17|2027-08-17|90000000000|r918",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2022-08-17",
+    "maturity_date": "2027-08-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-22|2027-08-22|50000000000|r919",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-08-22",
+    "maturity_date": "2027-08-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-23|2027-08-23|300000000000|r920",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-08-23",
+    "maturity_date": "2027-08-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-08-23|2027-08-23|250000000000|r921",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2024-08-23",
+    "maturity_date": "2027-08-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-08-26|2027-08-26|40000000000|r922",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2022-08-26",
+    "maturity_date": "2027-08-26",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-27|2027-08-27|250000000000|r923",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2024-08-27",
+    "maturity_date": "2027-08-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-09-01|2027-09-01|80000000000|r924",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2022-09-01",
+    "maturity_date": "2027-09-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-03|2027-09-03|300000000000|r925",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-09-03",
+    "maturity_date": "2027-09-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-09-04|2027-09-03|70000000000|r926",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2025-09-04",
+    "maturity_date": "2027-09-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-09-05|2027-09-05|200000000000|r927",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2024-09-05",
+    "maturity_date": "2027-09-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-09-06|2027-09-06|60000000000|r928",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2022-09-06",
+    "maturity_date": "2027-09-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-09-08|2027-09-08|100000000000|r929",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2022-09-08",
+    "maturity_date": "2027-09-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-10|2027-09-10|300000000000|r930",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-09-10",
+    "maturity_date": "2027-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-09-11|2027-09-10|100000000000|r931",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-09-11",
+    "maturity_date": "2027-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-09-13|2027-09-13|20000000000|r932",
+    "category": "전력채",
+    "amount": 20000000000,
+    "issuance_date": "2022-09-13",
+    "maturity_date": "2027-09-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-23|2027-09-23|400000000000|r933",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-09-23",
+    "maturity_date": "2027-09-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-09-28|2027-09-28|150000000000|r934",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2022-09-28",
+    "maturity_date": "2027-09-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2027-09-30|8250000|r935",
+    "category": "기타",
+    "amount": 8250000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2027-09-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2022-09-30|2027-09-30|100000000000|r936",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2022-09-30",
+    "maturity_date": "2027-09-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-10-01|2027-10-01|160000000000|r937",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2025-10-01",
+    "maturity_date": "2027-10-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-10-04|2027-10-04|20000000000|r938",
+    "category": "전력채",
+    "amount": 20000000000,
+    "issuance_date": "2022-10-04",
+    "maturity_date": "2027-10-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-10-04|2027-10-04|200000000000|r939",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2024-10-04",
+    "maturity_date": "2027-10-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-07|2027-10-07|400000000000|r940",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-10-07",
+    "maturity_date": "2027-10-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-10-13|2027-10-13|100000000000|r941",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-10-13",
+    "maturity_date": "2027-10-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-15|2027-10-15|300000000000|r942",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-10-15",
+    "maturity_date": "2027-10-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-25|2027-10-25|400000000000|r943",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-10-25",
+    "maturity_date": "2027-10-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-04|2027-11-04|400000000000|r944",
+    "category": "전력채",
+    "amount": 400000000000,
+    "issuance_date": "2024-11-04",
+    "maturity_date": "2027-11-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-12|2027-11-12|200000000000|r945",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-11-12",
+    "maturity_date": "2027-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2017-11-15|2027-11-15|200000000000|r946",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2017-11-15",
+    "maturity_date": "2027-11-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-25|2027-11-25|300000000000|r947",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-11-25",
+    "maturity_date": "2027-11-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-03|2027-12-03|200000000000|r948",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-12-03",
+    "maturity_date": "2027-12-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-12-06|2027-12-06|300000000000|r949",
+    "category": "중장기기업어음",
+    "amount": 300000000000,
+    "issuance_date": "2024-12-06",
+    "maturity_date": "2027-12-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-10|2027-12-10|160000000000|r950",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2024-12-10",
+    "maturity_date": "2027-12-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-17|2027-12-17|170000000000|r951",
+    "category": "전력채",
+    "amount": 170000000000,
+    "issuance_date": "2024-12-17",
+    "maturity_date": "2027-12-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-09-25|2027-12-20|37100000|r952",
+    "category": "기타",
+    "amount": 37100000,
+    "issuance_date": "2003-09-25",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2027-12-20|8680000|r953",
+    "category": "기타",
+    "amount": 8680000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2027-12-20|4900000|r954",
+    "category": "기타",
+    "amount": 4900000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-05-19|2027-12-20|10995810|r955",
+    "category": "기타",
+    "amount": 10995810,
+    "issuance_date": "2004-05-19",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-05-19|2027-12-20|7000000|r956",
+    "category": "기타",
+    "amount": 7000000,
+    "issuance_date": "2004-05-19",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2027-12-20|5600000|r957",
+    "category": "기타",
+    "amount": 5600000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2005-03-04|2027-12-20|7700000|r958",
+    "category": "기타",
+    "amount": 7700000,
+    "issuance_date": "2005-03-04",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-07-20|2027-12-20|204190|r959",
+    "category": "기타",
+    "amount": 204190,
+    "issuance_date": "2007-07-20",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2027-12-20|11900000|r960",
+    "category": "기타",
+    "amount": 11900000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2027-12-20|9100000|r961",
+    "category": "기타",
+    "amount": 9100000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1992-12-29|2027-12-20|9100000|r962",
+    "category": "기타",
+    "amount": 9100000,
+    "issuance_date": "1992-12-29",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1999-12-21|2027-12-20|52360000|r963",
+    "category": "기타",
+    "amount": 52360000,
+    "issuance_date": "1999-12-21",
+    "maturity_date": "2027-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-01-06|2028-01-06|250000000000|r964",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2023-01-06",
+    "maturity_date": "2028-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-06|2028-01-06|200000000000|r965",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-01-06",
+    "maturity_date": "2028-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-06|2028-01-06|200000000000|r966",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2026-01-06",
+    "maturity_date": "2028-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-01-10|2028-01-10|250000000000|r967",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2023-01-10",
+    "maturity_date": "2028-01-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-12|2028-01-12|200000000000|r968",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2026-01-12",
+    "maturity_date": "2028-01-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-14|2028-01-14|200000000000|r969",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-01-14",
+    "maturity_date": "2028-01-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-19|2028-01-19|120000000000|r970",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2026-01-19",
+    "maturity_date": "2028-01-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-22|2028-01-22|200000000000|r971",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-01-22",
+    "maturity_date": "2028-01-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-27|2028-01-25|30000000000|r972",
+    "category": "전력채",
+    "amount": 30000000000,
+    "issuance_date": "2026-01-27",
+    "maturity_date": "2028-01-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-01-26|2028-01-26|250000000000|r973",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2023-01-26",
+    "maturity_date": "2028-01-26",
+    "rate": 4.39,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-03|2028-02-03|50000000000|r974",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2026-02-03",
+    "maturity_date": "2028-02-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-06|2028-02-06|300000000000|r975",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2025-02-06",
+    "maturity_date": "2028-02-06",
+    "rate": 300000000000.0,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-02-09|2028-02-09|200000000000|r976",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2023-02-09",
+    "maturity_date": "2028-02-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-10|2028-02-10|70000000000|r977",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2026-02-10",
+    "maturity_date": "2028-02-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-12|2028-02-12|200000000000|r978",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-02-12",
+    "maturity_date": "2028-02-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-02-13|2028-02-13|589200000000|r979",
+    "category": "외화채권",
+    "amount": 589200000000,
+    "issuance_date": "2025-02-13",
+    "maturity_date": "2028-02-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-17|2028-02-17|200000000000|r980",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-02-17",
+    "maturity_date": "2028-02-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-24|2028-02-24|300000000000|r981",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2025-02-24",
+    "maturity_date": "2028-02-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-24|2028-02-24|110000000000|r982",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2026-02-24",
+    "maturity_date": "2028-02-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-02-27|2028-02-25|200000000000|r983",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2023-02-27",
+    "maturity_date": "2028-02-25",
+    "rate": 4.04,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-03-05|2028-03-03|120000000000|r984",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2026-03-05",
+    "maturity_date": "2028-03-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-06|2028-03-06|200000000000|r985",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-03-06",
+    "maturity_date": "2028-03-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-03-09|2028-03-09|100000000000|r986",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2023-03-09",
+    "maturity_date": "2028-03-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-12|2028-03-10|180000000000|r987",
+    "category": "전력채",
+    "amount": 180000000000,
+    "issuance_date": "2025-03-12",
+    "maturity_date": "2028-03-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-17|2028-03-17|200000000000|r988",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-03-17",
+    "maturity_date": "2028-03-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-03-17|2028-03-17|80000000000|r989",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2026-03-17",
+    "maturity_date": "2028-03-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-03-22|2028-03-22|100000000000|r990",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2018-03-22",
+    "maturity_date": "2028-03-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-27|2028-03-27|190000000000|r991",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2025-03-27",
+    "maturity_date": "2028-03-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2010-02-25|2028-03-31|7638000|r992",
+    "category": "기타",
+    "amount": 7638000,
+    "issuance_date": "2010-02-25",
+    "maturity_date": "2028-03-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-02|2028-03-31|130000000000|r993",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2028-03-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-03|2028-04-03|200000000000|r994",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-04-03",
+    "maturity_date": "2028-04-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2022-10-06|2028-04-06|283820000000|r995",
+    "category": "외화채권",
+    "amount": 283820000000,
+    "issuance_date": "2022-10-06",
+    "maturity_date": "2028-04-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2022-10-06|2028-04-06|141910000000|r996",
+    "category": "외화채권",
+    "amount": 141910000000,
+    "issuance_date": "2022-10-06",
+    "maturity_date": "2028-04-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-07|2028-04-07|150000000000|r997",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2028-04-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-04-09|2028-04-09|100000000000|r998",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2013-04-09",
+    "maturity_date": "2028-04-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-11|2028-04-11|200000000000|r999",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-04-11",
+    "maturity_date": "2028-04-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-16|2028-04-14|200000000000|r1000",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-04-16",
+    "maturity_date": "2028-04-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-15|2028-04-14|150000000000|r1001",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2026-04-15",
+    "maturity_date": "2028-04-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-04-20|2028-04-20|250000000000|r1002",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2023-04-20",
+    "maturity_date": "2028-04-20",
+    "rate": 4.2,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-21|2028-04-21|150000000000|r1003",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2026-04-21",
+    "maturity_date": "2028-04-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-28|2028-04-28|140000000000|r1004",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2026-04-28",
+    "maturity_date": "2028-04-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-04-30|2028-04-30|100000000000|r1005",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2013-04-30",
+    "maturity_date": "2028-04-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-07|2028-05-04|100000000000|r1006",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2028-05-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-08|2028-05-08|200000000000|r1007",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-05-08",
+    "maturity_date": "2028-05-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-05-12|2028-05-12|300000000000|r1008",
+    "category": "중장기기업어음",
+    "amount": 300000000000,
+    "issuance_date": "2023-05-12",
+    "maturity_date": "2028-05-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-13|2028-05-12|210000000000|r1009",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-05-13",
+    "maturity_date": "2028-05-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-12|2028-05-12|80000000000|r1010",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2028-05-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-05-13|2028-05-13|100000000000|r1011",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2013-05-13",
+    "maturity_date": "2028-05-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-05-15|2028-05-15|200000000000|r1012",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2025-05-15",
+    "maturity_date": "2028-05-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-21|2028-05-19|220000000000|r1013",
+    "category": "전력채",
+    "amount": 220000000000,
+    "issuance_date": "2025-05-21",
+    "maturity_date": "2028-05-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-05-27|2028-05-27|100000000000|r1014",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2013-05-27",
+    "maturity_date": "2028-05-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-06-01|2028-06-01|250000000000|r1015",
+    "category": "중장기기업어음",
+    "amount": 250000000000,
+    "issuance_date": "2023-06-01",
+    "maturity_date": "2028-06-01",
+    "rate": 4.49,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-04|2028-06-02|210000000000|r1016",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-06-04",
+    "maturity_date": "2028-06-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-12|2028-06-12|200000000000|r1017",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-06-12",
+    "maturity_date": "2028-06-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-16|2028-06-16|200000000000|r1018",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-06-16",
+    "maturity_date": "2028-06-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-06-28|2028-06-28|60000000000|r1019",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2013-06-28",
+    "maturity_date": "2028-06-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-07-04|2028-07-04|200000000000|r1020",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-07-04",
+    "maturity_date": "2028-07-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-07-09|2028-07-09|80000000000|r1021",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2013-07-09",
+    "maturity_date": "2028-07-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-07-11|2028-07-11|190000000000|r1022",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2025-07-11",
+    "maturity_date": "2028-07-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-07-12|2028-07-12|100000000000|r1023",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-07-12",
+    "maturity_date": "2028-07-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-07-12|2028-07-12|200000000000|r1024",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2023-07-12",
+    "maturity_date": "2028-07-12",
+    "rate": 4.45,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-07-30|2028-07-30|70000000000|r1025",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2013-07-30",
+    "maturity_date": "2028-07-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-08-05|2028-08-04|210000000000|r1026",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-08-05",
+    "maturity_date": "2028-08-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-08-06|2028-08-06|70000000000|r1027",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2013-08-06",
+    "maturity_date": "2028-08-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-08-09|2028-08-09|150000000000|r1028",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2018-08-09",
+    "maturity_date": "2028-08-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-08-11|2028-08-11|100000000000|r1029",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2023-08-11",
+    "maturity_date": "2028-08-11",
+    "rate": 4.31,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-08-12|2028-08-11|210000000000|r1030",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-08-12",
+    "maturity_date": "2028-08-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-08-27|2028-08-27|100000000000|r1031",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2013-08-27",
+    "maturity_date": "2028-08-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-09-04|2028-09-04|150000000000|r1032",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2018-09-04",
+    "maturity_date": "2028-09-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-09-04|2028-09-04|230000000000|r1033",
+    "category": "전력채",
+    "amount": 230000000000,
+    "issuance_date": "2025-09-04",
+    "maturity_date": "2028-09-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-09-11|2028-09-11|150000000000|r1034",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2018-09-11",
+    "maturity_date": "2028-09-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-09-11|2028-09-11|210000000000|r1035",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-09-11",
+    "maturity_date": "2028-09-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-09-16|2028-09-16|50000000000|r1036",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2013-09-16",
+    "maturity_date": "2028-09-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-09-18|2028-09-18|100000000000|r1037",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2023-09-18",
+    "maturity_date": "2028-09-18",
+    "rate": 4.38,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-09-27|2028-09-27|150000000000|r1038",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2018-09-27",
+    "maturity_date": "2028-09-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-10-01|2028-09-29|260000000000|r1039",
+    "category": "전력채",
+    "amount": 260000000000,
+    "issuance_date": "2025-10-01",
+    "maturity_date": "2028-09-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-01|2028-10-01|50000000000|r1040",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-10-01",
+    "maturity_date": "2028-10-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-10-11|2028-10-11|200000000000|r1041",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2018-10-11",
+    "maturity_date": "2028-10-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-10-13|2028-10-13|200000000000|r1042",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-10-13",
+    "maturity_date": "2028-10-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-10-20|2028-10-20|200000000000|r1043",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2025-10-20",
+    "maturity_date": "2028-10-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-21|2028-10-21|40000000000|r1044",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2021-10-21",
+    "maturity_date": "2028-10-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-25|2028-10-25|50000000000|r1045",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-10-25",
+    "maturity_date": "2028-10-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-11-06|2028-11-06|270000000000|r1046",
+    "category": "전력채",
+    "amount": 270000000000,
+    "issuance_date": "2025-11-06",
+    "maturity_date": "2028-11-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-11|2028-11-11|100000000000|r1047",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-11-11",
+    "maturity_date": "2028-11-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-11-12|2028-11-12|200000000000|r1048",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2018-11-12",
+    "maturity_date": "2028-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-12|2028-11-12|100000000000|r1049",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-11-12",
+    "maturity_date": "2028-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2028-11-12|146320000000|r1050",
+    "category": "외화채권",
+    "amount": 146320000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2028-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2028-11-12|438960000000|r1051",
+    "category": "외화채권",
+    "amount": 438960000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2028-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-11-13|2028-11-13|60000000000|r1052",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2013-11-13",
+    "maturity_date": "2028-11-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-19|2028-11-19|210000000000|r1053",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2021-11-19",
+    "maturity_date": "2028-11-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-22|2028-11-22|190000000000|r1054",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2021-11-22",
+    "maturity_date": "2028-11-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-24|2028-11-24|200000000000|r1055",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-11-24",
+    "maturity_date": "2028-11-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-11-26|2028-11-26|90000000000|r1056",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2013-11-26",
+    "maturity_date": "2028-11-26",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-11-28|2028-11-28|50000000000|r1057",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2013-11-28",
+    "maturity_date": "2028-11-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-30|2028-11-30|230000000000|r1058",
+    "category": "전력채",
+    "amount": 230000000000,
+    "issuance_date": "2021-11-30",
+    "maturity_date": "2028-11-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-02|2028-12-02|100000000000|r1059",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-12-02",
+    "maturity_date": "2028-12-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-03|2028-12-03|120000000000|r1060",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2021-12-03",
+    "maturity_date": "2028-12-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-09|2028-12-09|250000000000|r1061",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2021-12-09",
+    "maturity_date": "2028-12-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-10|2028-12-10|180000000000|r1062",
+    "category": "전력채",
+    "amount": 180000000000,
+    "issuance_date": "2021-12-10",
+    "maturity_date": "2028-12-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2023-12-13|2028-12-13|200000000000|r1063",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2023-12-13",
+    "maturity_date": "2028-12-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-16|2028-12-16|140000000000|r1064",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2021-12-16",
+    "maturity_date": "2028-12-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-17|2028-12-17|140000000000|r1065",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2021-12-17",
+    "maturity_date": "2028-12-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-09-25|2028-12-20|41800000|r1066",
+    "category": "기타",
+    "amount": 41800000,
+    "issuance_date": "2003-09-25",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2028-12-20|7810000|r1067",
+    "category": "기타",
+    "amount": 7810000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-02-16|2028-12-20|18700000|r1068",
+    "category": "기타",
+    "amount": 18700000,
+    "issuance_date": "2004-02-16",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2028-12-20|7700000|r1069",
+    "category": "기타",
+    "amount": 7700000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2005-03-04|2028-12-20|6600000|r1070",
+    "category": "기타",
+    "amount": 6600000,
+    "issuance_date": "2005-03-04",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-07-20|2028-12-20|10010000|r1071",
+    "category": "기타",
+    "amount": 10010000,
+    "issuance_date": "2007-07-20",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2028-12-20|11000000|r1072",
+    "category": "기타",
+    "amount": 11000000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1993-11-03|2028-12-20|2200000|r1073",
+    "category": "기타",
+    "amount": 2200000,
+    "issuance_date": "1993-11-03",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1999-12-21|2028-12-20|61380000|r1074",
+    "category": "기타",
+    "amount": 61380000,
+    "issuance_date": "1999-12-21",
+    "maturity_date": "2028-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-22|2028-12-22|150000000000|r1075",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2021-12-22",
+    "maturity_date": "2028-12-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-12-24|2028-12-22|100000000000|r1076",
+    "category": "중장기기업어음",
+    "amount": 100000000000,
+    "issuance_date": "2025-12-24",
+    "maturity_date": "2028-12-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-23|2028-12-23|140000000000|r1077",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2021-12-23",
+    "maturity_date": "2028-12-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-06|2029-01-05|100000000000|r1078",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-01-06",
+    "maturity_date": "2029-01-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-06|2029-01-06|200000000000|r1079",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2022-01-06",
+    "maturity_date": "2029-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-10|2029-01-10|200000000000|r1080",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2022-01-10",
+    "maturity_date": "2029-01-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-12|2029-01-12|200000000000|r1081",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2026-01-12",
+    "maturity_date": "2029-01-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-19|2029-01-19|100000000000|r1082",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2022-01-19",
+    "maturity_date": "2029-01-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-19|2029-01-19|250000000000|r1083",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2026-01-19",
+    "maturity_date": "2029-01-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2026-01-22|2029-01-22|200000000000|r1084",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-01-22",
+    "maturity_date": "2029-01-22",
+    "rate": 3.02,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-27|2029-01-26|100000000000|r1085",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-01-27",
+    "maturity_date": "2029-01-26",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-27|2029-01-27|140000000000|r1086",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2022-01-27",
+    "maturity_date": "2029-01-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2026-02-04|2029-02-02|200000000000|r1087",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-02-04",
+    "maturity_date": "2029-02-02",
+    "rate": 3.1,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-03|2029-02-02|120000000000|r1088",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2026-02-03",
+    "maturity_date": "2029-02-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-08|2029-02-08|140000000000|r1089",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2022-02-08",
+    "maturity_date": "2029-02-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-10|2029-02-09|100000000000|r1090",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-02-10",
+    "maturity_date": "2029-02-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2026-02-12|2029-02-09|200000000000|r1091",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-02-12",
+    "maturity_date": "2029-02-09",
+    "rate": 3.18,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-02-12|2029-02-12|200000000000|r1092",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-02-12",
+    "maturity_date": "2029-02-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-14|2029-02-14|90000000000|r1093",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2022-02-14",
+    "maturity_date": "2029-02-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-02-21|2029-02-21|200000000000|r1094",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2024-02-21",
+    "maturity_date": "2029-02-21",
+    "rate": 4.18,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-24|2029-02-23|230000000000|r1095",
+    "category": "전력채",
+    "amount": 230000000000,
+    "issuance_date": "2026-02-24",
+    "maturity_date": "2029-02-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2024-02-28|2029-02-28|200000000000|r1096",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2024-02-28",
+    "maturity_date": "2029-02-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-03-04|2029-03-04|200000000000|r1097",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-03-04",
+    "maturity_date": "2029-03-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-04|2029-03-04|20000000000|r1098",
+    "category": "전력채",
+    "amount": 20000000000,
+    "issuance_date": "2022-03-04",
+    "maturity_date": "2029-03-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-03-05|2029-03-05|110000000000|r1099",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2026-03-05",
+    "maturity_date": "2029-03-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-07|2029-03-07|50000000000|r1100",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-03-07",
+    "maturity_date": "2029-03-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-03-17|2029-03-16|160000000000|r1101",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2026-03-17",
+    "maturity_date": "2029-03-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2026-04-01|2029-03-30|200000000000|r1102",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-04-01",
+    "maturity_date": "2029-03-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-02|2029-04-02|120000000000|r1103",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2029-04-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-07|2029-04-06|180000000000|r1104",
+    "category": "전력채",
+    "amount": 180000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2029-04-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-04-11|2029-04-11|200000000000|r1105",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-04-11",
+    "maturity_date": "2029-04-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-15|2029-04-13|220000000000|r1106",
+    "category": "전력채",
+    "amount": 220000000000,
+    "issuance_date": "2026-04-15",
+    "maturity_date": "2029-04-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2026-04-22|2029-04-20|200000000000|r1107",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-04-22",
+    "maturity_date": "2029-04-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-21|2029-04-20|160000000000|r1108",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2026-04-21",
+    "maturity_date": "2029-04-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-28|2029-04-27|140000000000|r1109",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2026-04-28",
+    "maturity_date": "2029-04-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2014-04-29|2029-04-29|90000000000|r1111",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2014-04-29",
+    "maturity_date": "2029-04-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-07|2029-05-04|230000000000|r1112",
+    "category": "전력채",
+    "amount": 230000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2029-05-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-05-07|2029-05-07|200000000000|r1113",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-05-07",
+    "maturity_date": "2029-05-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2026-05-13|2029-05-11|200000000000|r1114",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-05-13",
+    "maturity_date": "2029-05-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-12|2029-05-11|210000000000|r1115",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2029-05-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-06-22|2029-06-22|50000000000|r1116",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2022-06-22",
+    "maturity_date": "2029-06-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2014-07-30|2029-07-30|102470000000|r1117",
+    "category": "외화채권",
+    "amount": 102470000000,
+    "issuance_date": "2014-07-30",
+    "maturity_date": "2029-07-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-07-31|2029-07-31|200000000000|r1118",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-07-31",
+    "maturity_date": "2029-07-31",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-08-23|2029-08-23|200000000000|r1119",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-08-23",
+    "maturity_date": "2029-08-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2014-08-27|2029-08-27|110000000000|r1120",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2014-08-27",
+    "maturity_date": "2029-08-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-03|2029-09-03|200000000000|r1121",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-09-03",
+    "maturity_date": "2029-09-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-09-10|2029-09-10|200000000000|r1122",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-09-10",
+    "maturity_date": "2029-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-02|2029-10-02|300000000000|r1123",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-10-02",
+    "maturity_date": "2029-10-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-15|2029-10-15|200000000000|r1124",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-10-15",
+    "maturity_date": "2029-10-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-25|2029-10-25|300000000000|r1125",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-10-25",
+    "maturity_date": "2029-10-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-10-30|2029-10-30|300000000000|r1126",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-10-30",
+    "maturity_date": "2029-10-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-11-11|2029-11-11|200000000000|r1127",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-11-11",
+    "maturity_date": "2029-11-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-12|2029-11-12|200000000000|r1128",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-11-12",
+    "maturity_date": "2029-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-11-25|2029-11-25|200000000000|r1129",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-11-25",
+    "maturity_date": "2029-11-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-11-28|2029-11-28|200000000000|r1130",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2019-11-28",
+    "maturity_date": "2029-11-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-03|2029-12-03|200000000000|r1131",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-12-03",
+    "maturity_date": "2029-12-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-10|2029-12-10|200000000000|r1132",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-12-10",
+    "maturity_date": "2029-12-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-12-17|2029-12-17|200000000000|r1133",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2024-12-17",
+    "maturity_date": "2029-12-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-12-19|2029-12-19|250000000000|r1134",
+    "category": "전력채",
+    "amount": 250000000000,
+    "issuance_date": "2019-12-19",
+    "maturity_date": "2029-12-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-12-26|2029-12-20|14850000|r1135",
+    "category": "기타",
+    "amount": 14850000,
+    "issuance_date": "2003-12-26",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2029-12-20|6000000|r1136",
+    "category": "기타",
+    "amount": 6000000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2029-12-20|4500000|r1137",
+    "category": "기타",
+    "amount": 4500000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2005-03-04|2029-12-20|4500000|r1138",
+    "category": "기타",
+    "amount": 4500000,
+    "issuance_date": "2005-03-04",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-07-20|2029-12-20|6750000|r1139",
+    "category": "기타",
+    "amount": 6750000,
+    "issuance_date": "2007-07-20",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-07-20|2029-12-20|4370000|r1140",
+    "category": "기타",
+    "amount": 4370000,
+    "issuance_date": "2007-07-20",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-07-20|2029-12-20|14570000|r1141",
+    "category": "기타",
+    "amount": 14570000,
+    "issuance_date": "2007-07-20",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2029-12-20|4500000|r1142",
+    "category": "기타",
+    "amount": 4500000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2029-12-20|6750000|r1143",
+    "category": "기타",
+    "amount": 6750000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2010-02-25|2029-12-20|7500000|r1144",
+    "category": "기타",
+    "amount": 7500000,
+    "issuance_date": "2010-02-25",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2011-11-03|2029-12-20|4500000|r1145",
+    "category": "기타",
+    "amount": 4500000,
+    "issuance_date": "2011-11-03",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1994-11-14|2029-12-20|12000000|r1146",
+    "category": "기타",
+    "amount": 12000000,
+    "issuance_date": "1994-11-14",
+    "maturity_date": "2029-12-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-12-30|2029-12-30|190000000000|r1147",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2019-12-30",
+    "maturity_date": "2029-12-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-01-06|2030-01-06|200000000000|r1148",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2020-01-06",
+    "maturity_date": "2030-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-06|2030-01-06|100000000000|r1149",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-01-06",
+    "maturity_date": "2030-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-14|2030-01-14|100000000000|r1150",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-01-14",
+    "maturity_date": "2030-01-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-01-21|2030-01-21|200000000000|r1151",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2020-01-21",
+    "maturity_date": "2030-01-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-01-22|2030-01-22|100000000000|r1152",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-01-22",
+    "maturity_date": "2030-01-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-02-06|2030-02-06|200000000000|r1153",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2020-02-06",
+    "maturity_date": "2030-02-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-06|2030-02-06|210000000000|r1154",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-02-06",
+    "maturity_date": "2030-02-06",
+    "rate": 210000000000.0,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-02-11|2030-02-11|200000000000|r1155",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2025-02-11",
+    "maturity_date": "2030-02-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-12|2030-02-12|200000000000|r1156",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-02-12",
+    "maturity_date": "2030-02-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-17|2030-02-17|100000000000|r1157",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-02-17",
+    "maturity_date": "2030-02-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-02-24|2030-02-24|100000000000|r1158",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-02-24",
+    "maturity_date": "2030-02-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-02-27|2030-02-27|200000000000|r1159",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2025-02-27",
+    "maturity_date": "2030-02-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-03-04|2030-03-04|200000000000|r1160",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2020-03-04",
+    "maturity_date": "2030-03-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-06|2030-03-06|100000000000|r1161",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-03-06",
+    "maturity_date": "2030-03-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-12|2030-03-12|100000000000|r1162",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-03-12",
+    "maturity_date": "2030-03-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-17|2030-03-15|100000000000|r1163",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-03-17",
+    "maturity_date": "2030-03-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-03-26|2030-03-26|100000000000|r1164",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2020-03-26",
+    "maturity_date": "2030-03-26",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-03-27|2030-03-27|210000000000|r1165",
+    "category": "전력채",
+    "amount": 210000000000,
+    "issuance_date": "2025-03-27",
+    "maturity_date": "2030-03-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-03-30|2030-03-30|100000000000|r1166",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2020-03-30",
+    "maturity_date": "2030-03-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-04-03|2030-04-03|100000000000|r1167",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2020-04-03",
+    "maturity_date": "2030-04-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-03|2030-04-03|100000000000|r1168",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-04-03",
+    "maturity_date": "2030-04-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-04-07|2030-04-07|100000000000|r1169",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2020-04-07",
+    "maturity_date": "2030-04-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-04-09|2030-04-09|100000000000|r1170",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2020-04-09",
+    "maturity_date": "2030-04-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-11|2030-04-11|100000000000|r1171",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-04-11",
+    "maturity_date": "2030-04-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-04-16|2030-04-16|110000000000|r1172",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2025-04-16",
+    "maturity_date": "2030-04-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "중장기기업어음|2025-04-24|2030-04-24|200000000000|r1173",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2025-04-24",
+    "maturity_date": "2030-04-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2020-04-29|2030-04-29|100000000000|r1174",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2020-04-29",
+    "maturity_date": "2030-04-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-08|2030-05-08|200000000000|r1175",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2025-05-08",
+    "maturity_date": "2030-05-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-13|2030-05-13|190000000000|r1176",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2025-05-13",
+    "maturity_date": "2030-05-13",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-05-21|2030-05-21|180000000000|r1177",
+    "category": "전력채",
+    "amount": 180000000000,
+    "issuance_date": "2025-05-21",
+    "maturity_date": "2030-05-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-04|2030-06-04|110000000000|r1178",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2025-06-04",
+    "maturity_date": "2030-06-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-12|2030-06-12|150000000000|r1179",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2025-06-12",
+    "maturity_date": "2030-06-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-06-16|2030-06-14|170000000000|r1180",
+    "category": "전력채",
+    "amount": 170000000000,
+    "issuance_date": "2025-06-16",
+    "maturity_date": "2030-06-14",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-07-04|2030-07-04|150000000000|r1181",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2025-07-04",
+    "maturity_date": "2030-07-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-07-11|2030-07-11|160000000000|r1182",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2025-07-11",
+    "maturity_date": "2030-07-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-08-05|2030-08-05|90000000000|r1183",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2025-08-05",
+    "maturity_date": "2030-08-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-08-12|2030-08-12|100000000000|r1184",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-08-12",
+    "maturity_date": "2030-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-09-04|2030-09-04|100000000000|r1185",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-09-04",
+    "maturity_date": "2030-09-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-09-11|2030-09-10|90000000000|r1186",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2025-09-11",
+    "maturity_date": "2030-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2030-09-15|10260000|r1187",
+    "category": "기타",
+    "amount": 10260000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2030-09-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2005-03-04|2030-09-15|10080000|r1188",
+    "category": "기타",
+    "amount": 10080000,
+    "issuance_date": "2005-03-04",
+    "maturity_date": "2030-09-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2010-02-25|2030-09-15|4320000|r1189",
+    "category": "기타",
+    "amount": 4320000,
+    "issuance_date": "2010-02-25",
+    "maturity_date": "2030-09-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1995-11-27|2030-09-15|9000000|r1190",
+    "category": "기타",
+    "amount": 9000000,
+    "issuance_date": "1995-11-27",
+    "maturity_date": "2030-09-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-10-01|2030-10-01|80000000000|r1191",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2025-10-01",
+    "maturity_date": "2030-10-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-10-13|2030-10-11|100000000000|r1192",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2025-10-13",
+    "maturity_date": "2030-10-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2025-11-06|2030-11-06|220000000000|r1193",
+    "category": "전력채",
+    "amount": 220000000000,
+    "issuance_date": "2025-11-06",
+    "maturity_date": "2030-11-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2030-11-12|292640000000|r1194",
+    "category": "외화채권",
+    "amount": 292640000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2030-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2030-11-12|219480000000|r1195",
+    "category": "외화채권",
+    "amount": 219480000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2030-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2030-11-12|146320000000|r1196",
+    "category": "외화채권",
+    "amount": 146320000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2030-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2030-11-12|73160000000|r1197",
+    "category": "외화채권",
+    "amount": 73160000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2030-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2025-11-12|2030-11-12|146320000000|r1198",
+    "category": "외화채권",
+    "amount": 146320000000,
+    "issuance_date": "2025-11-12",
+    "maturity_date": "2030-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-12-26|2030-12-15|8930000|r1199",
+    "category": "기타",
+    "amount": 8930000,
+    "issuance_date": "2003-12-26",
+    "maturity_date": "2030-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-11-17|2030-12-15|3040000|r1200",
+    "category": "기타",
+    "amount": 3040000,
+    "issuance_date": "2003-11-17",
+    "maturity_date": "2030-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2030-12-15|2660000|r1201",
+    "category": "기타",
+    "amount": 2660000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2030-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2030-12-15|4180000|r1202",
+    "category": "기타",
+    "amount": 4180000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2030-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2010-10-05|2030-12-15|8170000|r1203",
+    "category": "기타",
+    "amount": 8170000,
+    "issuance_date": "2010-10-05",
+    "maturity_date": "2030-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2011-11-03|2030-12-15|2850000|r1204",
+    "category": "기타",
+    "amount": 2850000,
+    "issuance_date": "2011-11-03",
+    "maturity_date": "2030-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-01-27|2031-01-27|80000000000|r1205",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2026-01-27",
+    "maturity_date": "2031-01-27",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-03|2031-02-03|130000000000|r1206",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2026-02-03",
+    "maturity_date": "2031-02-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-10|2031-02-10|170000000000|r1207",
+    "category": "전력채",
+    "amount": 170000000000,
+    "issuance_date": "2026-02-10",
+    "maturity_date": "2031-02-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-02-24|2031-02-24|100000000000|r1208",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-02-24",
+    "maturity_date": "2031-02-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-03-05|2031-03-05|70000000000|r1209",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2026-03-05",
+    "maturity_date": "2031-03-05",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-02|2031-04-02|70000000000|r1210",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2026-04-02",
+    "maturity_date": "2031-04-02",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-07|2031-04-07|70000000000|r1211",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2026-04-07",
+    "maturity_date": "2031-04-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-15|2031-04-15|30000000000|r1212",
+    "category": "전력채",
+    "amount": 30000000000,
+    "issuance_date": "2026-04-15",
+    "maturity_date": "2031-04-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-21|2031-04-21|100000000000|r1213",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-04-21",
+    "maturity_date": "2031-04-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-04-28|2031-04-28|90000000000|r1214",
+    "category": "전력채",
+    "amount": 90000000000,
+    "issuance_date": "2026-04-28",
+    "maturity_date": "2031-04-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-07|2031-05-07|80000000000|r1215",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2026-05-07",
+    "maturity_date": "2031-05-07",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-12|2031-05-12|50000000000|r1216",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2026-05-12",
+    "maturity_date": "2031-05-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-07-12|2031-07-12|100000000000|r1217",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-07-12",
+    "maturity_date": "2031-07-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-04|2031-08-04|100000000000|r1218",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-08-04",
+    "maturity_date": "2031-08-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-10|2031-08-10|100000000000|r1219",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-08-10",
+    "maturity_date": "2031-08-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-12|2031-08-12|100000000000|r1220",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-08-12",
+    "maturity_date": "2031-08-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-20|2031-08-20|100000000000|r1221",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-08-20",
+    "maturity_date": "2031-08-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-08-25|2031-08-25|100000000000|r1222",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-08-25",
+    "maturity_date": "2031-08-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-03|2031-09-03|100000000000|r1223",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-09-03",
+    "maturity_date": "2031-09-03",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-09|2031-09-09|100000000000|r1224",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-09-09",
+    "maturity_date": "2031-09-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-10|2031-09-10|100000000000|r1225",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-09-10",
+    "maturity_date": "2031-09-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-09-23|2031-09-23|200000000000|r1226",
+    "category": "전력채",
+    "amount": 200000000000,
+    "issuance_date": "2021-09-23",
+    "maturity_date": "2031-09-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-08|2031-10-08|100000000000|r1227",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-10-08",
+    "maturity_date": "2031-10-08",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-21|2031-10-21|150000000000|r1228",
+    "category": "전력채",
+    "amount": 150000000000,
+    "issuance_date": "2021-10-21",
+    "maturity_date": "2031-10-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-10-25|2031-10-25|130000000000|r1229",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2021-10-25",
+    "maturity_date": "2031-10-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-11|2031-11-11|50000000000|r1230",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-11-11",
+    "maturity_date": "2031-11-11",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-12|2031-11-12|50000000000|r1231",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-11-12",
+    "maturity_date": "2031-11-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-19|2031-11-19|50000000000|r1232",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-11-19",
+    "maturity_date": "2031-11-19",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-22|2031-11-22|50000000000|r1233",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-11-22",
+    "maturity_date": "2031-11-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-24|2031-11-24|80000000000|r1234",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2021-11-24",
+    "maturity_date": "2031-11-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-30|2031-11-30|60000000000|r1235",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2021-11-30",
+    "maturity_date": "2031-11-30",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-09|2031-12-09|80000000000|r1236",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2021-12-09",
+    "maturity_date": "2031-12-09",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2031-12-15|12190000|r1237",
+    "category": "기타",
+    "amount": 12190000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2031-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1996-12-27|2031-12-15|6900000|r1238",
+    "category": "기타",
+    "amount": 6900000,
+    "issuance_date": "1996-12-27",
+    "maturity_date": "2031-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-16|2031-12-16|50000000000|r1239",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2021-12-16",
+    "maturity_date": "2031-12-16",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-17|2031-12-17|40000000000|r1240",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2021-12-17",
+    "maturity_date": "2031-12-17",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-22|2031-12-22|20000000000|r1241",
+    "category": "전력채",
+    "amount": 20000000000,
+    "issuance_date": "2021-12-22",
+    "maturity_date": "2031-12-22",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2021-12-23|2031-12-23|60000000000|r1242",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2021-12-23",
+    "maturity_date": "2031-12-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-06|2032-01-06|100000000000|r1243",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2022-01-06",
+    "maturity_date": "2032-01-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-12|2032-01-12|120000000000|r1244",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2022-01-12",
+    "maturity_date": "2032-01-12",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-01-25|2032-01-25|100000000000|r1245",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2022-01-25",
+    "maturity_date": "2032-01-25",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-04|2032-02-04|160000000000|r1246",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2022-02-04",
+    "maturity_date": "2032-02-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-02-10|2032-02-10|70000000000|r1247",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2022-02-10",
+    "maturity_date": "2032-02-10",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-01|2032-04-01|10000000000|r1248",
+    "category": "전력채",
+    "amount": 10000000000,
+    "issuance_date": "2022-04-01",
+    "maturity_date": "2032-04-01",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2012-08-20|2032-08-20|110000000000|r1249",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2012-08-20",
+    "maturity_date": "2032-08-20",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1997-12-30|2032-12-15|6750000|r1250",
+    "category": "기타",
+    "amount": 6750000,
+    "issuance_date": "1997-12-30",
+    "maturity_date": "2032-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2013-08-06|2033-08-06|100000000000|r1251",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2013-08-06",
+    "maturity_date": "2033-08-06",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|1998-12-30|2033-12-15|17670000|r1252",
+    "category": "기타",
+    "amount": 17670000,
+    "issuance_date": "1998-12-30",
+    "maturity_date": "2033-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2004-04-21|2034-10-23|138010000000|r1253",
+    "category": "외화채권",
+    "amount": 138010000000,
+    "issuance_date": "2004-04-21",
+    "maturity_date": "2034-10-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2004-04-21|2034-10-23|138010000000|r1254",
+    "category": "외화채권",
+    "amount": 138010000000,
+    "issuance_date": "2004-04-21",
+    "maturity_date": "2034-10-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|2004-04-21|2034-10-23|119958292000|r1255",
+    "category": "외화채권",
+    "amount": 119958292000,
+    "issuance_date": "2004-04-21",
+    "maturity_date": "2034-10-23",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2000-01-20|2034-12-15|4900000|r1256",
+    "category": "기타",
+    "amount": 4900000,
+    "issuance_date": "2000-01-20",
+    "maturity_date": "2034-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2000-12-29|2035-12-15|130650000|r1257",
+    "category": "기타",
+    "amount": 130650000,
+    "issuance_date": "2000-12-29",
+    "maturity_date": "2035-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2001-12-28|2036-12-15|35690000|r1258",
+    "category": "기타",
+    "amount": 35690000,
+    "issuance_date": "2001-12-28",
+    "maturity_date": "2036-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2002-12-30|2037-12-15|15980000|r1260",
+    "category": "기타",
+    "amount": 15980000,
+    "issuance_date": "2002-12-30",
+    "maturity_date": "2037-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-09-01|2037-12-15|12220000|r1261",
+    "category": "기타",
+    "amount": 12220000,
+    "issuance_date": "2004-09-01",
+    "maturity_date": "2037-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2010-02-25|2037-12-15|11280000|r1262",
+    "category": "기타",
+    "amount": 11280000,
+    "issuance_date": "2010-02-25",
+    "maturity_date": "2037-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2013-01-16|2037-12-15|12455000|r1263",
+    "category": "기타",
+    "amount": 12455000,
+    "issuance_date": "2013-01-16",
+    "maturity_date": "2037-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-10-29|2038-10-29|100000000000|r1265",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2018-10-29",
+    "maturity_date": "2038-10-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2003-12-26|2038-12-15|38250000|r1266",
+    "category": "기타",
+    "amount": 38250000,
+    "issuance_date": "2003-12-26",
+    "maturity_date": "2038-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2038-12-15|13770000|r1267",
+    "category": "기타",
+    "amount": 13770000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2038-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2038-12-15|11220000|r1268",
+    "category": "기타",
+    "amount": 11220000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2038-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2038-12-15|8160000|r1269",
+    "category": "기타",
+    "amount": 8160000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2038-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2004-12-29|2039-12-15|26950000|r1270",
+    "category": "기타",
+    "amount": 26950000,
+    "issuance_date": "2004-12-29",
+    "maturity_date": "2039-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-10-01|2039-12-15|22000000|r1271",
+    "category": "기타",
+    "amount": 22000000,
+    "issuance_date": "2008-10-01",
+    "maturity_date": "2039-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2009-05-01|2039-12-15|8250000|r1272",
+    "category": "기타",
+    "amount": 8250000,
+    "issuance_date": "2009-05-01",
+    "maturity_date": "2039-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2005-12-28|2040-12-15|30680000|r1273",
+    "category": "기타",
+    "amount": 30680000,
+    "issuance_date": "2005-12-28",
+    "maturity_date": "2040-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2006-12-28|2041-12-15|8190000|r1274",
+    "category": "기타",
+    "amount": 8190000,
+    "issuance_date": "2006-12-28",
+    "maturity_date": "2041-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2007-11-30|2042-12-15|2680000|r1275",
+    "category": "기타",
+    "amount": 2680000,
+    "issuance_date": "2007-11-30",
+    "maturity_date": "2042-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2008-12-15|2043-12-15|10650000|r1276",
+    "category": "기타",
+    "amount": 10650000,
+    "issuance_date": "2008-12-15",
+    "maturity_date": "2043-12-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "기타|2009-11-13|2044-11-15|14060000|r1277",
+    "category": "기타",
+    "amount": 14060000,
+    "issuance_date": "2009-11-13",
+    "maturity_date": "2044-11-15",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2018-10-29|2048-10-29|120000000000|r1278",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2018-10-29",
+    "maturity_date": "2048-10-29",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2019-10-24|2049-10-24|60000000000|r1279",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2019-10-24",
+    "maturity_date": "2049-10-24",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-03-28|2052-03-28|130000000000|r1280",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2022-03-28",
+    "maturity_date": "2052-03-28",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2022-04-21|2052-04-21|100000000000|r1281",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2022-04-21",
+    "maturity_date": "2052-04-21",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "외화채권|1996-04-01|2096-04-01|306761088000|r1282",
+    "category": "외화채권",
+    "amount": 306761088000,
+    "issuance_date": "1996-04-01",
+    "maturity_date": "2096-04-01",
+    "rate": null,
+    "source": "excel"
+  }
+]
