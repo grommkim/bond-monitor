@@ -599,7 +599,7 @@ def issu_stats_section_html(stats: dict) -> str:
         sp_pct  = f"{kepco/special*100:.1f}%" if special else "–"
         tot_pct = f"{kepco/total*100:.1f}%"   if total  else "–"
         highlight = f'''
-<div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+<div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;max-width:544px">
   <div>
     <div style="font-size:.78rem;color:#ea580c;font-weight:600;margin-bottom:4px">⚡ 전력채 연간 발행액</div>
     <div style="font-size:2.2rem;font-weight:700;color:#c2410c">{fmt조(kepco)}</div>
@@ -669,16 +669,17 @@ def issu_stats_section_html(stats: dict) -> str:
     plugins:[{{
       id:'centerText',
       beforeDraw:function(chart){{
-        var w=chart.width,h=chart.height,ctx=chart.ctx;
+        var ca=chart.chartArea,ctx=chart.ctx;
+        var cx=(ca.left+ca.right)/2,cy=(ca.top+ca.bottom)/2;
         ctx.restore();
-        ctx.font='bold 13px Noto Sans KR,sans-serif';
+        ctx.font='bold 12px Noto Sans KR,sans-serif';
         ctx.textBaseline='middle';
         ctx.textAlign='center';
         ctx.fillStyle='#64748b';
-        ctx.fillText('전체', w/2, h/2-10);
-        ctx.font='bold 15px Noto Sans KR,sans-serif';
+        ctx.fillText('전체', cx, cy-10);
+        ctx.font='bold 14px Noto Sans KR,sans-serif';
         ctx.fillStyle='#0f2a4a';
-        ctx.fillText(totalLabel, w/2, h/2+10);
+        ctx.fillText(totalLabel, cx, cy+10);
         ctx.save();
       }}
     }}]
