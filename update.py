@@ -780,13 +780,13 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
 
     rows = (
         f'<tr style="background:#eef2ff"><td colspan="3" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">전력채</td><td>{조(summary["전력채"])}</td><td style="color:#94a3b8">–</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">단기사채</td><td>{조(summary["단기사채"])}</td><td style="color:#94a3b8">–</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">외화채권</td><td>{조(summary["외화채권"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">전력채</td><td>{조(summary["전력채"])}</td>{diff_td("전력채",True)}</tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">단기사채</td><td>{조(summary["단기사채"])}</td>{diff_td("단기사채",True)}</tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">외화채권</td><td>{조(summary["외화채권"])}</td>{diff_td("외화채권",True)}</tr>'
         f'<tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td><td>{조(summary["사채"])}</td>{diff_td("사채",True)}</tr>'
         f'<tr style="background:#f0fdf4"><td colspan="3" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td>{조(summary["중장기기업어음"])}</td><td style="color:#94a3b8">–</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">은행차입</td><td>{조(summary["은행차입"])}</td><td style="color:#94a3b8">–</td></tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td>{조(summary["중장기기업어음"])}</td>{diff_td("중장기기업어음",True)}</tr>'
+        f'<tr><td style="padding-left:18px;color:#475569">은행차입</td><td>{조(summary["은행차입"])}</td>{diff_td("은행차입",True)}</tr>'
         f'<tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td><td>{조(summary["사채외"])}</td>{diff_td("사채외",True)}</tr>'
         f'<tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td>'
         f'<td style="font-weight:700;font-size:1rem">{조(summary["합계"])}</td>{diff_td("합계")}</tr>'
