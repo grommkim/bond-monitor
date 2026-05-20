@@ -641,10 +641,12 @@ def issu_stats_section_html(stats: dict) -> str:
                 hbar("국채",            ktb,       total, "#3b82f6") +
                 hbar("기타(금융채·회사채 등)", other_tot, total, "#94a3b8"))
 
+        total_label = fmt조(total)
         donut_script = f"""
 <script>
 (function(){{
   var ctx=document.getElementById('{chart_id}').getContext('2d');
+  var totalLabel='{total_label}';
   new Chart(ctx,{{
     type:'doughnut',
     data:{{
@@ -659,10 +661,27 @@ def issu_stats_section_html(stats: dict) -> str:
     options:{{
       cutout:'62%',
       plugins:{{
-        legend:{{position:'bottom',labels:{{font:{{size:11}},padding:12}}}},
-        tooltip:{{callbacks:{{label:function(c){{return c.label+': '+c.parsed.toFixed(2)+'조원'}}}}}}
+        legend:{{position:'bottom',labels:{{font:{{size:11}},padding:10}}}},
+        tooltip:{{callbacks:{{label:function(c){{return c.label+': '+c.parsed.toFixed(2)+'조원'}}}}}},
+        beforeDraw:undefined
       }}
-    }}
+    }},
+    plugins:[{{
+      id:'centerText',
+      beforeDraw:function(chart){{
+        var w=chart.width,h=chart.height,ctx=chart.ctx;
+        ctx.restore();
+        ctx.font='bold 13px Noto Sans KR,sans-serif';
+        ctx.textBaseline='middle';
+        ctx.textAlign='center';
+        ctx.fillStyle='#64748b';
+        ctx.fillText('전체', w/2, h/2-10);
+        ctx.font='bold 15px Noto Sans KR,sans-serif';
+        ctx.fillStyle='#0f2a4a';
+        ctx.fillText(totalLabel, w/2, h/2+10);
+        ctx.save();
+      }}
+    }}]
   }});
 }})();
 </script>"""
@@ -670,7 +689,7 @@ def issu_stats_section_html(stats: dict) -> str:
         return f'''<div id="stat_{yr}" class="stat-panel">
 <p style="font-size:.8rem;color:#64748b;margin-bottom:12px">{label}</p>
 {highlight}
-<div style="display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center">
+<div style="display:grid;grid-template-columns:220px 300px;gap:24px;align-items:center;flex-wrap:wrap">
   <div><canvas id="{chart_id}" style="max-height:220px"></canvas></div>
   <div>{bars}</div>
 </div>
