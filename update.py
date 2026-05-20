@@ -507,7 +507,136 @@ def collect_debt(issuances):
     return summary, prev_s, as_of, is_pm
 
 
-# ── 4. HTML 생성 ────────────────────────────────────────────────────
+# ── 4. 채권 발행 통계 ───────────────────────────────────────────────
+
+def _fetch_issu_stat(start: str, end: str, val4: str):
+    """KOFIA에서 기간·종류별 발행 합계(억원) 반환 → (total_억, kepco_억)"""
+    txt = kofia_post("BISIssInfoSntcSrchSO", "list",
+                     {"BISComDspDatDTO": {
+                         "val1": "ISS", "val2": start, "val3": end,
+                         "val4": val4, "val5": "", "val6": "", "val7": "",
+                     }})
+    rows = kofia_items(txt, "BISComDspDatDTO")
+    total = kepco = 0
+    for row in rows:
+        amt = pval(row, "val6")
+        if not amt.isdigit(): continue
+        total += int(amt)
+        if "한국전력" in pval(row, "val1"):
+            kepco += int(amt)
+    return total, kepco
+
+def collect_issu_stats():
+    """올해·작년 채권 발행 통계 수집 — 캐시 포함"""
+    print("[ 채권 발행 통계 수집 ]")
+    cache = {}
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, encoding="utf-8") as f:
+                cache = json.load(f)
+        except Exception:
+            cache = {}
+
+    today = date.today()
+    this_year = str(today.year)
+    last_year = str(today.year - 1)
+    cache_key  = f"issu_stats_{today.isoformat()}"
+
+    if cache_key in cache:
+        print("  캐시 사용")
+        return cache[cache_key]
+
+    # 국채(1), 지방채(2), 특수채(3), 금융채(4), 회사채(5) — 단기사채 제외
+    CODES = ["1", "2", "3", "4", "5"]
+    result = {}
+    for year, start, end in [
+        (this_year, f"{this_year}0101", today.strftime("%Y%m%d")),
+        (last_year, f"{last_year}0101", f"{last_year}1231"),
+    ]:
+        grand = ktb = speical = kepco = 0
+        for code in CODES:
+            tot, kep = _fetch_issu_stat(start, end, code)
+            grand += tot
+            if code == "1": ktb     = tot
+            if code == "3": speical = tot; kepco = kep
+        result[year] = {
+            "전력채": kepco,
+            "특수채": speical,
+            "국채":   ktb,
+            "전체":   grand,
+        }
+        print(f"  {year}: 전력채 {kepco/10000:.2f}조 / 특수채 {speical/10000:.2f}조 / "
+              f"국채 {ktb/10000:.2f}조 / 전체 {grand/10000:.2f}조")
+
+    cache[cache_key] = result
+    with open(CACHE_FILE, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2)
+    return result
+
+def issu_stats_section_html(stats: dict) -> str:
+    if not stats: return ""
+    today   = date.today()
+    this_yr = str(today.year)
+    last_yr = str(today.year - 1)
+
+    def fmt조(v):
+        return f"{v/10000:.2f}조"
+
+    def bar(v, mx):
+        pct = min(int(v / mx * 100), 100) if mx else 0
+        return (f'<div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px">'
+                f'<div style="background:#2563eb;width:{pct}%;height:8px;border-radius:4px"></div></div>')
+
+    def year_html(yr):
+        d  = stats.get(yr, {})
+        mx = d.get("전체", 1)
+        rows = [
+            ("⚡ 전력채", d.get("전력채", 0), "#f97316"),
+            ("🏛 특수채", d.get("특수채", 0), "#7c3aed"),
+            ("🇰🇷 국채",  d.get("국채",   0), "#0369a1"),
+            ("📊 전체",   d.get("전체",   0), "#1e293b"),
+        ]
+        cards = ""
+        for label, val, color in rows:
+            pct_of_total = f'({val/mx*100:.1f}%)' if label != "📊 전체" else ""
+            cards += f'''
+<div class="card" style="border-top:3px solid {color}">
+  <div class="cn">{label}</div>
+  <div class="cv" style="color:{color};font-size:1.55rem">{fmt조(val)}</div>
+  <div class="cd">{pct_of_total} {yr}년 누적</div>
+  {bar(val, mx)}
+</div>'''
+        label = f"{yr}년 ({today.strftime('%m/%d')} 기준)" if yr == this_yr else f"{yr}년 (연간)"
+        return f'<div id="stat_{yr}" class="stat-panel"><p style="font-size:.8rem;color:#64748b;margin-bottom:12px">{label}</p><div class="cards">{cards}</div></div>'
+
+    this_html = year_html(this_yr)
+    last_html = year_html(last_yr)
+
+    return f"""
+<section>
+  <h2 style="border-left-color:#7c3aed">📈 채권 발행 통계</h2>
+  <div style="margin-bottom:14px">
+    <button onclick="showStat('{this_yr}')" id="btn_{this_yr}"
+      style="margin-right:8px;padding:6px 18px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.83rem;cursor:pointer;font-weight:600">올해({this_yr})</button>
+    <button onclick="showStat('{last_yr}')" id="btn_{last_yr}"
+      style="padding:6px 18px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.83rem;cursor:pointer;font-weight:600">작년({last_yr})</button>
+  </div>
+  {this_html}
+  {last_html}
+</section>
+<script>
+function showStat(yr){{
+  ['{this_yr}','{last_yr}'].forEach(function(y){{
+    document.getElementById('stat_'+y).style.display = y===yr?'block':'none';
+    var btn=document.getElementById('btn_'+y);
+    if(y===yr){{btn.style.background='#2563eb';btn.style.color='#fff';btn.style.borderColor='#2563eb';}}
+    else{{btn.style.background='#fff';btn.style.color='#64748b';btn.style.borderColor='#cbd5e1';}}
+  }});
+}}
+showStat('{this_yr}');
+</script>"""
+
+# ── 5. HTML 생성 ────────────────────────────────────────────────────
 
 def build_chart_data(chart):
     dates  = sorted(chart.keys())
@@ -677,7 +806,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
 </section>"""
 
 
-def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False):
+def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None):
     today_str = date.today().strftime("%Y년 %m월 %d일")
     latest_dt = latest.get("날짜","–")
     ktb_v  = latest.get("국고채", 0)
@@ -701,6 +830,7 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
     debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm) if debt_summary else ""
+    stats_html  = issu_stats_section_html(issu_stats) if issu_stats else ""
 
     THEAD = ('<thead><tr>'
              '<th>발행일</th><th>발행기관</th><th>종목명</th>'
@@ -771,6 +901,8 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 
 {debt_html}
 
+{stats_html}
+
 <section>
   <h2>국고채 3년 · 한전채 3년 · 스프레드 추이 (최근 약 4주, 민평 기준)</h2>
   <div class="chart-box">
@@ -836,10 +968,12 @@ if __name__ == "__main__":
     chart, latest = collect_kofia_history()
     issuances     = collect_issuance(days=7)
     d_sum, d_prev, d_as_of, d_pm = collect_debt(issuances)
+    issu_stats    = collect_issu_stats()
 
     html = generate_html(chart, latest, issuances,
                          debt_summary=d_sum, debt_prev=d_prev,
-                         debt_as_of=d_as_of, debt_is_pm=d_pm)
+                         debt_as_of=d_as_of, debt_is_pm=d_pm,
+                         issu_stats=issu_stats)
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(html)
 

@@ -100,6 +100,78 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
   </div>
 </section>
 
+
+<section>
+  <h2 style="border-left-color:#7c3aed">📈 채권 발행 통계</h2>
+  <div style="margin-bottom:14px">
+    <button onclick="showStat('2026')" id="btn_2026"
+      style="margin-right:8px;padding:6px 18px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.83rem;cursor:pointer;font-weight:600">올해(2026)</button>
+    <button onclick="showStat('2025')" id="btn_2025"
+      style="padding:6px 18px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.83rem;cursor:pointer;font-weight:600">작년(2025)</button>
+  </div>
+  <div id="stat_2026" class="stat-panel"><p style="font-size:.8rem;color:#64748b;margin-bottom:12px">2026년 (05/20 기준)</p><div class="cards">
+<div class="card" style="border-top:3px solid #f97316">
+  <div class="cn">⚡ 전력채</div>
+  <div class="cv" style="color:#f97316;font-size:1.55rem">5.55조</div>
+  <div class="cd">(2.5%) 2026년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:2%;height:8px;border-radius:4px"></div></div>
+</div>
+<div class="card" style="border-top:3px solid #7c3aed">
+  <div class="cn">🏛 특수채</div>
+  <div class="cv" style="color:#7c3aed;font-size:1.55rem">36.15조</div>
+  <div class="cd">(16.2%) 2026년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:16%;height:8px;border-radius:4px"></div></div>
+</div>
+<div class="card" style="border-top:3px solid #0369a1">
+  <div class="cn">🇰🇷 국채</div>
+  <div class="cv" style="color:#0369a1;font-size:1.55rem">67.45조</div>
+  <div class="cd">(30.2%) 2026년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:30%;height:8px;border-radius:4px"></div></div>
+</div>
+<div class="card" style="border-top:3px solid #1e293b">
+  <div class="cn">📊 전체</div>
+  <div class="cv" style="color:#1e293b;font-size:1.55rem">223.66조</div>
+  <div class="cd"> 2026년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:100%;height:8px;border-radius:4px"></div></div>
+</div></div></div>
+  <div id="stat_2025" class="stat-panel"><p style="font-size:.8rem;color:#64748b;margin-bottom:12px">2025년 (연간)</p><div class="cards">
+<div class="card" style="border-top:3px solid #f97316">
+  <div class="cn">⚡ 전력채</div>
+  <div class="cv" style="color:#f97316;font-size:1.55rem">14.49조</div>
+  <div class="cd">(2.7%) 2025년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:2%;height:8px;border-radius:4px"></div></div>
+</div>
+<div class="card" style="border-top:3px solid #7c3aed">
+  <div class="cn">🏛 특수채</div>
+  <div class="cv" style="color:#7c3aed;font-size:1.55rem">88.73조</div>
+  <div class="cd">(16.7%) 2025년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:16%;height:8px;border-radius:4px"></div></div>
+</div>
+<div class="card" style="border-top:3px solid #0369a1">
+  <div class="cn">🇰🇷 국채</div>
+  <div class="cv" style="color:#0369a1;font-size:1.55rem">213.26조</div>
+  <div class="cd">(40.1%) 2025년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:40%;height:8px;border-radius:4px"></div></div>
+</div>
+<div class="card" style="border-top:3px solid #1e293b">
+  <div class="cn">📊 전체</div>
+  <div class="cv" style="color:#1e293b;font-size:1.55rem">532.29조</div>
+  <div class="cd"> 2025년 누적</div>
+  <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px"><div style="background:#2563eb;width:100%;height:8px;border-radius:4px"></div></div>
+</div></div></div>
+</section>
+<script>
+function showStat(yr){
+  ['2026','2025'].forEach(function(y){
+    document.getElementById('stat_'+y).style.display = y===yr?'block':'none';
+    var btn=document.getElementById('btn_'+y);
+    if(y===yr){btn.style.background='#2563eb';btn.style.color='#fff';btn.style.borderColor='#2563eb';}
+    else{btn.style.background='#fff';btn.style.color='#64748b';btn.style.borderColor='#cbd5e1';}
+  });
+}
+showStat('2026');
+</script>
+
 <section>
   <h2>국고채 3년 · 한전채 3년 · 스프레드 추이 (최근 약 4주, 민평 기준)</h2>
   <div class="chart-box">
