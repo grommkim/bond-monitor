@@ -391,6 +391,61 @@ def save_debt_snapshot(summary, date_str):
 
 def get_snapshot(date_str): return _load_history().get(date_str)
 
+SEIBRO_URL = "https://seibro.or.kr/websquare/engine/proworks/callServletService.jsp"
+SEIBRO_HDR = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Content-Type": "application/xml; charset=UTF-8",
+    "Referer": "https://seibro.or.kr/websquare/control.jsp?w2xPath=/IPORTAL/user/moneyMarke/BIP_CNTS04010V.xml",
+    "Origin": "https://seibro.or.kr",
+    "X-Requested-With": "XMLHttpRequest",
+}
+KEPCO_CUSTNO = "1576"
+
+def collect_seibro_stb(start_dt: str, end_dt: str) -> list:
+    """SEIBRO에서 한전 단기사채 목록 수집 (날짜 형식: YYYYMMDD)"""
+    print(f"  SEIBRO 단기사채 조회: {start_dt[:4]}-{start_dt[4:6]}-{start_dt[6:]} ~ {end_dt[:4]}-{end_dt[4:6]}-{end_dt[6:]}")
+    body = (
+        f'<reqParam action="issuSecnPListEL1" task="ksd.safe.bip.cnts.MoneyMarke.process.EstpIssuSecnPTask">'
+        f'<MENU_NO value="134"/>'
+        f'<CMM_BTN_ABBR_NM value="total_search,openall,print,hwp,word,pdf,searchIcon,searchIcon,seach,xls,"/>'
+        f'<W2XPATH value="/IPORTAL/user/moneyMarke/BIP_CNTS04010V.xml"/>'
+        f'<ISSUCO_CUSTNO value="{KEPCO_CUSTNO}"/>'
+        f'<ISIN value=""/>'
+        f'<ic_start value="{start_dt}"/>'
+        f'<ic_end value="{end_dt}"/>'
+        f'<ic_start2 value=""/><ic_end2 value=""/>'
+        f'<START_PAGE value="1"/><END_PAGE value="200"/>'
+        f'<INDTP_CLSF_NO value=""/>'
+        f'</reqParam>'
+    )
+    try:
+        r = requests.post(SEIBRO_URL, data=body.encode("utf-8"), headers=SEIBRO_HDR, timeout=15)
+        txt = r.content.decode("utf-8", errors="ignore")
+    except Exception as e:
+        print(f"    SEIBRO 오류: {e}")
+        return []
+
+    items = re.findall(r"<result>(.*?)</result>", txt, re.DOTALL)
+    result = []
+    for item in items:
+        def gv(k):
+            m = re.search(f'<{k} value="(.*?)"/>', item)
+            return m.group(1).strip() if m else ""
+        issu_dt = gv("ISSU_DT")
+        xpir_dt = gv("XPIR_DT")
+        face_amt = gv("FACE_AMT")
+        if not issu_dt or not face_amt:
+            continue
+        iss_fmt = f"{issu_dt[:4]}-{issu_dt[4:6]}-{issu_dt[6:]}"
+        mat_fmt = f"{xpir_dt[:4]}-{xpir_dt[4:6]}-{xpir_dt[6:]}" if len(xpir_dt) == 8 else ""
+        try:
+            amt = int(face_amt)
+        except ValueError:
+            continue
+        result.append({"issuance_date": iss_fmt, "maturity_date": mat_fmt, "amount": amt})
+    print(f"    → 한전 단기사채 {len(result)}건")
+    return result
+
 def update_debt_pm(positions, issuances):
     today_s = last_biz().isoformat()
     before  = len(positions)
@@ -399,6 +454,8 @@ def update_debt_pm(positions, issuances):
     existing_keys = {(p["category"], p.get("issuance_date",""), p.get("maturity_date","") or "", p["amount"])
                      for p in positions}
     added = 0
+
+    # KOFIA 전력채 신규 추가
     for iss in issuances:
         if not iss.get("is_kepco"): continue
         try: amt = int(iss["amount"].replace(",","")) * 100_000_000
@@ -412,6 +469,21 @@ def update_debt_pm(positions, issuances):
             "rate":float(iss["rate"]) if iss.get("rate") else None,"source":"kofia"})
         existing_keys.add(key); added += 1
     if added: print(f"  신규 전력채 추가: {added}건")
+
+    # SEIBRO 단기사채 신규 추가 (당일 발행분)
+    today_dt = last_biz()
+    stb_list = collect_seibro_stb(today_dt.strftime("%Y%m%d"), today_dt.strftime("%Y%m%d"))
+    stb_added = 0
+    for stb in stb_list:
+        key = ("단기사채", stb["issuance_date"], stb["maturity_date"], stb["amount"])
+        if key in existing_keys: continue
+        uid = f"단기사채|{stb['issuance_date']}|{stb['maturity_date']}|{stb['amount']}|seibro"
+        positions.append({"id":uid,"category":"단기사채","amount":stb["amount"],
+            "issuance_date":stb["issuance_date"],"maturity_date":stb["maturity_date"] or None,
+            "rate":None,"source":"seibro"})
+        existing_keys.add(key); stb_added += 1
+    if stb_added: print(f"  신규 단기사채 추가: {stb_added}건")
+
     return positions
 
 def collect_debt(issuances):
