@@ -6604,5 +6604,23 @@
     "maturity_date": "2096-04-01",
     "rate": null,
     "source": "excel"
+  },
+  {
+    "id": "전력채|2026-05-20|2028-05-19|40000000000|kofia",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2026-05-20",
+    "maturity_date": "2028-05-19",
+    "rate": 3.92,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-05-20|2029-05-18|70000000000|kofia",
+    "category": "전력채",
+    "amount": 70000000000,
+    "issuance_date": "2026-05-20",
+    "maturity_date": "2029-05-18",
+    "rate": 4.1,
+    "source": "kofia"
   }
 ]
