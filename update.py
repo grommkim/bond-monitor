@@ -579,42 +579,110 @@ def issu_stats_section_html(stats: dict) -> str:
     this_yr = str(today.year)
     last_yr = str(today.year - 1)
 
-    def fmt조(v):
-        return f"{v/10000:.2f}조"
+    def fmt조(v): return f"{v/10000:.2f}조"
 
-    def bar(v, mx):
-        pct = min(int(v / mx * 100), 100) if mx else 0
-        return (f'<div style="background:#e2e8f0;border-radius:4px;height:8px;margin-top:6px">'
-                f'<div style="background:#2563eb;width:{pct}%;height:8px;border-radius:4px"></div></div>')
+    def year_data(yr):
+        d = stats.get(yr, {})
+        kepco   = d.get("전력채", 0)
+        special = d.get("특수채", 0)
+        ktb     = d.get("국채",   0)
+        total   = d.get("전체",   0)
+        other_special = special - kepco          # 특수채 중 전력채 제외
+        other_total   = total - special - ktb    # 전체 중 특수채·국채 제외
+        return kepco, other_special, ktb, other_total, special, total
 
     def year_html(yr):
-        d  = stats.get(yr, {})
-        mx = d.get("전체", 1)
-        rows = [
-            ("⚡ 전력채", d.get("전력채", 0), "#f97316"),
-            ("🏛 특수채", d.get("특수채", 0), "#7c3aed"),
-            ("🇰🇷 국채",  d.get("국채",   0), "#0369a1"),
-            ("📊 전체",   d.get("전체",   0), "#1e293b"),
-        ]
-        cards = ""
-        for label, val, color in rows:
-            pct_of_total = f'({val/mx*100:.1f}%)' if label != "📊 전체" else ""
-            cards += f'''
-<div class="card" style="border-top:3px solid {color}">
-  <div class="cn">{label}</div>
-  <div class="cv" style="color:{color};font-size:1.55rem">{fmt조(val)}</div>
-  <div class="cd">{pct_of_total} {yr}년 누적</div>
-  {bar(val, mx)}
-</div>'''
+        kepco, other_sp, ktb, other_tot, special, total = year_data(yr)
         label = f"{yr}년 ({today.strftime('%m/%d')} 기준)" if yr == this_yr else f"{yr}년 (연간)"
-        return f'<div id="stat_{yr}" class="stat-panel"><p style="font-size:.8rem;color:#64748b;margin-bottom:12px">{label}</p><div class="cards">{cards}</div></div>'
+
+        # ── 상단 강조 카드: 전력채 ──
+        sp_pct  = f"{kepco/special*100:.1f}%" if special else "–"
+        tot_pct = f"{kepco/total*100:.1f}%"   if total  else "–"
+        highlight = f'''
+<div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+  <div>
+    <div style="font-size:.78rem;color:#ea580c;font-weight:600;margin-bottom:4px">⚡ 전력채 연간 발행액</div>
+    <div style="font-size:2.2rem;font-weight:700;color:#c2410c">{fmt조(kepco)}</div>
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="font-size:.72rem;color:#92400e">특수채 내 비중</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">{sp_pct}</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:.72rem;color:#92400e">전체 채권 내 비중</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">{tot_pct}</div>
+    </div>
+  </div>
+</div>'''
+
+        # ── 도넛 차트 + 수평 바 ──
+        chart_id = f"statChart_{yr}"
+        kepco_v   = round(kepco/10000, 2)
+        other_v   = round(other_sp/10000, 2)
+        ktb_v     = round(ktb/10000, 2)
+        othertot_v= round(other_tot/10000, 2)
+
+        def hbar(label, val, total_val, color):
+            pct = min(int(val/total_val*100), 100) if total_val else 0
+            return f'''
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">{label}</span>
+    <span style="font-weight:600;color:{color}">{fmt조(val)} <span style="font-weight:400;color:#94a3b8">({pct}%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:{color};width:{pct}%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>'''
+
+        bars = (hbar("⚡ 전력채",       kepco,     total, "#f97316") +
+                hbar("특수채(전력채 외)", other_sp,  total, "#a78bfa") +
+                hbar("국채",            ktb,       total, "#3b82f6") +
+                hbar("기타(금융채·회사채 등)", other_tot, total, "#94a3b8"))
+
+        donut_script = f"""
+<script>
+(function(){{
+  var ctx=document.getElementById('{chart_id}').getContext('2d');
+  new Chart(ctx,{{
+    type:'doughnut',
+    data:{{
+      labels:['전력채','특수채(전력채외)','국채','기타'],
+      datasets:[{{
+        data:[{kepco_v},{other_v},{ktb_v},{othertot_v}],
+        backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
+        borderWidth:2,borderColor:'#fff',
+        hoverOffset:8
+      }}]
+    }},
+    options:{{
+      cutout:'62%',
+      plugins:{{
+        legend:{{position:'bottom',labels:{{font:{{size:11}},padding:12}}}},
+        tooltip:{{callbacks:{{label:function(c){{return c.label+': '+c.parsed.toFixed(2)+'조원'}}}}}}
+      }}
+    }}
+  }});
+}})();
+</script>"""
+
+        return f'''<div id="stat_{yr}" class="stat-panel">
+<p style="font-size:.8rem;color:#64748b;margin-bottom:12px">{label}</p>
+{highlight}
+<div style="display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center">
+  <div><canvas id="{chart_id}" style="max-height:220px"></canvas></div>
+  <div>{bars}</div>
+</div>
+{donut_script}
+</div>'''
 
     this_html = year_html(this_yr)
     last_html = year_html(last_yr)
 
     return f"""
 <section>
-  <h2 style="border-left-color:#7c3aed">📈 채권 발행 통계</h2>
+  <h2 style="border-left-color:#7c3aed">채권 발행 통계</h2>
   <div style="margin-bottom:14px">
     <button onclick="showStat('{this_yr}')" id="btn_{this_yr}"
       style="margin-right:8px;padding:6px 18px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.83rem;cursor:pointer;font-weight:600">올해({this_yr})</button>
@@ -746,7 +814,7 @@ def today_section_html(issuances):
     note_html = f'<p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{update_note}</p>' if update_note else ''
     return f"""
 <section>
-  <h2 style="border-left-color:#f97316">발행현황</h2>
+  <h2 style="border-left-color:#f97316">채권 발행현황</h2>
   {note_html}
   <div class="today-grid">
     <div>
@@ -773,7 +841,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
     def diff_td(key, light=False):
         if not prev_s: return '<td style="color:#94a3b8">–</td>'
         d = summary[key] - prev_s.get(key, summary[key])
-        if d == 0: return f'<td style="color:{"rgba(255,255,255,.4)" if not light else "#94a3b8"}">±0</td>'
+        if d == 0: return f'<td style="color:#94a3b8">–</td>'
         color = ("#fca5a5" if not light else "#dc2626") if d > 0 else ("#93c5fd" if not light else "#2563eb")
         sign  = "+" if d > 0 else ""
         return f'<td style="color:{color};font-weight:600;white-space:nowrap">{sign}{d/1e12:.2f}조</td>'
