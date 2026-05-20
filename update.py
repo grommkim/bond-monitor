@@ -746,7 +746,7 @@ def today_section_html(issuances):
     note_html = f'<p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{update_note}</p>' if update_note else ''
     return f"""
 <section>
-  <h2 style="border-left-color:#f97316">🔔 발행현황 ({section_date})</h2>
+  <h2 style="border-left-color:#f97316">발행현황</h2>
   {note_html}
   <div class="today-grid">
     <div>
@@ -795,7 +795,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
     note_html = f'<p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{note}</p>' if note else ""
     return f"""
 <section>
-  <h2 style="border-left-color:#6366f1">💰 차입금 현황 ({as_of} 기준)</h2>
+  <h2 style="border-left-color:#6366f1">차입금 현황</h2>
   {note_html}
   <div class="table-wrap" style="max-width:480px">
     <table>
@@ -815,8 +815,8 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 
     cards_html = ""
     for label, val, color, unit in [
-        ("국고채(3년) 민평", ktb_v,  "#2563eb", "%"),
         ("한전채(3년) 민평", kep_v,  "#f97316", "%"),
+        ("국고채(3년) 민평", ktb_v,  "#2563eb", "%"),
         ("스프레드(한전-국고)", sprd_v, "#0d9488", "%p"),
     ]:
         cards_html += f"""
