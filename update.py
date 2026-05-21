@@ -434,6 +434,7 @@ def collect_seibro_stb(start_dt: str, end_dt: str) -> list:
         issu_dt = gv("ISSU_DT")
         xpir_dt = gv("XPIR_DT")
         face_amt = gv("FACE_AMT")
+        isin = gv("ISIN_NO") or gv("SCRS_ISIN_CD") or gv("ISIN") or ""
         if not issu_dt or not face_amt:
             continue
         iss_fmt = f"{issu_dt[:4]}-{issu_dt[4:6]}-{issu_dt[6:]}"
@@ -442,15 +443,27 @@ def collect_seibro_stb(start_dt: str, end_dt: str) -> list:
             amt = int(face_amt)
         except ValueError:
             continue
-        result.append({"issuance_date": iss_fmt, "maturity_date": mat_fmt, "amount": amt})
+        result.append({"issuance_date": iss_fmt, "maturity_date": mat_fmt, "amount": amt, "isin": isin})
     print(f"    → 한전 단기사채 {len(result)}건")
     return result
 
 def update_debt_pm(positions, issuances):
     today_s = last_biz().isoformat()
+
+    # 오늘 발행된 구형(4-pipe) SEIBRO 항목 제거 → ISIN 기반으로 재추가
+    old_seibro = [p for p in positions if
+                  p.get("source") == "seibro" and
+                  p.get("issuance_date") == today_s and
+                  p["id"].count("|") == 4]
+    if old_seibro:
+        print(f"  구형 SEIBRO 항목 제거(재수집): {len(old_seibro)}건")
+        positions = [p for p in positions if p not in old_seibro]
+
     before  = len(positions)
     positions = [p for p in positions if not p["maturity_date"] or p["maturity_date"] > today_s]
     if before-len(positions): print(f"  만기 차감: {before-len(positions)}건")
+
+    existing_ids  = {p["id"] for p in positions}
     existing_keys = {(p["category"], p.get("issuance_date",""), p.get("maturity_date","") or "", p["amount"])
                      for p in positions}
     added = 0
@@ -470,18 +483,25 @@ def update_debt_pm(positions, issuances):
         existing_keys.add(key); added += 1
     if added: print(f"  신규 전력채 추가: {added}건")
 
-    # SEIBRO 단기사채 신규 추가 (당일 발행분)
+    # SEIBRO 단기사채 신규 추가 (당일 발행분, ISIN 기반 중복 방지)
     today_dt = last_biz()
     stb_list = collect_seibro_stb(today_dt.strftime("%Y%m%d"), today_dt.strftime("%Y%m%d"))
     stb_added = 0
     for stb in stb_list:
-        key = ("단기사채", stb["issuance_date"], stb["maturity_date"], stb["amount"])
-        if key in existing_keys: continue
-        uid = f"단기사채|{stb['issuance_date']}|{stb['maturity_date']}|{stb['amount']}|seibro"
+        isin = stb.get("isin", "")
+        uid = f"단기사채|{isin}|seibro" if isin else \
+              f"단기사채|{stb['issuance_date']}|{stb['maturity_date']}|{stb['amount']}|seibro"
+        if uid in existing_ids:
+            continue
+        if not isin:
+            key = ("단기사채", stb["issuance_date"], stb["maturity_date"], stb["amount"])
+            if key in existing_keys:
+                continue
+            existing_keys.add(key)
         positions.append({"id":uid,"category":"단기사채","amount":stb["amount"],
             "issuance_date":stb["issuance_date"],"maturity_date":stb["maturity_date"] or None,
             "rate":None,"source":"seibro"})
-        existing_keys.add(key); stb_added += 1
+        existing_ids.add(uid); stb_added += 1
     if stb_added: print(f"  신규 단기사채 추가: {stb_added}건")
 
     return positions
