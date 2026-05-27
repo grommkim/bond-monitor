@@ -118,16 +118,16 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;max-width:544px">
   <div>
     <div style="font-size:.78rem;color:#ea580c;font-weight:600;margin-bottom:4px">⚡ 전력채 연간 발행액</div>
-    <div style="font-size:2.2rem;font-weight:700;color:#c2410c">0.00조</div>
+    <div style="font-size:2.2rem;font-weight:700;color:#c2410c">5.90조</div>
   </div>
   <div style="display:flex;gap:20px;flex-wrap:wrap">
     <div style="text-align:center">
       <div style="font-size:.72rem;color:#92400e">특수채 내 비중</div>
-      <div style="font-size:1.3rem;font-weight:700;color:#f97316">–</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">15.0%</div>
     </div>
     <div style="text-align:center">
       <div style="font-size:.72rem;color:#92400e">전체 채권 내 비중</div>
-      <div style="font-size:1.3rem;font-weight:700;color:#f97316">0.0%</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">3.5%</div>
     </div>
   </div>
 </div>
@@ -137,19 +137,19 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">⚡ 전력채</span>
-    <span style="font-weight:600;color:#f97316">0.00조 <span style="font-weight:400;color:#94a3b8">(0%)</span></span>
+    <span style="font-weight:600;color:#f97316">5.90조 <span style="font-weight:400;color:#94a3b8">(3%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
-    <div style="background:#f97316;width:0%;height:10px;border-radius:4px;transition:width .4s"></div>
+    <div style="background:#f97316;width:3%;height:10px;border-radius:4px;transition:width .4s"></div>
   </div>
 </div>
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">특수채(전력채 외)</span>
-    <span style="font-weight:600;color:#a78bfa">0.00조 <span style="font-weight:400;color:#94a3b8">(0%)</span></span>
+    <span style="font-weight:600;color:#a78bfa">33.55조 <span style="font-weight:400;color:#94a3b8">(20%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
-    <div style="background:#a78bfa;width:0%;height:10px;border-radius:4px;transition:width .4s"></div>
+    <div style="background:#a78bfa;width:20%;height:10px;border-radius:4px;transition:width .4s"></div>
   </div>
 </div>
 <div style="margin-bottom:10px">
@@ -164,10 +164,10 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">기타(금융채·회사채 등)</span>
-    <span style="font-weight:600;color:#94a3b8">127.51조 <span style="font-weight:400;color:#94a3b8">(100%)</span></span>
+    <span style="font-weight:600;color:#94a3b8">127.51조 <span style="font-weight:400;color:#94a3b8">(76%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
-    <div style="background:#94a3b8;width:100%;height:10px;border-radius:4px;transition:width .4s"></div>
+    <div style="background:#94a3b8;width:76%;height:10px;border-radius:4px;transition:width .4s"></div>
   </div>
 </div></div>
 </div>
@@ -175,13 +175,13 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <script>
 (function(){
   var ctx=document.getElementById('statChart_2026').getContext('2d');
-  var totalLabel='127.51조';
+  var totalLabel='166.95조';
   new Chart(ctx,{
     type:'doughnut',
     data:{
       labels:['전력채','특수채(전력채외)','국채','기타'],
       datasets:[{
-        data:[0.0,0.0,0.0,127.51],
+        data:[5.9,33.55,0.0,127.51],
         backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
         borderWidth:2,borderColor:'#fff',
         hoverOffset:8
@@ -250,10 +250,10 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">특수채(전력채 외)</span>
-    <span style="font-weight:600;color:#a78bfa">74.14조 <span style="font-weight:400;color:#94a3b8">(13%)</span></span>
+    <span style="font-weight:600;color:#a78bfa">74.14조 <span style="font-weight:400;color:#94a3b8">(14%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
-    <div style="background:#a78bfa;width:13%;height:10px;border-radius:4px;transition:width .4s"></div>
+    <div style="background:#a78bfa;width:14%;height:10px;border-radius:4px;transition:width .4s"></div>
   </div>
 </div>
 <div style="margin-bottom:10px">
@@ -268,10 +268,10 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">기타(금융채·회사채 등)</span>
-    <span style="font-weight:600;color:#94a3b8">228.75조 <span style="font-weight:400;color:#94a3b8">(43%)</span></span>
+    <span style="font-weight:600;color:#94a3b8">225.25조 <span style="font-weight:400;color:#94a3b8">(42%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
-    <div style="background:#94a3b8;width:43%;height:10px;border-radius:4px;transition:width .4s"></div>
+    <div style="background:#94a3b8;width:42%;height:10px;border-radius:4px;transition:width .4s"></div>
   </div>
 </div></div>
 </div>
@@ -279,13 +279,13 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <script>
 (function(){
   var ctx=document.getElementById('statChart_2025').getContext('2d');
-  var totalLabel='531.88조';
+  var totalLabel='528.38조';
   new Chart(ctx,{
     type:'doughnut',
     data:{
       labels:['전력채','특수채(전력채외)','국채','기타'],
       datasets:[{
-        data:[14.49,74.14,214.5,228.75],
+        data:[14.49,74.14,214.5,225.25],
         backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
         borderWidth:2,borderColor:'#fff',
         hoverOffset:8
@@ -354,19 +354,19 @@ showStat('2026');
 <tr><td style="white-space:nowrap">2026-05-26</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1583</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,200억원</td><td class="rate" style="white-space:nowrap">4.02%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-26</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1584</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.23%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-26</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 283(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">2년6개월</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">3.77%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>국가철도공단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">국가철도공단채권 448</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">4.05%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.034%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.016%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사 563</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">3.89%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.839%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.051%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사564</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,500억원</td><td class="rate" style="white-space:nowrap">4.06%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.039%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.021%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사281(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">3.79%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.780%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.010%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 282(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">3.95%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.963%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/21)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.013%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>국가철도공단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">국가철도공단채권 448</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">4.05%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사 563</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">3.89%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사564</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,500억원</td><td class="rate" style="white-space:nowrap">4.06%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사281(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">3.79%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-05-22</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 282(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">3.95%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-20</td><td><strong>국가철도공단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">국가철도공단채권447</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">3.85%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.821%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/19)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.029%p</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-20</td><td><strong>부산항만공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">부산항만공사54-1</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">600억원</td><td class="rate" style="white-space:nowrap">3.89%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.840%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/19)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.050%p</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-20</td><td><strong>부산항만공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">부산항만공사54-2</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">600억원</td><td class="rate" style="white-space:nowrap">4.09%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.043%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/19)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.047%p</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-20</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1580</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">400억원</td><td class="rate" style="white-space:nowrap">3.92%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.836%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/19)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.084%p</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-20</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1581</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">4.10%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.031%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/19)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.069%p</span></td></tr>
 <tr><td style="white-space:nowrap">2026-05-19</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 280(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,300억원</td><td class="rate" style="white-space:nowrap">3.95%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.949%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/18)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.001%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-18</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 279(변)(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">1년</span></td><td style="white-space:nowrap">1,900억원</td><td class="rate" style="white-space:nowrap">2.88%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.210%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/15)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.330%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-05-15</td><td><strong>한국농어촌공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국농어촌공사30</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.96%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.925%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(05/14)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.035%p</span></td></tr></tbody>
+<tr><td style="white-space:nowrap">2026-05-18</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 279(변)(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">1년</span></td><td style="white-space:nowrap">1,900억원</td><td class="rate" style="white-space:nowrap">2.88%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-05-15</td><td><strong>한국농어촌공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국농어촌공사30</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.96%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr></tbody>
     </table>
   </div>
   <div class="note">
