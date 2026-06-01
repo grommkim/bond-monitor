@@ -6163,5 +6163,14 @@
     "maturity_date": "2026-07-14",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "은행차입|2026-05-27|2027-05-27|1000000000000|r_ext",
+    "category": "은행차입",
+    "amount": 1000000000000,
+    "issuance_date": "2026-05-27",
+    "maturity_date": "2027-05-27",
+    "rate": null,
+    "source": "manual"
   }
 ]
