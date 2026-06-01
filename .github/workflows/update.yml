@@ -2,9 +2,9 @@ name: 채권 대시보드 매일 업데이트
 
 on:
   schedule:
-    # 평일 오전 9시 KST (UTC 00:00) + 오후 3시 KST (UTC 06:00)
+    # 평일 오전 9시 KST (UTC 00:00) + 오후 4시 KST (UTC 07:00)
     - cron: '0 0 * * 1-5'
-    - cron: '0 6 * * 1-5'
+    - cron: '0 7 * * 1-5'
   workflow_dispatch:  # GitHub 웹에서 수동 실행 버튼
 
 permissions:
