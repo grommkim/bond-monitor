@@ -483,9 +483,14 @@ def update_debt_pm(positions, issuances):
         existing_keys.add(key); added += 1
     if added: print(f"  신규 전력채 추가: {added}건")
 
-    # SEIBRO 단기사채 신규 추가 (당일 발행분, ISIN 기반 중복 방지)
+    # SEIBRO 단기사채 신규 추가 (최근 5영업일 재조회 → 15:00 이후 SEIBRO 등록분 보완)
     today_dt = last_biz()
-    stb_list = collect_seibro_stb(today_dt.strftime("%Y%m%d"), today_dt.strftime("%Y%m%d"))
+    lookback = today_dt
+    for _ in range(4):          # 5영업일 전까지
+        lookback = prev_biz(lookback)
+    stb_start = lookback.strftime("%Y%m%d")
+    stb_end   = today_dt.strftime("%Y%m%d")
+    stb_list  = collect_seibro_stb(stb_start, stb_end)
     stb_added = 0
     for stb in stb_list:
         isin = stb.get("isin", "")
