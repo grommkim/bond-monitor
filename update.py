@@ -242,6 +242,45 @@ def collect_kofia_history():
 
 # ── 2. 발행실적 수집 (한전 포함 전체) ───────────────────────────────
 
+def collect_kepco_rates_ytd():
+    """KOFIA에서 올해 전력채 발행금리 수집 (차트용, 민평 조회 없음)"""
+    print("[ KOFIA 전력채 연초~현재 발행금리 수집 ]")
+    today  = last_biz()
+    jan1   = date(today.year, 1, 1)
+    start  = jan1.strftime("%Y%m%d")
+    end    = today.strftime("%Y%m%d")
+
+    txt = kofia_post("BISIssInfoSntcSrchSO", "list",
+                     {"BISComDspDatDTO": {
+                         "val1": "ISS", "val2": start, "val3": end,
+                         "val4": "3", "val5": "", "val6": "", "val7": "",
+                     }})
+    rows = kofia_items(txt, "BISComDspDatDTO")
+    acc  = {}   # {date: [total_원, weighted_sum]}
+    for row in rows:
+        name = pval(row, "val1")
+        if KEPCO not in name: continue
+        if "MBS" in name or "유동화" in name: continue
+        iss_dt = pval(row, "val3")
+        amount = pval(row, "val6")
+        coupon = pval(row, "val9")
+        iss_fmt = f"{iss_dt[:4]}-{iss_dt[4:6]}-{iss_dt[6:]}" if len(iss_dt)==8 else iss_dt
+        try:
+            amt  = int(amount) * 100_000_000
+            rate = float(coupon)
+        except (ValueError, TypeError):
+            continue
+        if iss_fmt not in acc:
+            acc[iss_fmt] = [0, 0.0]
+        acc[iss_fmt][0] += amt
+        acc[iss_fmt][1] += amt * rate
+
+    rate_by_date = {d: round(v[1]/v[0], 3) for d, v in acc.items() if v[0]}
+    amt_by_date  = {d: v[0] // 100_000_000   for d, v in acc.items() if v[0]}
+    print(f"  → 전력채 발행금리 {len(rate_by_date)}일치 수집")
+    return rate_by_date, amt_by_date
+
+
 def collect_issuance(days=7):
     print(f"[ KOFIA 발행실적 수집 (최근 {days}일, 한전 포함) ]")
     end_dt   = last_biz()
@@ -777,7 +816,7 @@ def build_chart_data(chart, kepco_rate_by_date=None):
     valid    = [s for s in spreads if s is not None]
     raw_max  = max(valid) if valid else 0.40
     sprd_min = 0.0
-    sprd_max = round(raw_max * 3.5, 2)   # 스프레드가 차트 하단 ~30% 구간에 위치
+    sprd_max = round(raw_max * 1.75, 2)  # 스프레드가 차트 하단 ~57% 구간, 금리선 아래 유지
 
     ds = [
         {"label":"국고채(3년) 민평","data":[chart[d]["국고채"] for d in dates],
@@ -953,7 +992,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
 </section>"""
 
 
-def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None):
+def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None, kepco_rate_by_date=None, kepco_amt_by_date=None):
     today_str = date.today().strftime("%Y년 %m월 %d일")
     latest_dt = latest.get("날짜","–")
     ktb_v  = latest.get("국고채", 0)
@@ -973,29 +1012,12 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
   <div class="cd">민평평균 · {latest_dt} 기준</div>
 </div>"""
 
-    # 전력채 발행일별 가중평균 금리 + 발행금액 (debt_positions 기반)
-    _iss_acc = {}   # {date: [총금액, 금리*금액 합계]}
-    try:
-        pos_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_positions.json")
-        with open(pos_path, encoding="utf-8") as _f:
-            _pos = json.load(_f)
-        for _p in _pos:
-            if _p["category"] == "전력채" and _p.get("issuance_date") and _p.get("rate") and _p.get("amount"):
-                _d  = _p["issuance_date"]
-                _a  = _p["amount"]
-                _r  = float(_p["rate"])
-                if _d not in _iss_acc:
-                    _iss_acc[_d] = [0, 0.0]
-                _iss_acc[_d][0] += _a
-                _iss_acc[_d][1] += _a * _r
-    except Exception:
-        pass
-    # 발행일별 가중평균금리 / 발행금액(억원)
-    kepco_rate_by_date = {d: round(v[1]/v[0], 3) for d, v in _iss_acc.items() if v[0]}
-    kepco_amt_by_date  = {d: v[0] // 100_000_000  for d, v in _iss_acc.items() if v[0]}
+    # 전력채 발행금리: 인자로 받은 YTD KOFIA 데이터 우선, 없으면 빈 dict
+    _rate = kepco_rate_by_date or {}
+    _amt  = kepco_amt_by_date  or {}
     labels_json, datasets_json, sprd_min, sprd_max, rate_min, rate_max = build_chart_data(
-        chart, kepco_rate_by_date)
-    kepco_amt_json = json.dumps(kepco_amt_by_date, ensure_ascii=False)
+        chart, _rate)
+    kepco_amt_json = json.dumps(_amt, ensure_ascii=False)
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
     debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm) if debt_summary else ""
@@ -1127,8 +1149,8 @@ function calcAxes(datasets, slicedLabels) {{
   const allRates = [...rates, ...issRates];
   const rMin = allRates.length ? Math.min(RATE_MIN, Math.round((Math.min(...allRates)-0.1)*100)/100) : RATE_MIN;
   const rMax = allRates.length ? Math.round((Math.max(...allRates)+0.15)*100)/100 : RATE_MAX;
-  // 스프레드 y2: 고정 범위 기반, 데이터에 따라 상단만 조정
-  const rawSMax = spreads.length ? Math.round((Math.max(...spreads)*3.5)*100)/100 : SPRD_MAX;
+  // 스프레드 y2: raw_max×1.75 → 스프레드가 차트 중간 아래에 위치
+  const rawSMax = spreads.length ? Math.round((Math.max(...spreads)*1.75)*100)/100 : SPRD_MAX;
   return {{ rMin, rMax, sMin: 0, sMax: Math.max(rawSMax, SPRD_MAX) }};
 }}
 
@@ -1257,15 +1279,18 @@ if __name__ == "__main__":
     print(f" 채권 시장 모니터 — {date.today()}")
     print("=" * 52)
 
-    chart, latest = collect_kofia_history()
-    issuances     = collect_issuance(days=7)
+    chart, latest    = collect_kofia_history()
+    issuances        = collect_issuance(days=7)
     d_sum, d_prev, d_as_of, d_pm = collect_debt(issuances)
-    issu_stats    = collect_issu_stats()
+    issu_stats       = collect_issu_stats()
+    kepco_rates, kepco_amts = collect_kepco_rates_ytd()
 
     html = generate_html(chart, latest, issuances,
                          debt_summary=d_sum, debt_prev=d_prev,
                          debt_as_of=d_as_of, debt_is_pm=d_pm,
-                         issu_stats=issu_stats)
+                         issu_stats=issu_stats,
+                         kepco_rate_by_date=kepco_rates,
+                         kepco_amt_by_date=kepco_amts)
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(html)
 
