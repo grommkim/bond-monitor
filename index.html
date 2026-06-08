@@ -57,18 +57,18 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
   <div class="cards">
 <div class="card" style="border-top:3px solid #f97316">
   <div class="cn">한전채(3년) 민평</div>
-  <div class="cv" style="color:#f97316">4.190<span class="pct">%</span></div>
-  <div class="cd">민평평균 · 2026-06-05 기준</div>
+  <div class="cv" style="color:#f97316">4.252<span class="pct">%</span></div>
+  <div class="cd">민평평균 · 2026-06-08 기준</div>
 </div>
 <div class="card" style="border-top:3px solid #2563eb">
   <div class="cn">국고채(3년) 민평</div>
-  <div class="cv" style="color:#2563eb">3.880<span class="pct">%</span></div>
-  <div class="cd">민평평균 · 2026-06-05 기준</div>
+  <div class="cv" style="color:#2563eb">3.930<span class="pct">%</span></div>
+  <div class="cd">민평평균 · 2026-06-08 기준</div>
 </div>
 <div class="card" style="border-top:3px solid #0d9488">
   <div class="cn">스프레드(한전-국고)</div>
-  <div class="cv" style="color:#0d9488">0.310<span class="pct">%p</span></div>
-  <div class="cd">민평평균 · 2026-06-05 기준</div>
+  <div class="cv" style="color:#0d9488">0.322<span class="pct">%p</span></div>
+  <div class="cd">민평평균 · 2026-06-08 기준</div>
 </div></div>
 </section>
 
@@ -340,7 +340,7 @@ showStat('2026');
       style="padding:5px 16px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s">연초부터</button>
     <button id="btn4w" onclick="setRange(20)"
       style="padding:5px 16px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s">최근 4주</button>
-    <span style="margin-left:8px;font-size:.75rem;color:#94a3b8">🟧 막대: 전력채 발행(억원)</span>
+    <span style="margin-left:8px;font-size:.75rem;color:#94a3b8">🟧 막대: 전력채 발행금리(민평금리 축 기준)</span>
   </div>
   <div class="chart-box">
     <canvas id="yieldChart" style="max-height:440px"></canvas>
@@ -383,22 +383,24 @@ showStat('2026');
 </footer>
 
 <script>
-const allLabels   = ["01/21", "01/22", "01/23", "01/26", "01/27", "01/28", "01/29", "01/30", "02/02", "02/03", "02/04", "02/05", "02/06", "02/09", "02/10", "02/11", "02/12", "02/13", "02/19", "02/20", "02/23", "02/24", "02/25", "02/26", "02/27", "03/03", "03/04", "03/05", "03/06", "03/09", "03/10", "03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28", "04/29", "04/30", "05/04", "05/06", "05/07", "05/08", "05/11", "05/12", "05/13", "05/14", "05/15", "05/18", "05/19", "05/20", "05/21", "05/22", "05/26", "05/27", "05/28", "05/29", "06/01", "06/02", "06/04", "06/05"];
-const allDatasets = [{"label": "국고채(3년) 민평", "data": [3.13, 3.097, 3.13, 3.092, 3.089, 3.065, 3.106, 3.142, 3.155, 3.19, 3.222, 3.205, 3.241, 3.269, 3.222, 3.2, 3.15, 3.14, 3.176, 3.14, 3.155, 3.155, 3.122, 3.064, 3.04, 3.185, 3.225, 3.18, 3.222, 3.4, 3.28, 3.25, 3.265, 3.332, 3.306, 3.327, 3.265, 3.328, 3.412, 3.63, 3.532, 3.555, 3.545, 3.592, 3.542, 3.555, 3.37, 3.475, 3.445, 3.43, 3.446, 3.32, 3.33, 3.357, 3.38, 3.337, 3.333, 3.337, 3.37, 3.347, 3.335, 3.364, 3.453, 3.495, 3.497, 3.53, 3.525, 3.593, 3.615, 3.596, 3.535, 3.561, 3.592, 3.68, 3.642, 3.657, 3.765, 3.757, 3.75, 3.758, 3.755, 3.725, 3.664, 3.717, 3.767, 3.723, 3.79, 3.77, 3.86, 3.88], "type": "line", "borderColor": "#2563eb", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 1}, {"label": "한전채(3년) 민평", "data": [3.359, 3.346, 3.391, 3.361, 3.38, 3.37, 3.406, 3.443, 3.458, 3.508, 3.546, 3.539, 3.585, 3.619, 3.592, 3.582, 3.539, 3.53, 3.565, 3.529, 3.535, 3.529, 3.493, 3.439, 3.411, 3.555, 3.594, 3.537, 3.58, 3.754, 3.635, 3.607, 3.623, 3.691, 3.66, 3.675, 3.614, 3.674, 3.758, 3.971, 3.876, 3.901, 3.895, 3.94, 3.892, 3.905, 3.733, 3.842, 3.81, 3.795, 3.813, 3.69, 3.702, 3.73, 3.753, 3.709, 3.7, 3.703, 3.731, 3.706, 3.692, 3.718, 3.795, 3.829, 3.826, 3.854, 3.846, 3.908, 3.924, 3.905, 3.841, 3.862, 3.89, 3.962, 3.926, 3.937, 4.039, 4.031, 4.038, 4.043, 4.042, 4.019, 3.963, 4.015, 4.068, 4.024, 4.092, 4.08, 4.17, 4.19], "type": "line", "borderColor": "#f97316", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 2}, {"label": "스프레드(한전-국고)", "data": [0.229, 0.249, 0.261, 0.269, 0.291, 0.305, 0.3, 0.301, 0.303, 0.318, 0.324, 0.334, 0.344, 0.35, 0.37, 0.382, 0.389, 0.39, 0.389, 0.389, 0.38, 0.374, 0.371, 0.375, 0.371, 0.37, 0.369, 0.357, 0.358, 0.354, 0.355, 0.357, 0.358, 0.359, 0.354, 0.348, 0.349, 0.346, 0.346, 0.341, 0.344, 0.346, 0.35, 0.348, 0.35, 0.35, 0.363, 0.367, 0.365, 0.365, 0.367, 0.37, 0.372, 0.373, 0.373, 0.372, 0.367, 0.366, 0.361, 0.359, 0.357, 0.354, 0.342, 0.334, 0.329, 0.324, 0.321, 0.315, 0.309, 0.309, 0.306, 0.301, 0.298, 0.282, 0.284, 0.28, 0.274, 0.274, 0.288, 0.285, 0.287, 0.294, 0.299, 0.298, 0.301, 0.301, 0.302, 0.31, 0.31, 0.31], "type": "line", "fill": "start", "borderColor": "rgba(20,184,166,0.9)", "backgroundColor": "rgba(20,184,166,0.12)", "borderWidth": 1.5, "pointRadius": 1.5, "pointHoverRadius": 5, "tension": 0.3, "yAxisID": "y2", "order": 3}, {"label": "전력채 발행", "data": [null, null, null, null, 2100, null, null, null, null, 3000, null, null, null, null, 3400, null, null, null, null, null, null, 4400, null, null, null, null, null, 3000, null, null, null, null, null, null, null, 2400, null, null, null, null, null, null, null, null, null, null, null, 3200, null, null, 4000, null, null, null, null, null, 4000, null, null, null, 4100, null, null, null, null, 3700, null, null, null, null, 4100, null, null, 3400, null, null, null, null, null, 1100, null, null, 2400, null, null, null, null, 1800, null, null], "type": "bar", "backgroundColor": "rgba(249,115,22,0.75)", "borderColor": "rgba(249,115,22,0.0)", "borderWidth": 0, "borderRadius": {"topLeft": 20, "topRight": 20, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 4, "yAxisID": "y3", "order": 10}];
-const RATE_MIN=2.96, RATE_MAX=4.27;
-const SPRD_MIN=0.179, SPRD_MAX=0.44;
-const ISS_MAX =5720.0;
+const allLabels   = ["01/02", "01/05", "01/06", "01/07", "01/08", "01/09", "01/12", "01/13", "01/14", "01/15", "01/16", "01/19", "01/20", "01/21", "01/22", "01/23", "01/26", "01/27", "01/28", "01/29", "01/30", "02/02", "02/03", "02/04", "02/05", "02/06", "02/09", "02/10", "02/11", "02/12", "02/13", "02/19", "02/20", "02/23", "02/24", "02/25", "02/26", "02/27", "03/03", "03/04", "03/05", "03/06", "03/09", "03/10", "03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28", "04/29", "04/30", "05/04", "05/06", "05/07", "05/08", "05/11", "05/12", "05/13", "05/14", "05/15", "05/18", "05/19", "05/20", "05/21", "05/22", "05/26", "05/27", "05/28", "05/29", "06/01", "06/02", "06/04", "06/05", "06/08"];
+const allDatasets = [{"label": "국고채(3년) 민평", "data": [2.926, 2.927, 2.949, 2.907, 2.909, 2.94, 2.98, 2.999, 2.995, 3.085, 3.081, 3.131, 3.183, 3.13, 3.097, 3.13, 3.092, 3.089, 3.065, 3.106, 3.142, 3.155, 3.19, 3.222, 3.205, 3.241, 3.269, 3.222, 3.2, 3.15, 3.14, 3.176, 3.14, 3.155, 3.155, 3.122, 3.064, 3.04, 3.185, 3.225, 3.18, 3.222, 3.4, 3.28, 3.25, 3.265, 3.332, 3.306, 3.327, 3.265, 3.328, 3.412, 3.63, 3.532, 3.555, 3.545, 3.592, 3.542, 3.555, 3.37, 3.475, 3.445, 3.43, 3.446, 3.32, 3.33, 3.357, 3.38, 3.337, 3.333, 3.337, 3.37, 3.347, 3.335, 3.364, 3.453, 3.495, 3.497, 3.53, 3.525, 3.593, 3.615, 3.596, 3.535, 3.561, 3.592, 3.68, 3.642, 3.657, 3.765, 3.757, 3.75, 3.758, 3.755, 3.725, 3.664, 3.717, 3.767, 3.723, 3.79, 3.77, 3.86, 3.88, 3.93], "type": "line", "borderColor": "#2563eb", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 1}, {"label": "한전채(3년) 민평", "data": [3.188, 3.189, 3.194, 3.152, 3.152, 3.182, 3.202, 3.221, 3.219, 3.308, 3.306, 3.357, 3.409, 3.359, 3.346, 3.391, 3.361, 3.38, 3.37, 3.406, 3.443, 3.458, 3.508, 3.546, 3.539, 3.585, 3.619, 3.592, 3.582, 3.539, 3.53, 3.565, 3.529, 3.535, 3.529, 3.493, 3.439, 3.411, 3.555, 3.594, 3.537, 3.58, 3.754, 3.635, 3.607, 3.623, 3.691, 3.66, 3.675, 3.614, 3.674, 3.758, 3.971, 3.876, 3.901, 3.895, 3.94, 3.892, 3.905, 3.733, 3.842, 3.81, 3.795, 3.813, 3.69, 3.702, 3.73, 3.753, 3.709, 3.7, 3.703, 3.731, 3.706, 3.692, 3.718, 3.795, 3.829, 3.826, 3.854, 3.846, 3.908, 3.924, 3.905, 3.841, 3.862, 3.89, 3.962, 3.926, 3.937, 4.039, 4.031, 4.038, 4.043, 4.042, 4.019, 3.963, 4.015, 4.068, 4.024, 4.092, 4.08, 4.17, 4.19, 4.252], "type": "line", "borderColor": "#f97316", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 2}, {"label": "스프레드(한전-국고)", "data": [0.262, 0.262, 0.245, 0.245, 0.243, 0.242, 0.222, 0.222, 0.224, 0.223, 0.225, 0.226, 0.226, 0.229, 0.249, 0.261, 0.269, 0.291, 0.305, 0.3, 0.301, 0.303, 0.318, 0.324, 0.334, 0.344, 0.35, 0.37, 0.382, 0.389, 0.39, 0.389, 0.389, 0.38, 0.374, 0.371, 0.375, 0.371, 0.37, 0.369, 0.357, 0.358, 0.354, 0.355, 0.357, 0.358, 0.359, 0.354, 0.348, 0.349, 0.346, 0.346, 0.341, 0.344, 0.346, 0.35, 0.348, 0.35, 0.35, 0.363, 0.367, 0.365, 0.365, 0.367, 0.37, 0.372, 0.373, 0.373, 0.372, 0.367, 0.366, 0.361, 0.359, 0.357, 0.354, 0.342, 0.334, 0.329, 0.324, 0.321, 0.315, 0.309, 0.309, 0.306, 0.301, 0.298, 0.282, 0.284, 0.28, 0.274, 0.274, 0.288, 0.285, 0.287, 0.294, 0.299, 0.298, 0.301, 0.301, 0.302, 0.31, 0.31, 0.31, 0.322], "type": "line", "fill": "start", "borderColor": "rgba(20,184,166,0.9)", "backgroundColor": "rgba(20,184,166,0.12)", "borderWidth": 1.5, "pointRadius": 1.5, "pointHoverRadius": 5, "tension": 0.3, "yAxisID": "y2", "order": 3}, {"label": "전력채 발행", "data": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 4.035, null, null, 4.008, null, null, null, null, 4.162, null, null, 4.409], "type": "bar", "backgroundColor": "rgba(249,115,22,0.28)", "borderColor": "rgba(249,115,22,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 5}];
+const RATE_MIN=2.0, RATE_MAX=4.4;
+const SPRD_MIN=0.0, SPRD_MAX=1.36;
+const kepcoAmt = {"2025-02-06": 7000, "2026-05-20": 1100, "2026-05-26": 2400, "2026-06-02": 1800, "2026-06-08": 1900};
 let activeRange = 0;
 
-function calcAxes(datasets) {
+function calcAxes(datasets, slicedLabels) {
   const rates   = [...datasets[0].data, ...datasets[1].data].filter(v=>v!=null);
   const spreads = datasets[2].data.filter(v=>v!=null);
-  return {
-    rMin: rates.length   ? Math.round((Math.min(...rates)  -0.08)*100)/100 : RATE_MIN,
-    rMax: rates.length   ? Math.round((Math.max(...rates)  +0.08)*100)/100 : RATE_MAX,
-    sMin: spreads.length ? Math.round((Math.min(...spreads)-0.05)*1000)/1000 : SPRD_MIN,
-    sMax: spreads.length ? Math.round((Math.max(...spreads)+0.05)*1000)/1000 : SPRD_MAX,
-  };
+  // 발행금리 bars (dataset[3])가 있으면 그것도 rate 범위에 포함
+  const issRates = datasets[3] ? datasets[3].data.filter(v=>v!=null) : [];
+  const allRates = [...rates, ...issRates];
+  const rMin = allRates.length ? Math.min(RATE_MIN, Math.round((Math.min(...allRates)-0.1)*100)/100) : RATE_MIN;
+  const rMax = allRates.length ? Math.round((Math.max(...allRates)+0.15)*100)/100 : RATE_MAX;
+  // 스프레드 y2: 고정 범위 기반, 데이터에 따라 상단만 조정
+  const rawSMax = spreads.length ? Math.round((Math.max(...spreads)*3.5)*100)/100 : SPRD_MAX;
+  return { rMin, rMax, sMin: 0, sMax: Math.max(rawSMax, SPRD_MAX) };
 }
 
 function buildChartData(n) {
@@ -409,12 +411,34 @@ function buildChartData(n) {
   };
 }
 
+// 발행금리 라벨을 막대 위에 그리는 플러그인
+const issLabelPlugin = {
+  id: 'issLabel',
+  afterDatasetsDraw(chart) {
+    const meta = chart.getDatasetMeta(3);
+    if (!meta || meta.hidden) return;
+    const ctx2 = chart.ctx;
+    meta.data.forEach((bar, i) => {
+      const v = chart.data.datasets[3].data[i];
+      if (v == null) return;
+      ctx2.save();
+      ctx2.font = "bold 10px 'Noto Sans KR',sans-serif";
+      ctx2.fillStyle = 'rgba(194,65,12,0.9)';
+      ctx2.textAlign = 'center';
+      ctx2.textBaseline = 'bottom';
+      ctx2.fillText(v.toFixed(2)+'%', bar.x, bar.y - 3);
+      ctx2.restore();
+    });
+  }
+};
+
 const initData = buildChartData(0);
 const initAxes = calcAxes(initData.datasets);
 
 const yieldChart = new Chart(document.getElementById('yieldChart'), {
   type:'line',
   data: initData,
+  plugins: [issLabelPlugin],
   options:{
     responsive:true,
     interaction:{mode:'index',intersect:false},
@@ -431,8 +455,15 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {
         callbacks:{
           label: ctx => {
             if(ctx.datasetIndex===3) {
-              const v = ctx.parsed.y;
-              return v ? ` ⚡ 전력채 발행: ${v.toLocaleString()}억원` : null;
+              const rate = ctx.parsed.y;
+              if(rate == null) return null;
+              // 날짜 라벨로 발행금액 조회
+              const label = ctx.chart.data.labels[ctx.dataIndex];
+              // label 형식: "MM/DD" → 실제 날짜키는 "YYYY-MM-DD"
+              const amtEntries = Object.entries(kepcoAmt);
+              const amt = amtEntries.find(([k]) => k.slice(5).replace('-','/') === label);
+              const amtStr = amt ? ` ${amt[1].toLocaleString()}억원` : '';
+              return ` ⚡ 전력채 발행금리: ${rate.toFixed(3)}%${amtStr}`;
             }
             const unit = ctx.datasetIndex===2 ? '%p' : '%';
             return ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}${unit}`;
@@ -458,12 +489,6 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {
         min: initAxes.sMin, max: initAxes.sMax,
         title:{display:true,text:'스프레드 (%p)',font:{size:10},color:'#0d9488'},
         ticks:{font:{family:"'Noto Sans KR'",size:10},color:'#0d9488',callback:v=>v.toFixed(3)+'%p'},
-        grid:{drawOnChartArea:false}
-      },
-      y3:{
-        position:'left',
-        display:false,
-        min:0, max:ISS_MAX,
         grid:{drawOnChartArea:false}
       }
     }
