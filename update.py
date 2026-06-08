@@ -809,7 +809,7 @@ def build_chart_data(chart, kepco_rate_by_date=None):
     # 금리 y축 범위: 최소 2.0% 고정, 상단은 데이터 기반
     rates = ([chart[d]["국고채"] for d in dates] + [chart[d]["한전채"] for d in dates])
     rates = [r for r in rates if r is not None]
-    rate_min = 2.0
+    rate_min = 2.5
     rate_max = round(max(rates) + 0.15, 2) if rates else 4.5
 
     # 스프레드 y2 범위: 스프레드가 금리선 아래 표시되도록 max를 넓게
@@ -1147,7 +1147,7 @@ function calcAxes(datasets, slicedLabels) {{
   // 발행금리 bars (dataset[3])가 있으면 그것도 rate 범위에 포함
   const issRates = datasets[3] ? datasets[3].data.filter(v=>v!=null) : [];
   const allRates = [...rates, ...issRates];
-  const rMin = allRates.length ? Math.min(RATE_MIN, Math.round((Math.min(...allRates)-0.1)*100)/100) : RATE_MIN;
+  const rMin = allRates.length ? Math.min(RATE_MIN, Math.round((Math.min(...allRates)-0.05)*100)/100) : RATE_MIN;
   const rMax = allRates.length ? Math.round((Math.max(...allRates)+0.15)*100)/100 : RATE_MAX;
   // 스프레드 y2: raw_max×1.75 → 스프레드가 차트 중간 아래에 위치
   const rawSMax = spreads.length ? Math.round((Math.max(...spreads)*1.75)*100)/100 : SPRD_MAX;
