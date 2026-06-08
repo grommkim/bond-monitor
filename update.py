@@ -1196,7 +1196,17 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
         position:'top',
         labels:{{
           font:{{family:"'Noto Sans KR',sans-serif",size:12}},
-          usePointStyle:true, padding:20
+          usePointStyle:true, padding:20,
+          generateLabels(chart) {{
+            const items = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            items.forEach(item => {{
+              if(item.datasetIndex === 3) {{
+                item.pointStyle = 'rect';
+                item.rotation = 0;
+              }}
+            }});
+            return items;
+          }}
         }}
       }},
       tooltip:{{
