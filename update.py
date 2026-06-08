@@ -281,6 +281,45 @@ def collect_kepco_rates_ytd():
     return rate_by_date, amt_by_date
 
 
+def collect_ktb3y_rates_ytd():
+    """KOFIA에서 올해 국고채 3년물 발행금리 수집 (차트용)"""
+    print("[ KOFIA 국고채 3년 연초~현재 발행금리 수집 ]")
+    today = last_biz()
+    start = date(today.year, 1, 1).strftime("%Y%m%d")
+    end   = today.strftime("%Y%m%d")
+
+    txt = kofia_post("BISIssInfoSntcSrchSO", "list",
+                     {"BISComDspDatDTO": {
+                         "val1": "ISS", "val2": start, "val3": end,
+                         "val4": "1", "val5": "", "val6": "", "val7": "",
+                     }})
+    rows = kofia_items(txt, "BISComDspDatDTO")
+    acc  = {}
+    for row in rows:
+        name   = pval(row, "val1")
+        if "국고채" not in name: continue
+        iss_dt = pval(row, "val3")
+        mat_dt = pval(row, "val4")
+        amount = pval(row, "val6")
+        coupon = pval(row, "val9")
+        if issue_tenor_label(iss_dt, mat_dt) != "3년": continue
+        iss_fmt = f"{iss_dt[:4]}-{iss_dt[4:6]}-{iss_dt[6:]}" if len(iss_dt)==8 else iss_dt
+        try:
+            amt  = int(amount) * 100_000_000
+            rate = float(coupon)
+        except (ValueError, TypeError):
+            continue
+        if iss_fmt not in acc:
+            acc[iss_fmt] = [0, 0.0]
+        acc[iss_fmt][0] += amt
+        acc[iss_fmt][1] += amt * rate
+
+    rate_by_date = {d: round(v[1]/v[0], 3) for d, v in acc.items() if v[0]}
+    amt_by_date  = {d: v[0] // 100_000_000   for d, v in acc.items() if v[0]}
+    print(f"  → 국고채 3년 발행금리 {len(rate_by_date)}일치 수집")
+    return rate_by_date, amt_by_date
+
+
 def collect_issuance(days=7):
     print(f"[ KOFIA 발행실적 수집 (최근 {days}일, 한전 포함) ]")
     end_dt   = last_biz()
@@ -801,7 +840,7 @@ showStat('{this_yr}');
 
 # ── 5. HTML 생성 ────────────────────────────────────────────────────
 
-def build_chart_data(chart, kepco_rate_by_date=None):
+def build_chart_data(chart, kepco_rate_by_date=None, ktb_rate_by_date=None):
     dates   = sorted(chart.keys())
     labels  = [d[5:].replace("-", "/") for d in dates]
     spreads = [round(chart[d]["한전채"] - chart[d]["국고채"], 4) for d in dates]
@@ -835,6 +874,12 @@ def build_chart_data(chart, kepco_rate_by_date=None):
          "borderWidth":1.5,
          "borderRadius":{"topLeft":4,"topRight":4,"bottomLeft":0,"bottomRight":0},
          "maxBarThickness":18,"yAxisID":"y","order":5},
+        {"label":"국고채 3년 발행금리 (좌)","data":[ktb_rate_by_date.get(d) for d in dates] if ktb_rate_by_date else [None]*len(dates),
+         "type":"bar",
+         "backgroundColor":"rgba(99,102,241,0.28)","borderColor":"rgba(99,102,241,0.75)",
+         "borderWidth":1.5,
+         "borderRadius":{"topLeft":4,"topRight":4,"bottomLeft":0,"bottomRight":0},
+         "maxBarThickness":18,"yAxisID":"y","order":6},
     ]
     return (json.dumps(labels, ensure_ascii=False), json.dumps(ds, ensure_ascii=False),
             sprd_min, sprd_max, rate_min, rate_max)
@@ -991,7 +1036,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
 </section>"""
 
 
-def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None, kepco_rate_by_date=None, kepco_amt_by_date=None):
+def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None, kepco_rate_by_date=None, kepco_amt_by_date=None, ktb_rate_by_date=None, ktb_amt_by_date=None):
     today_str = date.today().strftime("%Y년 %m월 %d일")
     latest_dt = latest.get("날짜","–")
     ktb_v  = latest.get("국고채", 0)
@@ -1012,11 +1057,14 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 </div>"""
 
     # 전력채 발행금리: 인자로 받은 YTD KOFIA 데이터 우선, 없으면 빈 dict
-    _rate = kepco_rate_by_date or {}
-    _amt  = kepco_amt_by_date  or {}
+    _rate     = kepco_rate_by_date or {}
+    _amt      = kepco_amt_by_date  or {}
+    _ktb_rate = ktb_rate_by_date   or {}
+    _ktb_amt  = ktb_amt_by_date    or {}
     labels_json, datasets_json, sprd_min, sprd_max, rate_min, rate_max = build_chart_data(
-        chart, _rate)
+        chart, _rate, _ktb_rate)
     kepco_amt_json = json.dumps(_amt, ensure_ascii=False)
+    ktb_amt_json   = json.dumps(_ktb_amt, ensure_ascii=False)
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
     debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm) if debt_summary else ""
@@ -1137,17 +1185,16 @@ const allDatasets = {datasets_json};
 const RATE_MIN={rate_min}, RATE_MAX={rate_max};
 const SPRD_MIN={sprd_min}, SPRD_MAX={sprd_max};
 const kepcoAmt = {kepco_amt_json};
+const ktbAmt   = {ktb_amt_json};
 let activeRange = 0;
 
-function calcAxes(datasets, slicedLabels) {{
+function calcAxes(datasets) {{
   const rates   = [...datasets[0].data, ...datasets[1].data].filter(v=>v!=null);
   const spreads = datasets[2].data.filter(v=>v!=null);
-  // 발행금리 bars (dataset[3])가 있으면 그것도 rate 범위에 포함
-  const issRates = datasets[3] ? datasets[3].data.filter(v=>v!=null) : [];
-  const allRates = [...rates, ...issRates];
+  const barRates = [...(datasets[3]?.data||[]), ...(datasets[4]?.data||[])].filter(v=>v!=null);
+  const allRates = [...rates, ...barRates];
   const rMin = allRates.length ? Math.min(RATE_MIN, Math.round((Math.min(...allRates)-0.05)*100)/100) : RATE_MIN;
   const rMax = allRates.length ? Math.round((Math.max(...allRates)+0.15)*100)/100 : RATE_MAX;
-  // 스프레드 y2: raw_max×1.75 → 스프레드가 차트 중간 아래에 위치
   const rawSMax = spreads.length ? Math.round((Math.max(...spreads)*1.75)*100)/100 : SPRD_MAX;
   return {{ rMin, rMax, sMin: 0, sMax: Math.max(rawSMax, SPRD_MAX) }};
 }}
@@ -1160,23 +1207,25 @@ function buildChartData(n) {{
   }};
 }}
 
-// 발행금리 라벨을 막대 위에 그리는 플러그인
+// 발행금리 라벨을 막대 위에 표시하는 플러그인
 const issLabelPlugin = {{
   id: 'issLabel',
   afterDatasetsDraw(chart) {{
-    const meta = chart.getDatasetMeta(3);
-    if (!meta || meta.hidden) return;
-    const ctx2 = chart.ctx;
-    meta.data.forEach((bar, i) => {{
-      const v = chart.data.datasets[3].data[i];
-      if (v == null) return;
-      ctx2.save();
-      ctx2.font = "bold 10px 'Noto Sans KR',sans-serif";
-      ctx2.fillStyle = 'rgba(194,65,12,0.9)';
-      ctx2.textAlign = 'center';
-      ctx2.textBaseline = 'bottom';
-      ctx2.fillText(v.toFixed(2)+'%', bar.x, bar.y - 3);
-      ctx2.restore();
+    [[3,'rgba(194,65,12,0.9)'],[4,'rgba(67,56,202,0.9)']].forEach(([dsIdx, color]) => {{
+      const meta = chart.getDatasetMeta(dsIdx);
+      if(!meta || meta.hidden) return;
+      const ctx2 = chart.ctx;
+      meta.data.forEach((bar, i) => {{
+        const v = chart.data.datasets[dsIdx].data[i];
+        if(v == null) return;
+        ctx2.save();
+        ctx2.font = "bold 10px 'Noto Sans KR',sans-serif";
+        ctx2.fillStyle = color;
+        ctx2.textAlign = 'center';
+        ctx2.textBaseline = 'bottom';
+        ctx2.fillText(v.toFixed(2)+'%', bar.x, bar.y - 3);
+        ctx2.restore();
+      }});
     }});
   }}
 }};
@@ -1200,7 +1249,7 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
           generateLabels(chart) {{
             const items = Chart.defaults.plugins.legend.labels.generateLabels(chart);
             items.forEach(item => {{
-              if(item.datasetIndex === 3) {{
+              if(item.datasetIndex === 3 || item.datasetIndex === 4) {{
                 item.pointStyle = 'rect';
                 item.rotation = 0;
               }}
@@ -1215,13 +1264,18 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
             if(ctx.datasetIndex===3) {{
               const rate = ctx.parsed.y;
               if(rate == null) return null;
-              // 날짜 라벨로 발행금액 조회
-              const label = ctx.chart.data.labels[ctx.dataIndex];
-              // label 형식: "MM/DD" → 실제 날짜키는 "YYYY-MM-DD"
-              const amtEntries = Object.entries(kepcoAmt);
-              const amt = amtEntries.find(([k]) => k.slice(5).replace('-','/') === label);
-              const amtStr = amt ? ` ${{amt[1].toLocaleString()}}억원` : '';
+              const lbl = ctx.chart.data.labels[ctx.dataIndex];
+              const e = Object.entries(kepcoAmt).find(([k])=>k.slice(5).replace('-','/')=== lbl);
+              const amtStr = e ? ` ${{e[1].toLocaleString()}}억원` : '';
               return ` ⚡ 전력채 발행금리: ${{rate.toFixed(3)}}%${{amtStr}}`;
+            }}
+            if(ctx.datasetIndex===4) {{
+              const rate = ctx.parsed.y;
+              if(rate == null) return null;
+              const lbl = ctx.chart.data.labels[ctx.dataIndex];
+              const e = Object.entries(ktbAmt).find(([k])=>k.slice(5).replace('-','/')=== lbl);
+              const amtStr = e ? ` ${{e[1].toLocaleString()}}억원` : '';
+              return ` 🏛 국고채 3년 발행금리: ${{rate.toFixed(3)}}%${{amtStr}}`;
             }}
             const unit = ctx.datasetIndex===2 ? '%p' : '%';
             return ` ${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(3)}}${{unit}}`;
@@ -1291,13 +1345,16 @@ if __name__ == "__main__":
     d_sum, d_prev, d_as_of, d_pm = collect_debt(issuances)
     issu_stats       = collect_issu_stats()
     kepco_rates, kepco_amts = collect_kepco_rates_ytd()
+    ktb_rates,   ktb_amts   = collect_ktb3y_rates_ytd()
 
     html = generate_html(chart, latest, issuances,
                          debt_summary=d_sum, debt_prev=d_prev,
                          debt_as_of=d_as_of, debt_is_pm=d_pm,
                          issu_stats=issu_stats,
                          kepco_rate_by_date=kepco_rates,
-                         kepco_amt_by_date=kepco_amts)
+                         kepco_amt_by_date=kepco_amts,
+                         ktb_rate_by_date=ktb_rates,
+                         ktb_amt_by_date=ktb_amts)
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(html)
 
