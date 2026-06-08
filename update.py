@@ -209,7 +209,7 @@ def collect_kofia_history():
 
     fetched = 0
     for d in sorted(need, reverse=True):
-        if fetched >= 7:
+        if fetched >= 30:          # 한 번에 최대 30일 백필
             break
         dk = d.strftime("%Y-%m-%d")
         ds = d.strftime("%Y%m%d")
@@ -224,7 +224,8 @@ def collect_kofia_history():
             print(f"  ✓ {dk}: 국고={data['국고채']}%, 한전={data['한전채']}%")
             fetched += 1
 
-    cutoff = (date.today() - timedelta(days=90)).strftime("%Y-%m-%d")
+    # 캐시 보관: 당해 연도 1월 1일 이후
+    cutoff = date(date.today().year, 1, 1).strftime("%Y-%m-%d")
     cache  = {k: v for k, v in cache.items() if k >= cutoff and v.get("국고채") and v.get("한전채")}
     with open(CACHE_FILE, "w", encoding="utf-8") as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
@@ -762,9 +763,25 @@ showStat('{this_yr}');
 # ── 5. HTML 생성 ────────────────────────────────────────────────────
 
 def build_chart_data(chart, kepco_by_date=None):
-    dates  = sorted(chart.keys())
-    labels = [d[5:].replace("-", "/") for d in dates]
+    dates   = sorted(chart.keys())
+    labels  = [d[5:].replace("-", "/") for d in dates]
     spreads = [round(chart[d]["한전채"] - chart[d]["국고채"], 4) for d in dates]
+
+    # 금리 y축 범위 (데이터 기반)
+    rates = ([chart[d]["국고채"] for d in dates] + [chart[d]["한전채"] for d in dates])
+    rates = [r for r in rates if r is not None]
+    rate_min = round(min(rates) - 0.08, 2) if rates else 2.5
+    rate_max = round(max(rates) + 0.08, 2) if rates else 4.5
+
+    # 스프레드 축 범위 (충분한 여유)
+    valid    = [s for s in spreads if s is not None]
+    sprd_min = round(min(valid) - 0.05, 3) if valid else 0.20
+    sprd_max = round(max(valid) + 0.05, 3) if valid else 0.40
+
+    # 전력채 발행 핀 마커용 최대값
+    iss_vals = [kepco_by_date.get(d, 0) for d in dates] if kepco_by_date else []
+    iss_max  = max(iss_vals) * 1.3 if iss_vals and max(iss_vals) else 3000
+
     ds = [
         {"label":"국고채(3년) 민평","data":[chart[d]["국고채"] for d in dates],
          "type":"line","borderColor":"#2563eb","backgroundColor":"transparent",
@@ -776,15 +793,15 @@ def build_chart_data(chart, kepco_by_date=None):
          "type":"line","fill":"start","borderColor":"rgba(20,184,166,0.9)",
          "backgroundColor":"rgba(20,184,166,0.12)","borderWidth":1.5,
          "pointRadius":1.5,"pointHoverRadius":5,"tension":0.3,"yAxisID":"y2","order":3},
-        {"label":"전력채 발행(억원)","data":[kepco_by_date.get(d) for d in dates] if kepco_by_date else [None]*len(dates),
-         "type":"bar","backgroundColor":"rgba(249,115,22,0.22)","borderColor":"rgba(249,115,22,0.7)",
-         "borderWidth":1,"borderRadius":3,"yAxisID":"y3","order":10},
+        # 전력채 발행 핀 마커: 얇은 막대(needle) + 둥근 끝
+        {"label":"전력채 발행","data":[kepco_by_date.get(d) for d in dates] if kepco_by_date else [None]*len(dates),
+         "type":"bar",
+         "backgroundColor":"rgba(249,115,22,0.75)","borderColor":"rgba(249,115,22,0.0)",
+         "borderWidth":0,"borderRadius":{"topLeft":20,"topRight":20,"bottomLeft":0,"bottomRight":0},
+         "maxBarThickness":4,"yAxisID":"y3","order":10},
     ]
-    # 스프레드 축 범위 (타이트하게)
-    valid = [s for s in spreads if s is not None]
-    sprd_min = round(min(valid) - 0.015, 3) if valid else 0.20
-    sprd_max = round(max(valid) + 0.015, 3) if valid else 0.40
-    return json.dumps(labels, ensure_ascii=False), json.dumps(ds, ensure_ascii=False), sprd_min, sprd_max
+    return (json.dumps(labels, ensure_ascii=False), json.dumps(ds, ensure_ascii=False),
+            sprd_min, sprd_max, rate_min, rate_max, iss_max)
 
 
 def issue_row_html(r, show_minp=True):
@@ -970,7 +987,7 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
                 kepco_by_date[_d] = kepco_by_date.get(_d, 0) + _p["amount"] // 100_000_000
     except Exception:
         pass
-    labels_json, datasets_json, sprd_min, sprd_max = build_chart_data(chart, kepco_by_date)
+    labels_json, datasets_json, sprd_min, sprd_max, rate_min, rate_max, iss_max = build_chart_data(chart, kepco_by_date)
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
     debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm) if debt_summary else ""
@@ -1089,8 +1106,21 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 <script>
 const allLabels   = {labels_json};
 const allDatasets = {datasets_json};
-const SPRD_MIN = {sprd_min}, SPRD_MAX = {sprd_max};
+const RATE_MIN={rate_min}, RATE_MAX={rate_max};
+const SPRD_MIN={sprd_min}, SPRD_MAX={sprd_max};
+const ISS_MAX ={iss_max};
 let activeRange = 0;
+
+function calcAxes(datasets) {{
+  const rates   = [...datasets[0].data, ...datasets[1].data].filter(v=>v!=null);
+  const spreads = datasets[2].data.filter(v=>v!=null);
+  return {{
+    rMin: rates.length   ? Math.round((Math.min(...rates)  -0.08)*100)/100 : RATE_MIN,
+    rMax: rates.length   ? Math.round((Math.max(...rates)  +0.08)*100)/100 : RATE_MAX,
+    sMin: spreads.length ? Math.round((Math.min(...spreads)-0.05)*1000)/1000 : SPRD_MIN,
+    sMax: spreads.length ? Math.round((Math.max(...spreads)+0.05)*1000)/1000 : SPRD_MAX,
+  }};
+}}
 
 function buildChartData(n) {{
   const sl = n === 0 ? allLabels.length : Math.min(n, allLabels.length);
@@ -1100,24 +1130,30 @@ function buildChartData(n) {{
   }};
 }}
 
+const initData = buildChartData(0);
+const initAxes = calcAxes(initData.datasets);
+
 const yieldChart = new Chart(document.getElementById('yieldChart'), {{
-  type:'bar',
-  data: buildChartData(0),
+  type:'line',
+  data: initData,
   options:{{
     responsive:true,
     interaction:{{mode:'index',intersect:false}},
     plugins:{{
       legend:{{
         position:'top',
-        labels:{{font:{{family:"'Noto Sans KR',sans-serif",size:12}},usePointStyle:true,padding:20,
-          filter: item => item.text !== '전력채 발행(억원)'
+        labels:{{
+          font:{{family:"'Noto Sans KR',sans-serif",size:12}},
+          usePointStyle:true, padding:20,
+          filter: item => item.text !== '전력채 발행'
         }}
       }},
       tooltip:{{
         callbacks:{{
           label: ctx => {{
             if(ctx.datasetIndex===3) {{
-              return ctx.parsed.y ? ` 전력채 발행: ${{ctx.parsed.y}}억원` : null;
+              const v = ctx.parsed.y;
+              return v ? ` ⚡ 전력채 발행: ${{v.toLocaleString()}}억원` : null;
             }}
             const unit = ctx.datasetIndex===2 ? '%p' : '%';
             return ` ${{ctx.dataset.label}}: ${{ctx.parsed.y.toFixed(3)}}${{unit}}`;
@@ -1128,26 +1164,27 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
     scales:{{
       x:{{
         type:'category',
-        grid:{{color:'rgba(241,245,249,0.8)'}},
-        ticks:{{font:{{family:"'Noto Sans KR'",size:10}},maxRotation:0,autoSkip:true,maxTicksLimit:activeRange===0?18:12}}
+        grid:{{color:'rgba(241,245,249,0.7)'}},
+        ticks:{{font:{{family:"'Noto Sans KR'",size:10}},maxRotation:0,autoSkip:true,maxTicksLimit:18}}
       }},
       y:{{
         position:'left',
+        min: initAxes.rMin, max: initAxes.rMax,
         title:{{display:true,text:'금리 (%)',font:{{size:10}},color:'#94a3b8'}},
-        grid:{{color:'rgba(241,245,249,0.8)'}},
+        grid:{{color:'rgba(241,245,249,0.7)'}},
         ticks:{{font:{{family:"'Noto Sans KR'",size:11}},callback:v=>v.toFixed(2)+'%'}}
       }},
       y2:{{
         position:'right',
-        min: SPRD_MIN, max: SPRD_MAX,
+        min: initAxes.sMin, max: initAxes.sMax,
         title:{{display:true,text:'스프레드 (%p)',font:{{size:10}},color:'#0d9488'}},
         ticks:{{font:{{family:"'Noto Sans KR'",size:10}},color:'#0d9488',callback:v=>v.toFixed(3)+'%p'}},
         grid:{{drawOnChartArea:false}}
       }},
       y3:{{
-        position:'right',
+        position:'left',
         display:false,
-        min:0,
+        min:0, max:ISS_MAX,
         grid:{{drawOnChartArea:false}}
       }}
     }}
@@ -1157,23 +1194,23 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
 function setRange(n) {{
   activeRange = n;
   const d = buildChartData(n);
+  const ax = calcAxes(d.datasets);
   yieldChart.data.labels   = d.labels;
   yieldChart.data.datasets = d.datasets;
-  // 스프레드 축 범위 재계산
-  const spreads = d.datasets[2].data.filter(v=>v!==null);
-  if(spreads.length) {{
-    yieldChart.options.scales.y2.min = Math.round((Math.min(...spreads)-0.015)*1000)/1000;
-    yieldChart.options.scales.y2.max = Math.round((Math.max(...spreads)+0.015)*1000)/1000;
-  }}
+  yieldChart.options.scales.y.min  = ax.rMin;
+  yieldChart.options.scales.y.max  = ax.rMax;
+  yieldChart.options.scales.y2.min = ax.sMin;
+  yieldChart.options.scales.y2.max = ax.sMax;
   yieldChart.options.scales.x.ticks.maxTicksLimit = n===0 ? 18 : 12;
   yieldChart.update();
-  // 버튼 스타일
-  document.getElementById('btnYtd').style.background = n===0 ? '#2563eb' : '#fff';
-  document.getElementById('btnYtd').style.color       = n===0 ? '#fff'    : '#64748b';
-  document.getElementById('btnYtd').style.borderColor = n===0 ? '#2563eb' : '#cbd5e1';
-  document.getElementById('btn4w').style.background  = n===20 ? '#2563eb' : '#fff';
-  document.getElementById('btn4w').style.color        = n===20 ? '#fff'    : '#64748b';
-  document.getElementById('btn4w').style.borderColor  = n===20 ? '#2563eb' : '#cbd5e1';
+  const active = '#2563eb', inactive = '#fff', inactText = '#64748b', inactBrd = '#cbd5e1';
+  ['btnYtd','btn4w'].forEach((id,i) => {{
+    const on = (i===0 && n===0) || (i===1 && n===20);
+    const el = document.getElementById(id);
+    el.style.background  = on ? active  : inactive;
+    el.style.color       = on ? '#fff'  : inactText;
+    el.style.borderColor = on ? active  : inactBrd;
+  }});
 }}
 </script>
 </body>
