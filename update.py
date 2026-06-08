@@ -819,18 +819,17 @@ def build_chart_data(chart, kepco_rate_by_date=None):
     sprd_max = round(raw_max * 1.75, 2)  # 스프레드가 차트 하단 ~57% 구간, 금리선 아래 유지
 
     ds = [
-        {"label":"국고채(3년) 민평","data":[chart[d]["국고채"] for d in dates],
+        {"label":"국고채(3년) 민평 (좌)","data":[chart[d]["국고채"] for d in dates],
          "type":"line","borderColor":"#2563eb","backgroundColor":"transparent",
          "borderWidth":2,"pointRadius":2,"pointHoverRadius":6,"tension":0.3,"yAxisID":"y","order":1},
-        {"label":"한전채(3년) 민평","data":[chart[d]["한전채"] for d in dates],
+        {"label":"한전채(3년) 민평 (좌)","data":[chart[d]["한전채"] for d in dates],
          "type":"line","borderColor":"#f97316","backgroundColor":"transparent",
          "borderWidth":2,"pointRadius":2,"pointHoverRadius":6,"tension":0.3,"yAxisID":"y","order":2},
-        {"label":"스프레드(한전-국고)","data":spreads,
+        {"label":"스프레드(한전-국고) (우)","data":spreads,
          "type":"line","fill":"start","borderColor":"rgba(20,184,166,0.9)",
          "backgroundColor":"rgba(20,184,166,0.12)","borderWidth":1.5,
          "pointRadius":1.5,"pointHoverRadius":5,"tension":0.3,"yAxisID":"y2","order":3},
-        # 전력채 발행: 발행금리 기준 막대 (y 금리축)
-        {"label":"전력채 발행","data":[kepco_rate_by_date.get(d) for d in dates] if kepco_rate_by_date else [None]*len(dates),
+        {"label":"전력채 발행금리 (좌)","data":[kepco_rate_by_date.get(d) for d in dates] if kepco_rate_by_date else [None]*len(dates),
          "type":"bar",
          "backgroundColor":"rgba(249,115,22,0.28)","borderColor":"rgba(249,115,22,0.75)",
          "borderWidth":1.5,
@@ -1102,7 +1101,6 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
       style="padding:5px 16px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s">연초부터</button>
     <button id="btn4w" onclick="setRange(20)"
       style="padding:5px 16px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s">최근 4주</button>
-    <span style="margin-left:8px;font-size:.75rem;color:#94a3b8">🟧 막대: 전력채 발행금리(민평금리 축 기준)</span>
   </div>
   <div class="chart-box">
     <canvas id="yieldChart" style="max-height:440px"></canvas>
@@ -1198,8 +1196,7 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
         position:'top',
         labels:{{
           font:{{family:"'Noto Sans KR',sans-serif",size:12}},
-          usePointStyle:true, padding:20,
-          filter: item => item.text !== '전력채 발행'
+          usePointStyle:true, padding:20
         }}
       }},
       tooltip:{{
