@@ -4,7 +4,7 @@
 평일 하루 2회(오전 9시·오후 3시) 자동 업데이트
 """
 
-import html as _html, json, os, re, sys
+import html as _html, json, os, re, subprocess, sys
 from datetime import date, datetime, timedelta, timezone
 
 try:
@@ -281,32 +281,45 @@ def collect_kepco_rates_ytd():
     return rate_by_date, amt_by_date
 
 
+def _mofe_fetch(url, params=None):
+    """curl로 mofe.go.kr 요청 (Python requests는 IP 차단됨)"""
+    full_url = url
+    if params:
+        qs = "&".join(f"{k}={v}" for k, v in params.items())
+        full_url = f"{url}?{qs}"
+    try:
+        res = subprocess.run(
+            ["curl", "-s", "-L", "--max-time", "20", "-k",
+             "-H", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+             "-H", "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+             "-H", "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8",
+             "-H", "Referer: https://mofe.go.kr/",
+             full_url],
+            capture_output=True, text=True, timeout=25
+        )
+        return res.stdout
+    except Exception as e:
+        print(f"    curl 오류: {e}")
+        return ""
+
+
 def collect_ktb3y_rates_ytd():
     """기재부 mofe.go.kr에서 올해 국고채 3년물 경쟁입찰 낙찰금리 수집"""
     print("[ 기재부 국고채 3년물 경쟁입찰 낙찰금리 수집 ]")
     LIST_URL   = "https://mofe.go.kr/st/fnancstats/ktb50201.do"
     DETAIL_URL = "https://mofe.go.kr/st/fnancstats/updateTbFnancstatsView.do"
-    HDR = {
-        "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "Referer":      "https://mofe.go.kr/",
-        "Accept":       "text/html,application/xhtml+xml;q=0.9",
-        "Accept-Language": "ko-KR,ko;q=0.9",
-    }
     year = str(date.today().year)
     serials_3y = []
 
     try:
-        for page_idx in range(1, 8):  # 최대 7페이지 탐색 (YTD 충분)
-            r = requests.get(LIST_URL, params={"pageIndex": page_idx},
-                             headers=HDR, timeout=15)
-            if r.status_code != 200:
+        for page_idx in range(1, 8):
+            html_text = _mofe_fetch(LIST_URL, {"pageIndex": page_idx})
+            if not html_text or len(html_text) < 500:
+                print(f"  페이지 {page_idx} 응답 없음")
                 break
-            html_text = r.text
 
-            # 각 행에서 MOSF ID + 제목 + 등록일 함께 추출
             rows_html = re.findall(r'<tr[^>]*>(.*?)</tr>', html_text, re.DOTALL)
-            found_this_page = 0
-            any_this_year   = False
+            any_this_year = False
 
             for row in rows_html:
                 sid_m = re.search(r'(MOSF_\d+)', row)
@@ -314,11 +327,9 @@ def collect_ktb3y_rates_ytd():
                     continue
                 sid = sid_m.group(1)
 
-                # 제목 셀 (tit, title, subject 클래스 모두 시도)
                 t_m = re.search(r'<td[^>]*class="[^"]*(?:tit|title|subject)[^"]*"[^>]*>(.*?)</td>', row, re.DOTALL)
                 title = re.sub(r'<[^>]+>', '', t_m.group(1)).strip() if t_m else ""
 
-                # 등록일
                 d_m = re.search(r'(\d{4}\.\d{2}\.\d{2})', row)
                 reg_date = d_m.group(1) if d_m else ""
 
@@ -330,10 +341,8 @@ def collect_ktb3y_rates_ytd():
                 if "3년물" in title and "경쟁입찰" in title and "결과" in title:
                     if sid not in serials_3y:
                         serials_3y.append(sid)
-                        found_this_page += 1
                         print(f"  발견: {reg_date} | {title[:45]}")
 
-            # 이 페이지에 올해 데이터가 전혀 없으면 중단
             if not any_this_year and page_idx > 1:
                 break
 
@@ -350,17 +359,16 @@ def collect_ktb3y_rates_ytd():
 
     for sid in serials_3y:
         try:
-            r = requests.get(DETAIL_URL,
-                             params={"searchSn": sid, "type": "ktb50201"},
-                             headers=HDR, timeout=15)
-            # id="cn" hidden input value
-            cn_m = re.search(r'<input[^>]*id="cn"[^>]*value="([^"]*)"', r.text) or \
-                   re.search(r'<input[^>]*value="([^"]*)"[^>]*id="cn"', r.text)
+            content = _mofe_fetch(DETAIL_URL, {"searchSn": sid, "type": "ktb50201"})
+            if not content:
+                continue
+
+            cn_m = (re.search(r'<input[^>]*id="cn"[^>]*value="([^"]*)"', content) or
+                    re.search(r'<input[^>]*value="([^"]*)"[^>]*id="cn"', content))
             if not cn_m:
                 continue
             cn = _html.unescape(cn_m.group(1)).replace('\xa0', ' ')
 
-            # 발행일: '26.6.10. 형식
             iss_m = re.search(r"발행일\s*[:：]\s*'?(\d{2})\.(\d{1,2})\.(\d{1,2})", cn)
             if not iss_m:
                 continue
@@ -368,13 +376,11 @@ def collect_ktb3y_rates_ytd():
                         f"{int(iss_m.group(2)):02d}-"
                         f"{int(iss_m.group(3)):02d}")
 
-            # 가중평균낙찰금리
             rm = re.search(r"가중평균낙찰금리\s*[:：]\s*([0-9]+\.[0-9]+)", cn)
             if not rm:
                 continue
             rate = float(rm.group(1))
 
-            # 낙찰금액 (억원)
             am  = re.search(r"낙찰금액\s*[:：]\s*([0-9,]+)\s*억", cn)
             amt = int(am.group(1).replace(",", "")) if am else 0
 
