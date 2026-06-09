@@ -297,6 +297,9 @@ def _mofe_fetch(url, params=None):
              full_url],
             capture_output=True, text=True, timeout=25
         )
+        print(f"    curl exit={res.returncode} len={len(res.stdout)} stderr={res.stderr[:120]!r}")
+        if res.stdout:
+            print(f"    response[:200]={res.stdout[:200]!r}")
         return res.stdout
     except Exception as e:
         print(f"    curl 오류: {e}")
