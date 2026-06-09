@@ -4,7 +4,7 @@
 평일 하루 2회(오전 9시·오후 3시) 자동 업데이트
 """
 
-import json, os, re, sys
+import html as _html, json, os, re, sys
 from datetime import date, datetime, timedelta, timezone
 
 try:
@@ -282,40 +282,110 @@ def collect_kepco_rates_ytd():
 
 
 def collect_ktb3y_rates_ytd():
-    """KOFIA에서 올해 국고채 3년물 발행금리 수집 (차트용)"""
-    print("[ KOFIA 국고채 3년 연초~현재 발행금리 수집 ]")
-    today = last_biz()
-    start = date(today.year, 1, 1).strftime("%Y%m%d")
-    end   = today.strftime("%Y%m%d")
+    """기재부 mofe.go.kr에서 올해 국고채 3년물 경쟁입찰 낙찰금리 수집"""
+    print("[ 기재부 국고채 3년물 경쟁입찰 낙찰금리 수집 ]")
+    LIST_URL   = "https://mofe.go.kr/st/fnancstats/ktb50201.do"
+    DETAIL_URL = "https://mofe.go.kr/st/fnancstats/updateTbFnancstatsView.do"
+    HDR = {
+        "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Referer":      "https://mofe.go.kr/",
+        "Accept":       "text/html,application/xhtml+xml;q=0.9",
+        "Accept-Language": "ko-KR,ko;q=0.9",
+    }
+    year = str(date.today().year)
+    serials_3y = []
 
-    txt = kofia_post("BISIssInfoSntcSrchSO", "list",
-                     {"BISComDspDatDTO": {
-                         "val1": "ISS", "val2": start, "val3": end,
-                         "val4": "1", "val5": "", "val6": "", "val7": "",
-                     }})
-    rows = kofia_items(txt, "BISComDspDatDTO")
-    acc  = {}
-    for row in rows:
-        name   = pval(row, "val1")
-        if "국고채" not in name: continue
-        iss_dt = pval(row, "val3")
-        mat_dt = pval(row, "val4")
-        amount = pval(row, "val6")
-        coupon = pval(row, "val9")
-        if issue_tenor_label(iss_dt, mat_dt) != "3년": continue
-        iss_fmt = f"{iss_dt[:4]}-{iss_dt[4:6]}-{iss_dt[6:]}" if len(iss_dt)==8 else iss_dt
+    try:
+        for page_idx in range(1, 8):  # 최대 7페이지 탐색 (YTD 충분)
+            r = requests.get(LIST_URL, params={"pageIndex": page_idx},
+                             headers=HDR, timeout=15)
+            if r.status_code != 200:
+                break
+            html_text = r.text
+
+            # 각 행에서 MOSF ID + 제목 + 등록일 함께 추출
+            rows_html = re.findall(r'<tr[^>]*>(.*?)</tr>', html_text, re.DOTALL)
+            found_this_page = 0
+            any_this_year   = False
+
+            for row in rows_html:
+                sid_m = re.search(r'(MOSF_\d+)', row)
+                if not sid_m:
+                    continue
+                sid = sid_m.group(1)
+
+                # 제목 셀 (tit, title, subject 클래스 모두 시도)
+                t_m = re.search(r'<td[^>]*class="[^"]*(?:tit|title|subject)[^"]*"[^>]*>(.*?)</td>', row, re.DOTALL)
+                title = re.sub(r'<[^>]+>', '', t_m.group(1)).strip() if t_m else ""
+
+                # 등록일
+                d_m = re.search(r'(\d{4}\.\d{2}\.\d{2})', row)
+                reg_date = d_m.group(1) if d_m else ""
+
+                if reg_date.startswith(year):
+                    any_this_year = True
+                if not reg_date.startswith(year):
+                    continue
+
+                if "3년물" in title and "경쟁입찰" in title and "결과" in title:
+                    if sid not in serials_3y:
+                        serials_3y.append(sid)
+                        found_this_page += 1
+                        print(f"  발견: {reg_date} | {title[:45]}")
+
+            # 이 페이지에 올해 데이터가 전혀 없으면 중단
+            if not any_this_year and page_idx > 1:
+                break
+
+    except Exception as e:
+        print(f"  목록 조회 오류: {e}")
+        return {}, {}
+
+    if not serials_3y:
+        print("  3년물 경쟁입찰 결과 없음")
+        return {}, {}
+
+    rate_by_date = {}
+    amt_by_date  = {}
+
+    for sid in serials_3y:
         try:
-            amt  = int(amount) * 100_000_000
-            rate = float(coupon)
-        except (ValueError, TypeError):
-            continue
-        if iss_fmt not in acc:
-            acc[iss_fmt] = [0, 0.0]
-        acc[iss_fmt][0] += amt
-        acc[iss_fmt][1] += amt * rate
+            r = requests.get(DETAIL_URL,
+                             params={"searchSn": sid, "type": "ktb50201"},
+                             headers=HDR, timeout=15)
+            # id="cn" hidden input value
+            cn_m = re.search(r'<input[^>]*id="cn"[^>]*value="([^"]*)"', r.text) or \
+                   re.search(r'<input[^>]*value="([^"]*)"[^>]*id="cn"', r.text)
+            if not cn_m:
+                continue
+            cn = _html.unescape(cn_m.group(1)).replace('\xa0', ' ')
 
-    rate_by_date = {d: round(v[1]/v[0], 3) for d, v in acc.items() if v[0]}
-    amt_by_date  = {d: v[0] // 100_000_000   for d, v in acc.items() if v[0]}
+            # 발행일: '26.6.10. 형식
+            iss_m = re.search(r"발행일\s*[:：]\s*'?(\d{2})\.(\d{1,2})\.(\d{1,2})", cn)
+            if not iss_m:
+                continue
+            iss_date = (f"20{iss_m.group(1)}-"
+                        f"{int(iss_m.group(2)):02d}-"
+                        f"{int(iss_m.group(3)):02d}")
+
+            # 가중평균낙찰금리
+            rm = re.search(r"가중평균낙찰금리\s*[:：]\s*([0-9]+\.[0-9]+)", cn)
+            if not rm:
+                continue
+            rate = float(rm.group(1))
+
+            # 낙찰금액 (억원)
+            am  = re.search(r"낙찰금액\s*[:：]\s*([0-9,]+)\s*억", cn)
+            amt = int(am.group(1).replace(",", "")) if am else 0
+
+            rate_by_date[iss_date] = rate
+            if amt:
+                amt_by_date[iss_date] = amt
+            print(f"  {iss_date}: {rate}%  {amt}억원")
+
+        except Exception as e:
+            print(f"  {sid} 상세조회 오류: {e}")
+
     print(f"  → 국고채 3년 발행금리 {len(rate_by_date)}일치 수집")
     return rate_by_date, amt_by_date
 
