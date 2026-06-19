@@ -1,95 +1,5 @@
 [
   {
-    "id": "단기사채|2026-05-07|2026-06-19|10000000000|r695",
-    "category": "단기사채",
-    "amount": 10000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|70000000000|r696",
-    "category": "단기사채",
-    "amount": 70000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|30000000000|r697",
-    "category": "단기사채",
-    "amount": 30000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|10000000000|r698",
-    "category": "단기사채",
-    "amount": 10000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|30000000000|r699",
-    "category": "단기사채",
-    "amount": 30000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|30000000000|r700",
-    "category": "단기사채",
-    "amount": 30000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|20000000000|r701",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|20000000000|r702",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|90000000000|r703",
-    "category": "단기사채",
-    "amount": 90000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "단기사채|2026-05-07|2026-06-19|40000000000|r704",
-    "category": "단기사채",
-    "amount": 40000000000,
-    "issuance_date": "2026-05-07",
-    "maturity_date": "2026-06-19",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "단기사채|2026-04-27|2026-06-22|20000000000|r705",
     "category": "단기사채",
     "amount": 20000000000,
@@ -6684,6 +6594,24 @@
     "issuance_date": "2026-06-16",
     "maturity_date": "2031-06-16",
     "rate": 4.28,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-06-19|2028-10-10|500000000000|kofia",
+    "category": "전력채",
+    "amount": 500000000000,
+    "issuance_date": "2026-06-19",
+    "maturity_date": "2028-10-10",
+    "rate": 3.97,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-06-19|2029-04-03|700000000000|kofia",
+    "category": "전력채",
+    "amount": 700000000000,
+    "issuance_date": "2026-06-19",
+    "maturity_date": "2029-04-03",
+    "rate": 4.07,
     "source": "kofia"
   }
 ]
