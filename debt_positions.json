@@ -1,14 +1,5 @@
 [
   {
-    "id": "전력채|2024-06-25|2026-06-25|300000000000|r741",
-    "category": "전력채",
-    "amount": 300000000000,
-    "issuance_date": "2024-06-25",
-    "maturity_date": "2026-06-25",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "전력채|2024-07-04|2026-07-04|300000000000|r742",
     "category": "전력채",
     "amount": 300000000000,
@@ -6298,5 +6289,23 @@
     "maturity_date": "2026-07-24",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "전력채|2026-06-25|2028-06-23|140000000000|kofia",
+    "category": "전력채",
+    "amount": 140000000000,
+    "issuance_date": "2026-06-25",
+    "maturity_date": "2028-06-23",
+    "rate": 4.15,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-06-25|2029-06-25|40000000000|kofia",
+    "category": "전력채",
+    "amount": 40000000000,
+    "issuance_date": "2026-06-25",
+    "maturity_date": "2029-06-25",
+    "rate": 4.26,
+    "source": "kofia"
   }
 ]
