@@ -6100,5 +6100,86 @@
     "maturity_date": "2026-08-20",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SE|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-20",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760RP|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760RQ|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760RY|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-20",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SF|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SH|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-20",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760RS|seibro",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SA|seibro",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-20",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760RX|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-06",
+    "maturity_date": "2026-08-19",
+    "rate": null,
+    "source": "seibro"
   }
 ]
