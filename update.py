@@ -645,9 +645,13 @@ def update_debt_pm(positions, issuances):
         key   = ("전력채", iss["date"], mat_s, amt)
         if key in existing_keys: continue
         uid = f"전력채|{iss['date']}|{mat_s}|{amt}|kofia"
+        try:
+            _r = float(iss["rate"]) if iss.get("rate") else None
+        except (ValueError, TypeError):
+            _r = None
         positions.append({"id":uid,"category":"전력채","amount":amt,
             "issuance_date":iss["date"],"maturity_date":mat_s or None,
-            "rate":float(iss["rate"]) if iss.get("rate") else None,"source":"kofia"})
+            "rate":_r,"source":"kofia"})
         existing_keys.add(key); added += 1
     if added: print(f"  신규 전력채 추가: {added}건")
 
