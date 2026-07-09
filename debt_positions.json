@@ -9,15 +9,6 @@
     "source": "excel"
   },
   {
-    "id": "전력채|2021-07-09|2026-07-09|200000000000|r744",
-    "category": "전력채",
-    "amount": 200000000000,
-    "issuance_date": "2021-07-09",
-    "maturity_date": "2026-07-09",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "은행차입|2025-07-11|2026-07-11|300000000000|r745",
     "category": "은행차입",
     "amount": 300000000000,
@@ -6269,6 +6260,78 @@
     "amount": 20000000000,
     "issuance_date": "2026-07-06",
     "maturity_date": "2026-08-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "전력채|2026-07-09|2029-05-03|600000000000|kofia",
+    "category": "전력채",
+    "amount": 600000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2029-05-03",
+    "rate": null,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-07-09|2029-07-09|50000000000|kofia",
+    "category": "전력채",
+    "amount": 50000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2029-07-09",
+    "rate": null,
+    "source": "kofia"
+  },
+  {
+    "id": "단기사채|KRZS015760TE|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2026-08-24",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760ST|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2026-08-25",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SY|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2026-08-25",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SN|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2026-08-24",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SS|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2026-08-25",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760SJ|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-07-09",
+    "maturity_date": "2026-08-24",
     "rate": null,
     "source": "seibro"
   }
