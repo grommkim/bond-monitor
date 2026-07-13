@@ -9,33 +9,6 @@
     "source": "excel"
   },
   {
-    "id": "은행차입|2025-07-11|2026-07-11|300000000000|r745",
-    "category": "은행차입",
-    "amount": 300000000000,
-    "issuance_date": "2025-07-11",
-    "maturity_date": "2026-07-11",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "전력채|2021-07-12|2026-07-12|200000000000|r746",
-    "category": "전력채",
-    "amount": 200000000000,
-    "issuance_date": "2021-07-12",
-    "maturity_date": "2026-07-12",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "전력채|2024-07-12|2026-07-12|300000000000|r747",
-    "category": "전력채",
-    "amount": 300000000000,
-    "issuance_date": "2024-07-12",
-    "maturity_date": "2026-07-12",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "전력채|2024-07-25|2026-07-25|240000000000|r748",
     "category": "전력채",
     "amount": 240000000000,
