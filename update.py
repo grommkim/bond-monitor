@@ -628,7 +628,8 @@ def update_debt_pm(positions, issuances):
         positions = [p for p in positions if p not in old_seibro]
 
     before  = len(positions)
-    positions = [p for p in positions if not p["maturity_date"] or p["maturity_date"] > today_s]
+    # 은행차입은 수동 관리 항목이므로 만기 자동 차감 제외
+    positions = [p for p in positions if p.get("category") == "은행차입" or not p["maturity_date"] or p["maturity_date"] > today_s]
     if before-len(positions): print(f"  만기 차감: {before-len(positions)}건")
 
     existing_ids  = {p["id"] for p in positions}
