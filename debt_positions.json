@@ -5778,29 +5778,29 @@
     "source": "seibro"
   },
   {
-    "id": "외화채권|2026-07-13|2029-07-21|5900000000000|manual",
+    "id": "중장기기업어음|2026-06-11|2029-06-11|200000000000|manual",
+    "category": "중장기기업어음",
+    "amount": 200000000000,
+    "issuance_date": "2026-06-11",
+    "maturity_date": "2029-06-11",
+    "rate": null,
+    "source": "manual"
+  },
+  {
+    "id": "외화채권|2026-07-13|2029-07-21|590000000000|manual",
     "category": "외화채권",
-    "amount": 5900000000000,
+    "amount": 590000000000,
     "issuance_date": "2026-07-13",
     "maturity_date": "2029-07-21",
     "rate": null,
     "source": "manual"
   },
   {
-    "id": "외화채권|2026-07-13|2031-07-21|4500000000000|manual",
+    "id": "외화채권|2026-07-13|2031-07-21|450000000000|manual",
     "category": "외화채권",
-    "amount": 4500000000000,
+    "amount": 450000000000,
     "issuance_date": "2026-07-13",
     "maturity_date": "2031-07-21",
-    "rate": null,
-    "source": "manual"
-  },
-  {
-    "id": "중장기기업어음|2026-06-11|2029-06-11|200000000000|manual",
-    "category": "중장기기업어음",
-    "amount": 200000000000,
-    "issuance_date": "2026-06-11",
-    "maturity_date": "2029-06-11",
     "rate": null,
     "source": "manual"
   }
