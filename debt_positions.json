@@ -5776,5 +5776,23 @@
     "maturity_date": "2026-08-20",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "외화채권|2026-07-13|2029-07-21|5900000000000|manual",
+    "category": "외화채권",
+    "amount": 5900000000000,
+    "issuance_date": "2026-07-13",
+    "maturity_date": "2029-07-21",
+    "rate": null,
+    "source": "manual"
+  },
+  {
+    "id": "외화채권|2026-07-13|2031-07-21|4500000000000|manual",
+    "category": "외화채권",
+    "amount": 4500000000000,
+    "issuance_date": "2026-07-13",
+    "maturity_date": "2031-07-21",
+    "rate": null,
+    "source": "manual"
   }
 ]
