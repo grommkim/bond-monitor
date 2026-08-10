@@ -9,15 +9,6 @@
     "source": "excel"
   },
   {
-    "id": "전력채|2021-08-10|2026-08-10|200000000000|r759",
-    "category": "전력채",
-    "amount": 200000000000,
-    "issuance_date": "2021-08-10",
-    "maturity_date": "2026-08-10",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "전력채|2021-08-12|2026-08-12|300000000000|r760",
     "category": "전력채",
     "amount": 300000000000,
@@ -5972,6 +5963,69 @@
     "amount": 100000000000,
     "issuance_date": "2026-08-06",
     "maturity_date": "2026-09-16",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XK|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-17",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760WX|seibro",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-18",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760WY|seibro",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-17",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760WQ|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-18",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760WP|seibro",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-17",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XM|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-18",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XJ|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-08-10",
+    "maturity_date": "2026-09-18",
     "rate": null,
     "source": "seibro"
   }
