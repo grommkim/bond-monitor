@@ -6217,5 +6217,86 @@
     "maturity_date": "2026-09-16",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XY|seibro",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-15",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XZ|seibro",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-15",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760YA|seibro",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-15",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760YC|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-15",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760YB|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-16",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XW|seibro",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-15",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XV|seibro",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-16",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XS|seibro",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-15",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015760XT|seibro",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-08-11",
+    "maturity_date": "2026-09-16",
+    "rate": null,
+    "source": "seibro"
   }
 ]
