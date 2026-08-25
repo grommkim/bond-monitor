@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>채권 시장 모니터 — 2026년 08월 24일</title>
+<title>채권 시장 모니터 — 2026년 08월 25일</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -48,7 +48,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <header>
   <div><h1>📊 채권 시장 모니터</h1>
   <div class="sub">국고채 · 한전채 민평금리 · 공사채 발행현황</div></div>
-  <div class="sub">기준일 <strong style="color:#fff">2026년 08월 24일</strong></div>
+  <div class="sub">기준일 <strong style="color:#fff">2026년 08월 25일</strong></div>
 </header>
 <main>
 
@@ -57,25 +57,25 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
   <div class="cards">
 <div class="card" style="border-top:3px solid #f97316">
   <div class="cn">한전채(3년) 민평</div>
-  <div class="cv" style="color:#f97316">4.236<span class="pct">%</span></div>
-  <div class="cd">민평평균 · 2026-08-21 기준</div>
+  <div class="cv" style="color:#f97316">4.216<span class="pct">%</span></div>
+  <div class="cd">민평평균 · 2026-08-24 기준</div>
 </div>
 <div class="card" style="border-top:3px solid #2563eb">
   <div class="cn">국고채(3년) 민평</div>
-  <div class="cv" style="color:#2563eb">3.855<span class="pct">%</span></div>
-  <div class="cd">민평평균 · 2026-08-21 기준</div>
+  <div class="cv" style="color:#2563eb">3.835<span class="pct">%</span></div>
+  <div class="cd">민평평균 · 2026-08-24 기준</div>
 </div>
 <div class="card" style="border-top:3px solid #0d9488">
   <div class="cn">스프레드(한전-국고)</div>
   <div class="cv" style="color:#0d9488">0.381<span class="pct">%p</span></div>
-  <div class="cd">민평평균 · 2026-08-21 기준</div>
+  <div class="cd">민평평균 · 2026-08-24 기준</div>
 </div></div>
 </section>
 
 
 <section>
   <h2 style="border-left-color:#f97316">채권 발행현황</h2>
-  
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">⏰ 금일 발행 데이터는 오후 3시 업데이트 예정 · 현재 전일(08/24) 기준</p>
   <div class="today-grid">
     <div>
       <h3 class="sub-h3" style="color:#f97316">⚡ 한국전력공사</h3>
@@ -91,7 +91,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 
 <section>
   <h2 style="border-left-color:#6366f1">차입금 현황</h2>
-  
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">⏰ 전일 현황 기준 · 당일 발행 반영은 오후 3시 업데이트 예정</p>
   <div class="table-wrap" style="max-width:480px">
     <table>
       <thead><tr><th>구분</th><th style="text-align:right">잔액</th><th style="text-align:right">전일비</th></tr></thead>
@@ -110,7 +110,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
       style="padding:6px 18px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.83rem;cursor:pointer;font-weight:600">작년(2025)</button>
   </div>
   <div id="stat_2026" class="stat-panel">
-<p style="font-size:.8rem;color:#64748b;margin-bottom:12px">2026년 (08/24 기준)</p>
+<p style="font-size:.8rem;color:#64748b;margin-bottom:12px">2026년 (08/25 기준)</p>
 
 <div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;max-width:544px">
   <div>
@@ -161,7 +161,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">기타(금융채·회사채 등)</span>
-    <span style="font-weight:600;color:#94a3b8">208.70조 <span style="font-weight:400;color:#94a3b8">(54%)</span></span>
+    <span style="font-weight:600;color:#94a3b8">209.78조 <span style="font-weight:400;color:#94a3b8">(54%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
     <div style="background:#94a3b8;width:54%;height:10px;border-radius:4px;transition:width .4s"></div>
@@ -172,13 +172,13 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <script>
 (function(){
   var ctx=document.getElementById('statChart_2026').getContext('2d');
-  var totalLabel='384.58조';
+  var totalLabel='385.66조';
   new Chart(ctx,{
     type:'doughnut',
     data:{
       labels:['전력채','특수채(전력채외)','국채','기타'],
       datasets:[{
-        data:[11.77,63.11,101.0,208.7],
+        data:[11.77,63.11,101.0,209.78],
         backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
         borderWidth:2,borderColor:'#fff',
         hoverOffset:8
@@ -265,7 +265,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">기타(금융채·회사채 등)</span>
-    <span style="font-weight:600;color:#94a3b8">202.27조 <span style="font-weight:400;color:#94a3b8">(40%)</span></span>
+    <span style="font-weight:600;color:#94a3b8">201.82조 <span style="font-weight:400;color:#94a3b8">(40%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
     <div style="background:#94a3b8;width:40%;height:10px;border-radius:4px;transition:width .4s"></div>
@@ -276,13 +276,13 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <script>
 (function(){
   var ctx=document.getElementById('statChart_2025').getContext('2d');
-  var totalLabel='500.85조';
+  var totalLabel='500.40조';
   new Chart(ctx,{
     type:'doughnut',
     data:{
       labels:['전력채','특수채(전력채외)','국채','기타'],
       datasets:[{
-        data:[14.49,72.53,211.56,202.27],
+        data:[14.49,72.53,211.56,201.82],
         backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
         borderWidth:2,borderColor:'#fff',
         hoverOffset:8
@@ -361,12 +361,7 @@ showStat('2026');
 <tr><td style="white-space:nowrap">2026-08-20</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1015</td><td style="white-space:nowrap"><span class="badge badge-10y">29년11개월</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.93%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
 <tr><td style="white-space:nowrap">2026-08-18</td><td><strong>한국장학재단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국장학재단26-24(사)(콜)</td><td style="white-space:nowrap"><span class="badge badge-10y">20년0개월</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">7.40%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
 <tr><td style="white-space:nowrap">2026-08-14</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 297(변)(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">1년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.10%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.644%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/13)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.544%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-08-14</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 297(변)(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">1년</span></td><td style="white-space:nowrap">200억원</td><td class="rate" style="white-space:nowrap">-%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.644%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/13)</span></td><td style="white-space:nowrap">–</td></tr>
-<tr><td style="white-space:nowrap">2026-08-12</td><td><strong>국가철도공단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">국가철도공단채권455</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">2,000억원</td><td class="rate" style="white-space:nowrap">4.11%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.127%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/11)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.017%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-08-12</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1608</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">800억원</td><td class="rate" style="white-space:nowrap">4.00%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.958%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/11)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.042%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-08-12</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1609</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">4.22%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.161%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/11)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.059%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-08-12</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1610</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.41%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.381%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/11)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.029%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-08-12</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 296(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">2년6개월</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.98%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.971%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/11)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.009%p</span></td></tr></tbody>
+<tr><td style="white-space:nowrap">2026-08-14</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 297(변)(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">1년</span></td><td style="white-space:nowrap">200억원</td><td class="rate" style="white-space:nowrap">-%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.644%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(08/13)</span></td><td style="white-space:nowrap">–</td></tr></tbody>
     </table>
   </div>
   <div class="note">
@@ -378,12 +373,12 @@ showStat('2026');
 </main>
 <footer>
   데이터: <a href="https://www.kofiabond.or.kr" target="_blank">금융투자협회 KOFIA</a> ·
-  평일 오전 9시·오후 3시 자동 업데이트 · 마지막 생성: 2026년 08월 24일
+  평일 오전 9시·오후 3시 자동 업데이트 · 마지막 생성: 2026년 08월 25일
 </footer>
 
 <script>
-const allLabels   = ["01/02", "01/05", "01/06", "01/07", "01/08", "01/09", "01/12", "01/13", "01/14", "01/15", "01/16", "01/19", "01/20", "01/21", "01/22", "01/23", "01/26", "01/27", "01/28", "01/29", "01/30", "02/02", "02/03", "02/04", "02/05", "02/06", "02/09", "02/10", "02/11", "02/12", "02/13", "02/19", "02/20", "02/23", "02/24", "02/25", "02/26", "02/27", "03/03", "03/04", "03/05", "03/06", "03/09", "03/10", "03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28", "04/29", "04/30", "05/04", "05/06", "05/07", "05/08", "05/11", "05/12", "05/13", "05/14", "05/15", "05/18", "05/19", "05/20", "05/21", "05/22", "05/26", "05/27", "05/28", "05/29", "06/01", "06/02", "06/04", "06/05", "06/08", "06/09", "06/10", "06/11", "06/12", "06/15", "06/16", "06/17", "06/18", "06/19", "06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/03", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/20", "07/21", "07/22", "07/23", "07/24", "07/27", "07/28", "07/29", "07/30", "07/31", "08/03", "08/04", "08/05", "08/06", "08/07", "08/10", "08/11", "08/12", "08/13", "08/14", "08/18", "08/19", "08/20", "08/21"];
-const allDatasets = [{"label": "국고채(3년) 민평 (좌)", "data": [2.926, 2.927, 2.949, 2.907, 2.909, 2.94, 2.98, 2.999, 2.995, 3.085, 3.081, 3.131, 3.183, 3.13, 3.097, 3.13, 3.092, 3.089, 3.065, 3.106, 3.142, 3.155, 3.19, 3.222, 3.205, 3.241, 3.269, 3.222, 3.2, 3.15, 3.14, 3.176, 3.14, 3.155, 3.155, 3.122, 3.064, 3.04, 3.185, 3.225, 3.18, 3.222, 3.4, 3.28, 3.25, 3.265, 3.332, 3.306, 3.327, 3.265, 3.328, 3.412, 3.63, 3.532, 3.555, 3.545, 3.592, 3.542, 3.555, 3.37, 3.475, 3.445, 3.43, 3.446, 3.32, 3.33, 3.357, 3.38, 3.337, 3.333, 3.337, 3.37, 3.347, 3.335, 3.364, 3.453, 3.495, 3.497, 3.53, 3.525, 3.593, 3.615, 3.596, 3.535, 3.561, 3.592, 3.68, 3.642, 3.657, 3.765, 3.757, 3.75, 3.758, 3.755, 3.725, 3.664, 3.717, 3.767, 3.723, 3.79, 3.77, 3.86, 3.88, 3.93, 3.86, 3.877, 3.906, 3.79, 3.74, 3.715, 3.7, 3.752, 3.782, 3.805, 3.765, 3.775, 3.762, 3.716, 3.735, 3.697, 3.791, 3.745, 3.745, 3.771, 3.78, 3.776, 3.78, 3.77, 3.81, 3.89, 3.867, 3.852, 3.897, 3.866, 3.915, 3.917, 3.953, 3.867, 3.83, 3.803, 3.827, 3.76, 3.742, 3.74, 3.677, 3.745, 3.747, 3.776, 3.797, 3.782, 3.777, 3.795, 3.84, 3.787, 3.822, 3.855], "type": "line", "borderColor": "#2563eb", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 1}, {"label": "한전채(3년) 민평 (좌)", "data": [3.188, 3.189, 3.194, 3.152, 3.152, 3.182, 3.202, 3.221, 3.219, 3.308, 3.306, 3.357, 3.409, 3.359, 3.346, 3.391, 3.361, 3.38, 3.37, 3.406, 3.443, 3.458, 3.508, 3.546, 3.539, 3.585, 3.619, 3.592, 3.582, 3.539, 3.53, 3.565, 3.529, 3.535, 3.529, 3.493, 3.439, 3.411, 3.555, 3.594, 3.537, 3.58, 3.754, 3.635, 3.607, 3.623, 3.691, 3.66, 3.675, 3.614, 3.674, 3.758, 3.971, 3.876, 3.901, 3.895, 3.94, 3.892, 3.905, 3.733, 3.842, 3.81, 3.795, 3.813, 3.69, 3.702, 3.73, 3.753, 3.709, 3.7, 3.703, 3.731, 3.706, 3.692, 3.718, 3.795, 3.829, 3.826, 3.854, 3.846, 3.908, 3.924, 3.905, 3.841, 3.862, 3.89, 3.962, 3.926, 3.937, 4.039, 4.031, 4.038, 4.043, 4.042, 4.019, 3.963, 4.015, 4.068, 4.024, 4.092, 4.08, 4.17, 4.19, 4.252, 4.202, 4.19, 4.229, 4.141, 4.094, 4.076, 4.069, 4.125, 4.159, 4.191, 4.156, 4.169, 4.17, 4.135, 4.158, 4.124, 4.218, 4.164, 4.164, 4.19, 4.191, 4.194, 4.204, 4.197, 4.237, 4.31, 4.283, 4.263, 4.308, 4.275, 4.312, 4.308, 4.343, 4.258, 4.22, 4.192, 4.213, 4.146, 4.129, 4.125, 4.061, 4.123, 4.122, 4.142, 4.161, 4.151, 4.151, 4.169, 4.214, 4.166, 4.201, 4.236], "type": "line", "borderColor": "#f97316", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 2}, {"label": "스프레드(한전-국고) (우)", "data": [0.262, 0.262, 0.245, 0.245, 0.243, 0.242, 0.222, 0.222, 0.224, 0.223, 0.225, 0.226, 0.226, 0.229, 0.249, 0.261, 0.269, 0.291, 0.305, 0.3, 0.301, 0.303, 0.318, 0.324, 0.334, 0.344, 0.35, 0.37, 0.382, 0.389, 0.39, 0.389, 0.389, 0.38, 0.374, 0.371, 0.375, 0.371, 0.37, 0.369, 0.357, 0.358, 0.354, 0.355, 0.357, 0.358, 0.359, 0.354, 0.348, 0.349, 0.346, 0.346, 0.341, 0.344, 0.346, 0.35, 0.348, 0.35, 0.35, 0.363, 0.367, 0.365, 0.365, 0.367, 0.37, 0.372, 0.373, 0.373, 0.372, 0.367, 0.366, 0.361, 0.359, 0.357, 0.354, 0.342, 0.334, 0.329, 0.324, 0.321, 0.315, 0.309, 0.309, 0.306, 0.301, 0.298, 0.282, 0.284, 0.28, 0.274, 0.274, 0.288, 0.285, 0.287, 0.294, 0.299, 0.298, 0.301, 0.301, 0.302, 0.31, 0.31, 0.31, 0.322, 0.342, 0.313, 0.323, 0.351, 0.354, 0.361, 0.369, 0.373, 0.377, 0.386, 0.391, 0.394, 0.408, 0.419, 0.423, 0.427, 0.427, 0.419, 0.419, 0.419, 0.411, 0.418, 0.424, 0.427, 0.427, 0.42, 0.416, 0.411, 0.411, 0.409, 0.397, 0.391, 0.39, 0.391, 0.39, 0.389, 0.386, 0.386, 0.387, 0.385, 0.384, 0.378, 0.375, 0.366, 0.364, 0.369, 0.374, 0.374, 0.374, 0.379, 0.379, 0.381], "type": "line", "fill": "start", "borderColor": "rgba(20,184,166,0.9)", "backgroundColor": "rgba(20,184,166,0.12)", "borderWidth": 1.5, "pointRadius": 1.5, "pointHoverRadius": 5, "tension": 0.3, "yAxisID": "y2", "order": 3}, {"label": "전력채 발행금리 (좌)", "data": [null, null, 3.037, null, null, null, 3.07, null, null, null, null, 3.252, null, null, null, null, null, 3.471, null, null, null, null, 3.621, null, null, null, null, 3.712, null, null, null, null, null, null, 3.498, null, null, null, null, null, 3.48, null, null, null, null, null, null, null, 3.563, null, null, null, null, null, null, null, null, null, null, null, 3.783, null, null, 3.76, null, null, null, null, null, 3.638, null, null, null, 3.673, null, null, null, null, 3.802, null, null, null, null, 3.852, null, null, 3.93, null, null, null, null, null, 4.035, null, null, 4.008, null, null, null, null, 4.162, null, null, 4.409, null, null, 4.234, null, null, 4.129, null, null, 4.028, null, null, null, 4.174, null, null, null, null, 4.087, null, null, null, null, 4.177, null, null, null, 4.24, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 4.099, null, null, null, 4.179, null, null, null, null, null, null], "type": "bar", "backgroundColor": "rgba(249,115,22,0.28)", "borderColor": "rgba(249,115,22,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 5}, {"label": "국고채 3년 발행금리 (좌)", "data": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "type": "bar", "backgroundColor": "rgba(99,102,241,0.28)", "borderColor": "rgba(99,102,241,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 6}];
+const allLabels   = ["01/02", "01/05", "01/06", "01/07", "01/08", "01/09", "01/12", "01/13", "01/14", "01/15", "01/16", "01/19", "01/20", "01/21", "01/22", "01/23", "01/26", "01/27", "01/28", "01/29", "01/30", "02/02", "02/03", "02/04", "02/05", "02/06", "02/09", "02/10", "02/11", "02/12", "02/13", "02/19", "02/20", "02/23", "02/24", "02/25", "02/26", "02/27", "03/03", "03/04", "03/05", "03/06", "03/09", "03/10", "03/11", "03/12", "03/13", "03/16", "03/17", "03/18", "03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28", "04/29", "04/30", "05/04", "05/06", "05/07", "05/08", "05/11", "05/12", "05/13", "05/14", "05/15", "05/18", "05/19", "05/20", "05/21", "05/22", "05/26", "05/27", "05/28", "05/29", "06/01", "06/02", "06/04", "06/05", "06/08", "06/09", "06/10", "06/11", "06/12", "06/15", "06/16", "06/17", "06/18", "06/19", "06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/03", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/20", "07/21", "07/22", "07/23", "07/24", "07/27", "07/28", "07/29", "07/30", "07/31", "08/03", "08/04", "08/05", "08/06", "08/07", "08/10", "08/11", "08/12", "08/13", "08/14", "08/18", "08/19", "08/20", "08/21", "08/24"];
+const allDatasets = [{"label": "국고채(3년) 민평 (좌)", "data": [2.926, 2.927, 2.949, 2.907, 2.909, 2.94, 2.98, 2.999, 2.995, 3.085, 3.081, 3.131, 3.183, 3.13, 3.097, 3.13, 3.092, 3.089, 3.065, 3.106, 3.142, 3.155, 3.19, 3.222, 3.205, 3.241, 3.269, 3.222, 3.2, 3.15, 3.14, 3.176, 3.14, 3.155, 3.155, 3.122, 3.064, 3.04, 3.185, 3.225, 3.18, 3.222, 3.4, 3.28, 3.25, 3.265, 3.332, 3.306, 3.327, 3.265, 3.328, 3.412, 3.63, 3.532, 3.555, 3.545, 3.592, 3.542, 3.555, 3.37, 3.475, 3.445, 3.43, 3.446, 3.32, 3.33, 3.357, 3.38, 3.337, 3.333, 3.337, 3.37, 3.347, 3.335, 3.364, 3.453, 3.495, 3.497, 3.53, 3.525, 3.593, 3.615, 3.596, 3.535, 3.561, 3.592, 3.68, 3.642, 3.657, 3.765, 3.757, 3.75, 3.758, 3.755, 3.725, 3.664, 3.717, 3.767, 3.723, 3.79, 3.77, 3.86, 3.88, 3.93, 3.86, 3.877, 3.906, 3.79, 3.74, 3.715, 3.7, 3.752, 3.782, 3.805, 3.765, 3.775, 3.762, 3.716, 3.735, 3.697, 3.791, 3.745, 3.745, 3.771, 3.78, 3.776, 3.78, 3.77, 3.81, 3.89, 3.867, 3.852, 3.897, 3.866, 3.915, 3.917, 3.953, 3.867, 3.83, 3.803, 3.827, 3.76, 3.742, 3.74, 3.677, 3.745, 3.747, 3.776, 3.797, 3.782, 3.777, 3.795, 3.84, 3.787, 3.822, 3.855, 3.835], "type": "line", "borderColor": "#2563eb", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 1}, {"label": "한전채(3년) 민평 (좌)", "data": [3.188, 3.189, 3.194, 3.152, 3.152, 3.182, 3.202, 3.221, 3.219, 3.308, 3.306, 3.357, 3.409, 3.359, 3.346, 3.391, 3.361, 3.38, 3.37, 3.406, 3.443, 3.458, 3.508, 3.546, 3.539, 3.585, 3.619, 3.592, 3.582, 3.539, 3.53, 3.565, 3.529, 3.535, 3.529, 3.493, 3.439, 3.411, 3.555, 3.594, 3.537, 3.58, 3.754, 3.635, 3.607, 3.623, 3.691, 3.66, 3.675, 3.614, 3.674, 3.758, 3.971, 3.876, 3.901, 3.895, 3.94, 3.892, 3.905, 3.733, 3.842, 3.81, 3.795, 3.813, 3.69, 3.702, 3.73, 3.753, 3.709, 3.7, 3.703, 3.731, 3.706, 3.692, 3.718, 3.795, 3.829, 3.826, 3.854, 3.846, 3.908, 3.924, 3.905, 3.841, 3.862, 3.89, 3.962, 3.926, 3.937, 4.039, 4.031, 4.038, 4.043, 4.042, 4.019, 3.963, 4.015, 4.068, 4.024, 4.092, 4.08, 4.17, 4.19, 4.252, 4.202, 4.19, 4.229, 4.141, 4.094, 4.076, 4.069, 4.125, 4.159, 4.191, 4.156, 4.169, 4.17, 4.135, 4.158, 4.124, 4.218, 4.164, 4.164, 4.19, 4.191, 4.194, 4.204, 4.197, 4.237, 4.31, 4.283, 4.263, 4.308, 4.275, 4.312, 4.308, 4.343, 4.258, 4.22, 4.192, 4.213, 4.146, 4.129, 4.125, 4.061, 4.123, 4.122, 4.142, 4.161, 4.151, 4.151, 4.169, 4.214, 4.166, 4.201, 4.236, 4.216], "type": "line", "borderColor": "#f97316", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 2}, {"label": "스프레드(한전-국고) (우)", "data": [0.262, 0.262, 0.245, 0.245, 0.243, 0.242, 0.222, 0.222, 0.224, 0.223, 0.225, 0.226, 0.226, 0.229, 0.249, 0.261, 0.269, 0.291, 0.305, 0.3, 0.301, 0.303, 0.318, 0.324, 0.334, 0.344, 0.35, 0.37, 0.382, 0.389, 0.39, 0.389, 0.389, 0.38, 0.374, 0.371, 0.375, 0.371, 0.37, 0.369, 0.357, 0.358, 0.354, 0.355, 0.357, 0.358, 0.359, 0.354, 0.348, 0.349, 0.346, 0.346, 0.341, 0.344, 0.346, 0.35, 0.348, 0.35, 0.35, 0.363, 0.367, 0.365, 0.365, 0.367, 0.37, 0.372, 0.373, 0.373, 0.372, 0.367, 0.366, 0.361, 0.359, 0.357, 0.354, 0.342, 0.334, 0.329, 0.324, 0.321, 0.315, 0.309, 0.309, 0.306, 0.301, 0.298, 0.282, 0.284, 0.28, 0.274, 0.274, 0.288, 0.285, 0.287, 0.294, 0.299, 0.298, 0.301, 0.301, 0.302, 0.31, 0.31, 0.31, 0.322, 0.342, 0.313, 0.323, 0.351, 0.354, 0.361, 0.369, 0.373, 0.377, 0.386, 0.391, 0.394, 0.408, 0.419, 0.423, 0.427, 0.427, 0.419, 0.419, 0.419, 0.411, 0.418, 0.424, 0.427, 0.427, 0.42, 0.416, 0.411, 0.411, 0.409, 0.397, 0.391, 0.39, 0.391, 0.39, 0.389, 0.386, 0.386, 0.387, 0.385, 0.384, 0.378, 0.375, 0.366, 0.364, 0.369, 0.374, 0.374, 0.374, 0.379, 0.379, 0.381, 0.381], "type": "line", "fill": "start", "borderColor": "rgba(20,184,166,0.9)", "backgroundColor": "rgba(20,184,166,0.12)", "borderWidth": 1.5, "pointRadius": 1.5, "pointHoverRadius": 5, "tension": 0.3, "yAxisID": "y2", "order": 3}, {"label": "전력채 발행금리 (좌)", "data": [null, null, 3.037, null, null, null, 3.07, null, null, null, null, 3.252, null, null, null, null, null, 3.471, null, null, null, null, 3.621, null, null, null, null, 3.712, null, null, null, null, null, null, 3.498, null, null, null, null, null, 3.48, null, null, null, null, null, null, null, 3.563, null, null, null, null, null, null, null, null, null, null, null, 3.783, null, null, 3.76, null, null, null, null, null, 3.638, null, null, null, 3.673, null, null, null, null, 3.802, null, null, null, null, 3.852, null, null, 3.93, null, null, null, null, null, 4.035, null, null, 4.008, null, null, null, null, 4.162, null, null, 4.409, null, null, 4.234, null, null, 4.129, null, null, 4.028, null, null, null, 4.174, null, null, null, null, 4.087, null, null, null, null, 4.177, null, null, null, 4.24, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 4.099, null, null, null, 4.179, null, null, null, null, null, null, null], "type": "bar", "backgroundColor": "rgba(249,115,22,0.28)", "borderColor": "rgba(249,115,22,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 5}, {"label": "국고채 3년 발행금리 (좌)", "data": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "type": "bar", "backgroundColor": "rgba(99,102,241,0.28)", "borderColor": "rgba(99,102,241,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 6}];
 const RATE_MIN=2.5, RATE_MAX=4.49;
 const SPRD_MIN=0.0, SPRD_MAX=0.75;
 const kepcoAmt = {"2026-08-12": 2000, "2026-08-06": 10700, "2026-07-15": 3000, "2026-07-09": 6500, "2026-07-02": 15100, "2026-06-25": 1800, "2026-06-19": 12000, "2026-06-16": 1500, "2026-06-11": 2400, "2026-06-08": 1900, "2026-06-02": 1800, "2026-05-26": 2400, "2026-05-20": 1100, "2026-05-12": 3400, "2026-05-07": 4100, "2026-04-28": 3700, "2026-04-21": 4100, "2026-04-15": 4000, "2026-04-07": 4000, "2026-04-02": 3200, "2026-03-17": 2400, "2026-03-05": 3000, "2026-02-24": 4400, "2026-02-10": 3400, "2026-02-03": 3000, "2026-01-27": 2100, "2026-01-19": 3700, "2026-01-12": 4000, "2026-01-06": 3000};
