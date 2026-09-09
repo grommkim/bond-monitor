@@ -34,13 +34,36 @@ def fetch_us_rates():
     return rates
 
 
+def translate_to_ko(text):
+    """Google Translate 무료 엔드포인트로 영→한 번역"""
+    import urllib.parse
+    try:
+        url = ("https://translate.googleapis.com/translate_a/single"
+               f"?client=gtx&sl=en&tl=ko&dt=t&q={urllib.parse.quote(text)}")
+        resp = requests.get(url, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
+        data = resp.json()
+        return "".join(seg[0] for seg in data[0] if seg[0]).strip()
+    except Exception:
+        return text
+
+
+def _rss_desc(item):
+    """RSS item에서 description 텍스트 추출 (HTML 태그 제거, 100자 이내)"""
+    raw = item.findtext("description", "") or ""
+    raw = re.sub(r'<[^>]+>', ' ', raw)
+    raw = re.sub(r'\s+', ' ', raw).strip()
+    if len(raw) > 110:
+        raw = raw[:107] + "…"
+    return raw
+
+
 def fetch_market_news():
-    """채권/금리 관련 뉴스 수집 (Reuters RSS + 국내 RSS)"""
+    """채권/금리 관련 뉴스 수집. 반환: list of (typ, headline_ko, desc_ko)"""
     import xml.etree.ElementTree as ET
     print("[ 금융시장 뉴스 수집 ]")
-    news = []
+    news = []  # (typ, headline, desc)
 
-    # Global bond news - try Google News RSS for bond/treasury
+    # Global bond news
     global_sources = [
         ("https://news.google.com/rss/search?q=US+Treasury+yield+Fed+bond&hl=en&gl=US&ceid=US:en", "en"),
         ("https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines", "en"),
@@ -54,7 +77,10 @@ def fetch_market_news():
                 title = item.findtext("title", "").strip()
                 title = re.sub(r'\s*-\s*(Reuters|Bloomberg|WSJ|MarketWatch).*$', '', title)
                 if any(k in title.lower() for k in global_kw):
-                    news.append(("global", title))
+                    desc = _rss_desc(item)
+                    title_ko = translate_to_ko(title)
+                    desc_ko  = translate_to_ko(desc) if desc else ""
+                    news.append(("global", title_ko, desc_ko))
                     break
             if any(n[0] == "global" for n in news):
                 break
@@ -66,13 +92,15 @@ def fetch_market_news():
         url2 = "https://news.google.com/rss/search?q=Federal+Reserve+interest+rate+economy&hl=en&gl=US&ceid=US:en"
         resp2 = requests.get(url2, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
         root2 = ET.fromstring(resp2.content)
-        count = 0
         for item in root2.findall(".//item")[:20]:
             title = item.findtext("title", "").strip()
             title = re.sub(r'\s*-\s*(Reuters|Bloomberg|WSJ|MarketWatch|CNN|CNBC).*$', '', title)
             kw2 = ["rate","cut","hike","fed","inflation","economy","growth","gdp","jobs"]
             if any(k in title.lower() for k in kw2) and title not in [n[1] for n in news]:
-                news.append(("global2", title))
+                desc = _rss_desc(item)
+                title_ko = translate_to_ko(title)
+                desc_ko  = translate_to_ko(desc) if desc else ""
+                news.append(("global2", title_ko, desc_ko))
                 break
     except Exception as e:
         print(f"  글로벌 뉴스2 오류: {e}")
@@ -91,14 +119,15 @@ def fetch_market_news():
                 title = item.findtext("title", "").strip()
                 title = re.sub(r'<[^>]+>', '', title)
                 if any(k in title for k in kr_kw):
-                    news.append(("kr", title))
+                    desc = _rss_desc(item)
+                    news.append(("kr", title, desc))
                     break
             if any(n[0] == "kr" for n in news):
                 break
         except Exception as e:
             print(f"  국내 뉴스 오류({url[:40]}): {e}")
 
-    for typ, headline in news:
+    for typ, headline, _ in news:
         print(f"  [{typ}] {headline[:80]}")
     return news
 
@@ -1228,7 +1257,7 @@ def _stb_row(summary, prev_s, R, 조, diff_td, flow_td, ytd_r):
     stb_diff = stb_curr - STB_YEAREND
     stb_sign = "순증" if stb_diff >= 0 else "순감"
     stb_color = "#dc2626" if stb_diff >= 0 else "#2563eb"
-    stb_net_str = f'작년말比 <span style="color:{stb_color};font-weight:700">{stb_sign} {abs(stb_diff)/1e12:.2f}조</span>'
+    stb_net_str = f'<span style="color:{stb_color};font-weight:700">{stb_sign} {abs(stb_diff)/1e12:.2f}조</span>'
     return (
         f'<tr>'
         f'<td style="padding-left:18px;color:#475569">단기사채</td>'
@@ -1257,7 +1286,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
         "단기사채": None,
         "외화채권": 2.7e12,
         "중장기기업어음": 2.0e12,
-        "은행차입": 1.0e12,
+        "은행차입": 2.6e12,
     }
     ytd_b = ytd_borrow or {}
     ytd_r = ytd_repay or {}
@@ -1377,13 +1406,21 @@ def market_news_section_html(us_rates, news_items):
     news_html = ""
     type_icons = {"global": "🌐", "global2": "📰", "kr": "🇰🇷"}
     type_labels = {"global": "글로벌", "global2": "글로벌", "kr": "국내"}
-    for typ, headline in news_items:
+    for item in news_items:
+        typ, headline = item[0], item[1]
+        desc = item[2] if len(item) > 2 else ""
         icon = type_icons.get(typ, "📌")
         label = type_labels.get(typ, "")
+        desc_html = (
+            f'<div style="font-size:.78rem;color:#64748b;margin-top:3px;line-height:1.4">'
+            f'{_html.escape(desc)}</div>'
+        ) if desc else ""
         news_html += (
-            f'<div style="padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:.84rem;line-height:1.5;color:#334155">'
+            f'<div style="padding:8px 0;border-bottom:1px solid #f1f5f9;line-height:1.5">'
+            f'<div style="font-size:.84rem;color:#334155">'
             f'<span style="font-size:.75rem;font-weight:600;color:#64748b;margin-right:6px">{icon} {label}</span>'
-            f'{_html.escape(headline)}'
+            f'{_html.escape(headline)}</div>'
+            f'{desc_html}'
             f'</div>'
         )
 
