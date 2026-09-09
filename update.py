@@ -1337,14 +1337,13 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
         <tr style="background:#0f2a4a;color:#fff">
           <th rowspan="2" style="vertical-align:middle">구분</th>
           <th colspan="2" style="text-align:center;background:#1a3a5c;border-bottom:1px solid rgba(255,255,255,0.2);padding:6px 12px">🎯 조달</th>
-          <th colspan="2" style="text-align:center;background:#0f2a4a;border-bottom:1px solid rgba(255,255,255,0.2);padding:6px 12px">💰 잔액현황</th>
+          <th rowspan="2" style="text-align:right;vertical-align:middle">상환(올해)</th>
+          <th rowspan="2" style="text-align:right;vertical-align:middle">잔액</th>
           <th rowspan="2" style="text-align:right;vertical-align:middle">전일비</th>
         </tr>
         <tr style="background:#0f2a4a;color:#94a3b8;font-size:.78rem">
           <th style="text-align:right;background:#1a3a5c;padding:5px 12px">계획(한도)</th>
           <th style="text-align:right;background:#1a3a5c;padding:5px 12px">차입(올해)</th>
-          <th style="text-align:right;padding:5px 12px">상환(올해)</th>
-          <th style="text-align:right;padding:5px 12px">잔액</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>
