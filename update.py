@@ -1222,8 +1222,8 @@ def recent_section_html(issuances):
 
 STB_YEAREND = 5_570_000_000_000  # 단기사채 작년말 기준: 5.57조
 
-def _stb_row(summary, prev_s, R, 조, diff_td):
-    """단기사채 행: 조달계획/차입/상환 대신 작년말比 순증/순감 표시"""
+def _stb_row(summary, prev_s, R, 조, diff_td, flow_td, ytd_r):
+    """단기사채 행: 조달 셀에 작년말比 순증/순감 표시"""
     stb_curr = summary["단기사채"]
     stb_diff = stb_curr - STB_YEAREND
     stb_sign = "순증" if stb_diff >= 0 else "순감"
@@ -1232,8 +1232,8 @@ def _stb_row(summary, prev_s, R, 조, diff_td):
     return (
         f'<tr>'
         f'<td style="padding-left:18px;color:#475569">단기사채</td>'
-        f'<td {R} style="color:#94a3b8">–</td>'
-        f'<td colspan="2" style="text-align:center;font-size:.84rem">{stb_net_str}</td>'
+        f'<td style="text-align:center;font-size:.84rem">{stb_net_str}</td>'
+        f'{flow_td(ytd_r.get("단기사채"))}'
         f'<td {R}>{조(stb_curr)}</td>'
         f'{diff_td("단기사채", True)}'
         f'</tr>'
@@ -1262,22 +1262,24 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
     ytd_b = ytd_borrow or {}
     ytd_r = ytd_repay or {}
 
-    def plan_td(cat):
-        v = PLAN.get(cat)
-        if v is None:
-            return f'<td {R} style="color:#94a3b8">–</td>'
-        return f'<td {R}>{조(v)}</td>'
-
     def flow_td(amt):
         if not amt:
             return f'<td {R} style="color:#94a3b8">–</td>'
         return f'<td {R}>{조(amt)}</td>'
 
+    def plan_borrow_td(cat):
+        plan = PLAN.get(cat)
+        borrow = ytd_b.get(cat)
+        borrow_str = 조(borrow) if borrow else '<span style="color:#94a3b8">–</span>'
+        if plan is None:
+            return f'<td style="text-align:right;white-space:nowrap">{borrow_str}</td>'
+        plan_str = f'<span style="color:#94a3b8;font-size:.78rem"> / 계획 {조(plan)}</span>'
+        return f'<td style="text-align:right;white-space:nowrap">{borrow_str}{plan_str}</td>'
+
     def row(cat, label):
         return (
             f'<tr><td style="padding-left:18px;color:#475569">{label}</td>'
-            f'{plan_td(cat)}'
-            f'{flow_td(ytd_b.get(cat))}'
+            f'{plan_borrow_td(cat)}'
             f'{flow_td(ytd_r.get(cat))}'
             f'<td {R}>{조(summary[cat])}</td>'
             f'{diff_td(cat, True)}'
@@ -1298,29 +1300,33 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
     nonbond_r_sum = sum(ytd_r.get(k, 0) for k in nonbond_cats)
     total_r_sum   = sum(ytd_r.values()) if ytd_r else 0
 
+    def subtotal_borrow_td(b_sum, plan_sum):
+        b_str = 조(b_sum) if b_sum else "–"
+        plan_str = f'<span style="color:#94a3b8;font-size:.78rem"> / 계획 {조(plan_sum)}</span>'
+        return f'<td style="text-align:right;white-space:nowrap">{b_str}{plan_str}</td>'
+
     rows = (
-        f'<tr style="background:#eef2ff"><td colspan="6" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
+        f'<tr style="background:#eef2ff"><td colspan="5" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
         + row("전력채", "전력채")
-        + _stb_row(summary, prev_s, R, 조, diff_td)
+        + _stb_row(summary, prev_s, R, 조, diff_td, flow_td, ytd_r)
         + row("외화채권", "외화채권")
         + (f'<tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td>'
-           f'<td {R}>{조(bond_plan_sum)}</td>'
-           f'<td {R}>{조(bond_b_sum) if bond_b_sum else "–"}</td>'
+           f'{subtotal_borrow_td(bond_b_sum, bond_plan_sum)}'
            f'<td {R}>{조(bond_r_sum) if bond_r_sum else "–"}</td>'
            f'<td {R}>{조(summary["사채"])}</td>'
            f'{diff_td("사채", True)}</tr>')
-        + f'<tr style="background:#f0fdf4"><td colspan="6" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr>'
+        + f'<tr style="background:#f0fdf4"><td colspan="5" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr>'
         + row("중장기기업어음", "중장기기업어음")
         + row("은행차입", "은행차입")
         + (f'<tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td>'
-           f'<td {R}>{조(nonbond_plan_sum)}</td>'
-           f'<td {R}>{조(nonbond_b_sum) if nonbond_b_sum else "–"}</td>'
+           f'{subtotal_borrow_td(nonbond_b_sum, nonbond_plan_sum)}'
            f'<td {R}>{조(nonbond_r_sum) if nonbond_r_sum else "–"}</td>'
            f'<td {R}>{조(summary["사채외"])}</td>'
            f'{diff_td("사채외", True)}</tr>')
         + (f'<tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td>'
-           f'<td style="font-weight:700;text-align:right;white-space:nowrap">{조(total_plan_sum)}</td>'
-           f'<td style="font-weight:700;text-align:right;white-space:nowrap">{조(total_b_sum) if total_b_sum else "–"}</td>'
+           f'<td style="font-weight:700;text-align:right;white-space:nowrap">'
+           f'{조(total_b_sum) if total_b_sum else "–"}'
+           f'<span style="color:#94a3b8;font-size:.78rem;font-weight:400"> / 계획 {조(total_plan_sum)}</span></td>'
            f'<td style="font-weight:700;text-align:right;white-space:nowrap">{조(total_r_sum) if total_r_sum else "–"}</td>'
            f'<td style="font-weight:700;font-size:1rem;text-align:right;white-space:nowrap">{조(summary["합계"])}</td>'
            f'{diff_td("합계")}</tr>')
@@ -1335,15 +1341,11 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
     <table>
       <thead>
         <tr style="background:#0f2a4a;color:#fff">
-          <th rowspan="2" style="vertical-align:middle">구분</th>
-          <th colspan="2" style="text-align:center;background:#1a3a5c;border-bottom:1px solid rgba(255,255,255,0.2);padding:6px 12px">🎯 조달</th>
-          <th rowspan="2" style="text-align:right;vertical-align:middle">상환(올해)</th>
-          <th rowspan="2" style="text-align:right;vertical-align:middle">잔액</th>
-          <th rowspan="2" style="text-align:right;vertical-align:middle">전일비</th>
-        </tr>
-        <tr style="background:#0f2a4a;color:#94a3b8;font-size:.78rem">
-          <th style="text-align:right;background:#1a3a5c;padding:5px 12px">계획(한도)</th>
-          <th style="text-align:right;background:#1a3a5c;padding:5px 12px">차입(올해)</th>
+          <th>구분</th>
+          <th style="text-align:center;background:#1a3a5c;padding:8px 12px">🎯 차입(올해) / 계획(한도)</th>
+          <th style="text-align:right">상환(올해)</th>
+          <th style="text-align:right">잔액</th>
+          <th style="text-align:right">전일비</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>
