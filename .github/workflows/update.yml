@@ -34,6 +34,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          touch debt_matured.json
           git add index.html kofia_cache.json debt_positions.json debt_history.json debt_matured.json
           git diff --staged --quiet || git commit -m "Update $(date +'%Y-%m-%d')"
           git pull --no-rebase -X ours origin main && git push
