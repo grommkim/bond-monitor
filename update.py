@@ -12,6 +12,98 @@ try:
 except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
+def fetch_us_rates():
+    """Stooq.com에서 미국 국채 금리 수집 (2Y, 10Y, 30Y)"""
+    import csv, io
+    print("[ 미국 국채 금리 수집 (Stooq) ]")
+    rates = {}
+    for tenor, symbol in [("2Y", "2us.b"), ("10Y", "10us.b"), ("30Y", "30us.b")]:
+        url = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
+        try:
+            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+            rows = list(csv.DictReader(io.StringIO(resp.text)))
+            rows = [r for r in rows if r.get("Close") and r["Close"] != "null"]
+            if len(rows) >= 2:
+                curr = float(rows[-1]["Close"])
+                prev = float(rows[-2]["Close"])
+                chg = round((curr - prev) * 100, 1)
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rows[-1].get("Date", "")}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps)")
+        except Exception as e:
+            print(f"  {tenor} 오류: {e}")
+    return rates
+
+
+def fetch_market_news():
+    """채권/금리 관련 뉴스 수집 (Reuters RSS + 국내 RSS)"""
+    import xml.etree.ElementTree as ET
+    print("[ 금융시장 뉴스 수집 ]")
+    news = []
+
+    # Global bond news - try Google News RSS for bond/treasury
+    global_sources = [
+        ("https://news.google.com/rss/search?q=US+Treasury+yield+Fed+bond&hl=en&gl=US&ceid=US:en", "en"),
+        ("https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines", "en"),
+    ]
+    global_kw = ["treasury","yield","fed","bond","rate","powell","inflation","bps","basis point"]
+    for url, lang in global_sources:
+        try:
+            resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+            root = ET.fromstring(resp.content)
+            for item in root.findall(".//item")[:30]:
+                title = item.findtext("title", "").strip()
+                title = re.sub(r'\s*-\s*(Reuters|Bloomberg|WSJ|MarketWatch).*$', '', title)
+                if any(k in title.lower() for k in global_kw):
+                    news.append(("global", title))
+                    break
+            if any(n[0] == "global" for n in news):
+                break
+        except Exception as e:
+            print(f"  글로벌 뉴스 오류: {e}")
+
+    # Second global headline
+    try:
+        url2 = "https://news.google.com/rss/search?q=Federal+Reserve+interest+rate+economy&hl=en&gl=US&ceid=US:en"
+        resp2 = requests.get(url2, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+        root2 = ET.fromstring(resp2.content)
+        count = 0
+        for item in root2.findall(".//item")[:20]:
+            title = item.findtext("title", "").strip()
+            title = re.sub(r'\s*-\s*(Reuters|Bloomberg|WSJ|MarketWatch|CNN|CNBC).*$', '', title)
+            kw2 = ["rate","cut","hike","fed","inflation","economy","growth","gdp","jobs"]
+            if any(k in title.lower() for k in kw2) and title not in [n[1] for n in news]:
+                news.append(("global2", title))
+                break
+    except Exception as e:
+        print(f"  글로벌 뉴스2 오류: {e}")
+
+    # Korean bond/money market news
+    kr_sources = [
+        "https://www.mk.co.kr/rss/30100041/",
+        "https://rss.hankyung.com/economy.xml",
+        "https://www.yonhapnews.co.kr/rss/economy.xml",
+    ]
+    kr_kw = ["채권", "금리", "국고채", "자금시장", "한전채", "기준금리", "한국은행", "금통위", "크레딧", "스프레드"]
+    for url in kr_sources:
+        try:
+            resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+            root = ET.fromstring(resp.content)
+            for item in root.findall(".//item")[:30]:
+                title = item.findtext("title", "").strip()
+                title = re.sub(r'<[^>]+>', '', title)
+                if any(k in title for k in kr_kw):
+                    news.append(("kr", title))
+                    break
+            if any(n[0] == "kr" for n in news):
+                break
+        except Exception as e:
+            print(f"  국내 뉴스 오류({url[:40]}): {e}")
+
+    for typ, headline in news:
+        print(f"  [{typ}] {headline[:80]}")
+    return news
+
+
 # ── 설정 ────────────────────────────────────────────────────────────
 OUTPUT     = os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html")
 CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kofia_cache.json")
@@ -490,6 +582,7 @@ def collect_issuance(days=7):
 
 DEBT_FILE    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_positions.json")
 DEBT_HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_history.json")
+DEBT_MATURED = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_matured.json")
 EXCEL_FILE   = os.path.join(os.path.dirname(os.path.abspath(__file__)), "업로드 파일(26.5.19).xlsx")
 DEBT_BOND_CATS = {"전력채", "단기사채", "외화채권"}
 
@@ -627,6 +720,25 @@ def update_debt_pm(positions, issuances):
         print(f"  구형 SEIBRO 항목 제거(재수집): {len(old_seibro)}건")
         positions = [p for p in positions if p not in old_seibro]
 
+    # 만기 도래 포지션 → debt_matured.json에 기록
+    matured_now = [p for p in positions
+                   if p.get("category") != "은행차입"
+                   and p.get("maturity_date")
+                   and p["maturity_date"] <= today_s]
+    if matured_now:
+        matured_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debt_matured.json")
+        try:
+            existing = json.load(open(matured_file)) if os.path.exists(matured_file) else []
+        except Exception:
+            existing = []
+        existing_ids = {p["id"] for p in existing}
+        for p in matured_now:
+            if p["id"] not in existing_ids:
+                existing.append(p)
+                existing_ids.add(p["id"])
+        with open(matured_file, "w") as f:
+            json.dump(existing, f, ensure_ascii=False, indent=2)
+
     before  = len(positions)
     # 은행차입은 수동 관리 항목이므로 만기 자동 차감 제외
     positions = [p for p in positions if p.get("category") == "은행차입" or not p["maturity_date"] or p["maturity_date"] > today_s]
@@ -703,6 +815,34 @@ def collect_debt(issuances):
         summary = snap if snap else get_debt_summary(positions)
         prev_s  = get_snapshot(prev_biz(yesterday).isoformat())
     return summary, prev_s, as_of, is_pm
+
+
+def calc_ytd_debt_flows(positions):
+    """올해 카테고리별 차입(발행) 금액 계산"""
+    year = str(date.today().year)
+    cats = ["전력채", "단기사채", "외화채권", "중장기기업어음", "은행차입"]
+    borrow = {cat: sum(p["amount"] for p in positions
+                       if p["category"] == cat
+                       and (p.get("issuance_date") or "").startswith(year))
+              for cat in cats}
+    return borrow
+
+
+def calc_ytd_repay():
+    """올해 만기 상환금액 (debt_matured.json 기준)"""
+    year = str(date.today().year)
+    if not os.path.exists(DEBT_MATURED):
+        return {}
+    try:
+        matured = json.load(open(DEBT_MATURED))
+    except Exception:
+        return {}
+    cats = ["전력채", "단기사채", "외화채권", "중장기기업어음", "은행차입"]
+    repay = {cat: sum(p["amount"] for p in matured
+                      if p["category"] == cat
+                      and (p.get("maturity_date") or "").startswith(year))
+             for cat in cats}
+    return repay
 
 
 # ── 4. 채권 발행 통계 ───────────────────────────────────────────────
@@ -1081,7 +1221,7 @@ def recent_section_html(issuances):
     return "\n".join(issue_row_html(r) for r in issuances)
 
 
-def debt_section_html(summary, prev_s, as_of, is_pm):
+def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=None):
     R = 'style="text-align:right;white-space:nowrap"'
     def 조(v): return f"{v/1e12:.2f}조원"
     def diff_td(key, light=False):
@@ -1092,35 +1232,153 @@ def debt_section_html(summary, prev_s, as_of, is_pm):
         sign  = "+" if d > 0 else ""
         return f'<td style="color:{color};font-weight:600;text-align:right;white-space:nowrap">{sign}{d/1e12:.2f}조</td>'
 
+    # 조달계획(한도)
+    PLAN = {
+        "전력채": 13.7e12,
+        "단기사채": None,
+        "외화채권": 2.7e12,
+        "중장기기업어음": 2.0e12,
+        "은행차입": 1.0e12,
+    }
+    ytd_b = ytd_borrow or {}
+    ytd_r = ytd_repay or {}
+
+    def plan_td(cat):
+        v = PLAN.get(cat)
+        if v is None:
+            return f'<td {R} style="color:#94a3b8">–</td>'
+        return f'<td {R}>{조(v)}</td>'
+
+    def flow_td(amt):
+        if not amt:
+            return f'<td {R} style="color:#94a3b8">–</td>'
+        return f'<td {R}>{조(amt)}</td>'
+
+    def row(cat, label):
+        return (
+            f'<tr><td style="padding-left:18px;color:#475569">{label}</td>'
+            f'{plan_td(cat)}'
+            f'{flow_td(ytd_b.get(cat))}'
+            f'{flow_td(ytd_r.get(cat))}'
+            f'<td {R}>{조(summary[cat])}</td>'
+            f'{diff_td(cat, True)}'
+            f'</tr>'
+        )
+
+    # Sums for subtotal/total rows
+    bond_cats    = ["전력채", "단기사채", "외화채권"]
+    nonbond_cats = ["중장기기업어음", "은행차입"]
+    # Plan sums (None-excluded)
+    bond_plan_sum    = sum(v for k, v in PLAN.items() if v is not None and k in bond_cats)
+    nonbond_plan_sum = sum(v for k, v in PLAN.items() if v is not None and k in nonbond_cats)
+    total_plan_sum   = bond_plan_sum + nonbond_plan_sum
+    bond_b_sum    = sum(ytd_b.get(k, 0) for k in bond_cats)
+    nonbond_b_sum = sum(ytd_b.get(k, 0) for k in nonbond_cats)
+    total_b_sum   = sum(ytd_b.values()) if ytd_b else 0
+    bond_r_sum    = sum(ytd_r.get(k, 0) for k in bond_cats)
+    nonbond_r_sum = sum(ytd_r.get(k, 0) for k in nonbond_cats)
+    total_r_sum   = sum(ytd_r.values()) if ytd_r else 0
+
     rows = (
-        f'<tr style="background:#eef2ff"><td colspan="3" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">전력채</td><td {R}>{조(summary["전력채"])}</td>{diff_td("전력채",True)}</tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">단기사채</td><td {R}>{조(summary["단기사채"])}</td>{diff_td("단기사채",True)}</tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">외화채권</td><td {R}>{조(summary["외화채권"])}</td>{diff_td("외화채권",True)}</tr>'
-        f'<tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td><td {R}>{조(summary["사채"])}</td>{diff_td("사채",True)}</tr>'
-        f'<tr style="background:#f0fdf4"><td colspan="3" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td {R}>{조(summary["중장기기업어음"])}</td>{diff_td("중장기기업어음",True)}</tr>'
-        f'<tr><td style="padding-left:18px;color:#475569">은행차입</td><td {R}>{조(summary["은행차입"])}</td>{diff_td("은행차입",True)}</tr>'
-        f'<tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td><td {R}>{조(summary["사채외"])}</td>{diff_td("사채외",True)}</tr>'
-        f'<tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td>'
-        f'<td style="font-weight:700;font-size:1rem;text-align:right;white-space:nowrap">{조(summary["합계"])}</td>{diff_td("합계")}</tr>'
+        f'<tr style="background:#eef2ff"><td colspan="6" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
+        + row("전력채", "전력채")
+        + row("단기사채", "단기사채")
+        + row("외화채권", "외화채권")
+        + (f'<tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td>'
+           f'<td {R}>{조(bond_plan_sum)}</td>'
+           f'<td {R}>{조(bond_b_sum) if bond_b_sum else "–"}</td>'
+           f'<td {R}>{조(bond_r_sum) if bond_r_sum else "–"}</td>'
+           f'<td {R}>{조(summary["사채"])}</td>'
+           f'{diff_td("사채", True)}</tr>')
+        + f'<tr style="background:#f0fdf4"><td colspan="6" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr>'
+        + row("중장기기업어음", "중장기기업어음")
+        + row("은행차입", "은행차입")
+        + (f'<tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td>'
+           f'<td {R}>{조(nonbond_plan_sum)}</td>'
+           f'<td {R}>{조(nonbond_b_sum) if nonbond_b_sum else "–"}</td>'
+           f'<td {R}>{조(nonbond_r_sum) if nonbond_r_sum else "–"}</td>'
+           f'<td {R}>{조(summary["사채외"])}</td>'
+           f'{diff_td("사채외", True)}</tr>')
+        + (f'<tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td>'
+           f'<td style="font-weight:700;text-align:right;white-space:nowrap">{조(total_plan_sum)}</td>'
+           f'<td style="font-weight:700;text-align:right;white-space:nowrap">{조(total_b_sum) if total_b_sum else "–"}</td>'
+           f'<td style="font-weight:700;text-align:right;white-space:nowrap">{조(total_r_sum) if total_r_sum else "–"}</td>'
+           f'<td style="font-weight:700;font-size:1rem;text-align:right;white-space:nowrap">{조(summary["합계"])}</td>'
+           f'{diff_td("합계")}</tr>')
     )
-    note = "" if is_pm else "⏰ 전일 현황 기준 · 당일 발행 반영은 오후 3시 업데이트 예정"
+    note = "" if is_pm else "⏰ 전일 현황 기준 · 당일 발행 반영은 오후 4시 업데이트 예정"
     note_html = f'<p style="font-size:.82rem;color:#64748b;margin-bottom:14px">{note}</p>' if note else ""
     return f"""
 <section>
   <h2 style="border-left-color:#6366f1">차입금 현황</h2>
   {note_html}
-  <div class="table-wrap" style="max-width:480px">
+  <div class="table-wrap" style="max-width:800px">
     <table>
-      <thead><tr><th>구분</th><th style="text-align:right">잔액</th><th style="text-align:right">전일비</th></tr></thead>
+      <thead><tr>
+        <th>구분</th>
+        <th style="text-align:right">조달계획(한도)</th>
+        <th style="text-align:right">차입(올해)</th>
+        <th style="text-align:right">상환(올해)</th>
+        <th style="text-align:right">잔액</th>
+        <th style="text-align:right">전일비</th>
+      </tr></thead>
       <tbody>{rows}</tbody>
     </table>
   </div>
 </section>"""
 
 
-def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None, kepco_rate_by_date=None, kepco_amt_by_date=None, ktb_rate_by_date=None, ktb_amt_by_date=None):
+def market_news_section_html(us_rates, news_items):
+    """금융시장 동향 섹션 HTML"""
+    if not us_rates and not news_items:
+        return ""
+
+    # US rates line
+    rate_parts = []
+    for tenor in ["2Y", "10Y", "30Y"]:
+        if tenor in us_rates:
+            r = us_rates[tenor]
+            sign = "▲" if r["chg_bps"] > 0 else ("▼" if r["chg_bps"] < 0 else "–")
+            color = "#dc2626" if r["chg_bps"] > 0 else ("#2563eb" if r["chg_bps"] < 0 else "#94a3b8")
+            abs_chg = abs(r["chg_bps"])
+            rate_parts.append(
+                f'미국 국채 {tenor} <strong style="color:{color}">{r["rate"]:.3f}%</strong>'
+                f' <span style="color:{color};font-size:.85em">{sign}{abs_chg:.1f}bp</span>'
+            )
+    rate_line = " &nbsp;|&nbsp; ".join(rate_parts) if rate_parts else ""
+
+    # News lines
+    news_html = ""
+    type_icons = {"global": "🌐", "global2": "📰", "kr": "🇰🇷"}
+    type_labels = {"global": "글로벌", "global2": "글로벌", "kr": "국내"}
+    for typ, headline in news_items:
+        icon = type_icons.get(typ, "📌")
+        label = type_labels.get(typ, "")
+        news_html += (
+            f'<div style="padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:.84rem;line-height:1.5;color:#334155">'
+            f'<span style="font-size:.75rem;font-weight:600;color:#64748b;margin-right:6px">{icon} {label}</span>'
+            f'{_html.escape(headline)}'
+            f'</div>'
+        )
+
+    rate_section = (
+        f'<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 14px;'
+        f'font-size:.85rem;color:#0c4a6e;margin-bottom:12px;line-height:1.8">'
+        f'<span style="font-size:.75rem;font-weight:700;color:#0369a1;margin-right:8px">📊 전일 종가</span>'
+        f'{rate_line}</div>'
+    ) if rate_line else ""
+
+    return f"""
+<section>
+  <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
+  {rate_section}
+  <div style="background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+    {news_html if news_html else '<p style="color:#94a3b8;font-size:.84rem">뉴스를 불러오는 중...</p>'}
+  </div>
+</section>"""
+
+
+def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None, kepco_rate_by_date=None, kepco_amt_by_date=None, ktb_rate_by_date=None, ktb_amt_by_date=None, ytd_borrow=None, ytd_repay=None, us_rates=None, market_news=None):
     today_str = date.today().strftime("%Y년 %m월 %d일")
     latest_dt = latest.get("날짜","–")
     ktb_v  = latest.get("국고채", 0)
@@ -1151,7 +1409,8 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
     ktb_amt_json   = json.dumps(_ktb_amt, ensure_ascii=False)
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
-    debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm) if debt_summary else ""
+    debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm, ytd_borrow, ytd_repay) if debt_summary else ""
+    news_html   = market_news_section_html(us_rates or {}, market_news or [])
     stats_html  = issu_stats_section_html(issu_stats) if issu_stats else ""
 
     THEAD = ('<thead><tr>'
@@ -1219,9 +1478,11 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
   <div class="cards">{cards_html}</div>
 </section>
 
-{today_html}
-
 {debt_html}
+
+{news_html}
+
+{today_html}
 
 {stats_html}
 
@@ -1427,6 +1688,10 @@ if __name__ == "__main__":
     chart, latest    = collect_kofia_history()
     issuances        = collect_issuance(days=7)
     d_sum, d_prev, d_as_of, d_pm = collect_debt(issuances)
+    ytd_borrow = calc_ytd_debt_flows(json.load(open(DEBT_FILE)))
+    ytd_repay  = calc_ytd_repay()
+    us_rates   = fetch_us_rates()
+    market_news = fetch_market_news()
     issu_stats       = collect_issu_stats()
     kepco_rates, kepco_amts = collect_kepco_rates_ytd()
     ktb_rates,   ktb_amts   = collect_ktb3y_rates_ytd()
@@ -1438,7 +1703,11 @@ if __name__ == "__main__":
                          kepco_rate_by_date=kepco_rates,
                          kepco_amt_by_date=kepco_amts,
                          ktb_rate_by_date=ktb_rates,
-                         ktb_amt_by_date=ktb_amts)
+                         ktb_amt_by_date=ktb_amts,
+                         ytd_borrow=ytd_borrow,
+                         ytd_repay=ytd_repay,
+                         us_rates=us_rates,
+                         market_news=market_news)
     with open(OUTPUT, "w", encoding="utf-8") as f:
         f.write(html)
 
