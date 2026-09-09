@@ -79,9 +79,8 @@ def fetch_market_news():
 
     # Korean bond/money market news
     kr_sources = [
-        "https://www.mk.co.kr/rss/30100041/",
-        "https://rss.hankyung.com/economy.xml",
-        "https://www.yonhapnews.co.kr/rss/economy.xml",
+        "https://news.google.com/rss/search?q=국고채+채권+금리&hl=ko&gl=KR&ceid=KR:ko",
+        "https://news.google.com/rss/search?q=자금시장+한국은행+기준금리&hl=ko&gl=KR&ceid=KR:ko",
     ]
     kr_kw = ["채권", "금리", "국고채", "자금시장", "한전채", "기준금리", "한국은행", "금통위", "크레딧", "스프레드"]
     for url in kr_sources:
@@ -1221,6 +1220,26 @@ def recent_section_html(issuances):
     return "\n".join(issue_row_html(r) for r in issuances)
 
 
+STB_YEAREND = 5_570_000_000_000  # 단기사채 작년말 기준: 5.57조
+
+def _stb_row(summary, prev_s, R, 조, diff_td):
+    """단기사채 행: 조달계획/차입/상환 대신 작년말比 순증/순감 표시"""
+    stb_curr = summary["단기사채"]
+    stb_diff = stb_curr - STB_YEAREND
+    stb_sign = "순증" if stb_diff >= 0 else "순감"
+    stb_color = "#dc2626" if stb_diff >= 0 else "#2563eb"
+    stb_net_str = f'작년말比 <span style="color:{stb_color};font-weight:700">{stb_sign} {abs(stb_diff)/1e12:.2f}조</span>'
+    return (
+        f'<tr>'
+        f'<td style="padding-left:18px;color:#475569">단기사채</td>'
+        f'<td {R} style="color:#94a3b8">–</td>'
+        f'<td colspan="2" style="text-align:center;font-size:.84rem">{stb_net_str}</td>'
+        f'<td {R}>{조(stb_curr)}</td>'
+        f'{diff_td("단기사채", True)}'
+        f'</tr>'
+    )
+
+
 def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=None):
     R = 'style="text-align:right;white-space:nowrap"'
     def 조(v): return f"{v/1e12:.2f}조원"
@@ -1282,7 +1301,7 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
     rows = (
         f'<tr style="background:#eef2ff"><td colspan="6" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr>'
         + row("전력채", "전력채")
-        + row("단기사채", "단기사채")
+        + _stb_row(summary, prev_s, R, 조, diff_td)
         + row("외화채권", "외화채권")
         + (f'<tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td>'
            f'<td {R}>{조(bond_plan_sum)}</td>'
@@ -1314,14 +1333,20 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
   {note_html}
   <div class="table-wrap" style="max-width:800px">
     <table>
-      <thead><tr>
-        <th>구분</th>
-        <th style="text-align:right">조달계획(한도)</th>
-        <th style="text-align:right">차입(올해)</th>
-        <th style="text-align:right">상환(올해)</th>
-        <th style="text-align:right">잔액</th>
-        <th style="text-align:right">전일비</th>
-      </tr></thead>
+      <thead>
+        <tr style="background:#0f2a4a;color:#fff">
+          <th rowspan="2" style="vertical-align:middle">구분</th>
+          <th colspan="2" style="text-align:center;background:#1a3a5c;border-bottom:1px solid rgba(255,255,255,0.2);padding:6px 12px">🎯 조달</th>
+          <th colspan="2" style="text-align:center;background:#0f2a4a;border-bottom:1px solid rgba(255,255,255,0.2);padding:6px 12px">💰 잔액현황</th>
+          <th rowspan="2" style="text-align:right;vertical-align:middle">전일비</th>
+        </tr>
+        <tr style="background:#0f2a4a;color:#94a3b8;font-size:.78rem">
+          <th style="text-align:right;background:#1a3a5c;padding:5px 12px">계획(한도)</th>
+          <th style="text-align:right;background:#1a3a5c;padding:5px 12px">차입(올해)</th>
+          <th style="text-align:right;padding:5px 12px">상환(올해)</th>
+          <th style="text-align:right;padding:5px 12px">잔액</th>
+        </tr>
+      </thead>
       <tbody>{rows}</tbody>
     </table>
   </div>
