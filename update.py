@@ -34,21 +34,8 @@ def fetch_us_rates():
     return rates
 
 
-def translate_to_ko(text):
-    """Google Translate 무료 엔드포인트로 영→한 번역"""
-    import urllib.parse
-    try:
-        url = ("https://translate.googleapis.com/translate_a/single"
-               f"?client=gtx&sl=en&tl=ko&dt=t&q={urllib.parse.quote(text)}")
-        resp = requests.get(url, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
-        data = resp.json()
-        return "".join(seg[0] for seg in data[0] if seg[0]).strip()
-    except Exception:
-        return text
-
-
 def _rss_desc(item):
-    """RSS item에서 description 텍스트 추출 (HTML 태그 제거, 100자 이내)"""
+    """RSS item에서 description 텍스트 추출 (HTML 태그 제거, 110자 이내)"""
     raw = item.findtext("description", "") or ""
     raw = re.sub(r'<[^>]+>', ' ', raw)
     raw = re.sub(r'\s+', ' ', raw).strip()
@@ -58,54 +45,36 @@ def _rss_desc(item):
 
 
 def fetch_market_news():
-    """채권/금리 관련 뉴스 수집. 반환: list of (typ, headline_ko, desc_ko)"""
+    """채권/금리 관련 뉴스 수집. 반환: list of (typ, headline, desc)"""
     import xml.etree.ElementTree as ET
     print("[ 금융시장 뉴스 수집 ]")
     news = []  # (typ, headline, desc)
 
-    # Global bond news
+    # 글로벌 채권·금리 뉴스 — 한국어 Google News로 직접 수집 (번역 불필요)
     global_sources = [
-        ("https://news.google.com/rss/search?q=US+Treasury+yield+Fed+bond&hl=en&gl=US&ceid=US:en", "en"),
-        ("https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines", "en"),
+        ("https://news.google.com/rss/search?q=미국+국채+연준+금리&hl=ko&gl=KR&ceid=KR:ko", "global",
+         ["국채", "연준", "금리", "Fed", "국채금리", "기준금리", "인플레", "채권"]),
+        ("https://news.google.com/rss/search?q=글로벌+채권+금리+Fed+인플레이션&hl=ko&gl=KR&ceid=KR:ko", "global2",
+         ["국채", "연준", "금리", "글로벌", "채권", "인플레", "경제", "성장"]),
     ]
-    global_kw = ["treasury","yield","fed","bond","rate","powell","inflation","bps","basis point"]
-    for url, lang in global_sources:
+    for url, typ, kw in global_sources:
+        if any(n[0] == typ for n in news):
+            continue
         try:
             resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
             root = ET.fromstring(resp.content)
             for item in root.findall(".//item")[:30]:
                 title = item.findtext("title", "").strip()
-                title = re.sub(r'\s*-\s*(Reuters|Bloomberg|WSJ|MarketWatch).*$', '', title)
-                if any(k in title.lower() for k in global_kw):
+                title = re.sub(r'<[^>]+>', '', title)
+                title = re.sub(r'\s*-\s*\S+$', '', title).strip()
+                if any(k in title for k in kw) and title not in [n[1] for n in news]:
                     desc = _rss_desc(item)
-                    title_ko = translate_to_ko(title)
-                    desc_ko  = translate_to_ko(desc) if desc else ""
-                    news.append(("global", title_ko, desc_ko))
+                    news.append((typ, title, desc))
                     break
-            if any(n[0] == "global" for n in news):
-                break
         except Exception as e:
-            print(f"  글로벌 뉴스 오류: {e}")
+            print(f"  글로벌 뉴스 오류({typ}): {e}")
 
-    # Second global headline
-    try:
-        url2 = "https://news.google.com/rss/search?q=Federal+Reserve+interest+rate+economy&hl=en&gl=US&ceid=US:en"
-        resp2 = requests.get(url2, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
-        root2 = ET.fromstring(resp2.content)
-        for item in root2.findall(".//item")[:20]:
-            title = item.findtext("title", "").strip()
-            title = re.sub(r'\s*-\s*(Reuters|Bloomberg|WSJ|MarketWatch|CNN|CNBC).*$', '', title)
-            kw2 = ["rate","cut","hike","fed","inflation","economy","growth","gdp","jobs"]
-            if any(k in title.lower() for k in kw2) and title not in [n[1] for n in news]:
-                desc = _rss_desc(item)
-                title_ko = translate_to_ko(title)
-                desc_ko  = translate_to_ko(desc) if desc else ""
-                news.append(("global2", title_ko, desc_ko))
-                break
-    except Exception as e:
-        print(f"  글로벌 뉴스2 오류: {e}")
-
-    # Korean bond/money market news
+    # 국내 채권·자금시장 뉴스
     kr_sources = [
         "https://news.google.com/rss/search?q=국고채+채권+금리&hl=ko&gl=KR&ceid=KR:ko",
         "https://news.google.com/rss/search?q=자금시장+한국은행+기준금리&hl=ko&gl=KR&ceid=KR:ko",
@@ -118,7 +87,7 @@ def fetch_market_news():
             for item in root.findall(".//item")[:30]:
                 title = item.findtext("title", "").strip()
                 title = re.sub(r'<[^>]+>', '', title)
-                if any(k in title for k in kr_kw):
+                if any(k in title for k in kr_kw) and title not in [n[1] for n in news]:
                     desc = _rss_desc(item)
                     news.append(("kr", title, desc))
                     break
