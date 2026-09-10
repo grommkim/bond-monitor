@@ -256,57 +256,19 @@ def fetch_bond_news_all():
 
 def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None):
     """
-    미국 국채 금리 + 한국 국채 + 수집 헤드라인 → 채권시장 분석 딕셔너리 반환
+    미국 국채 금리 + 이벤트 + 야간선물 → 4단 서술 분석 반환
+    흐름: 이벤트 → 미국 반응 → 야간선물 → 오늘 전망
     """
     chg_10  = us_rates.get("10Y", {}).get("chg_bps", 0)
     rate_10 = us_rates.get("10Y", {}).get("rate", 0)
+    rate_2  = us_rates.get("2Y",  {}).get("rate", 0)
+    rate_30 = us_rates.get("30Y", {}).get("rate", 0)
     kr_chg  = (kr_bond or {}).get("chg_bps", None)
     kr_rate = (kr_bond or {}).get("rate", 0)
+    nf      = night_futures or {}
 
-    # 미국 10Y 방향 레이블 (rate_block 표시용)
-    if chg_10 >= 7:
-        direction_ko = "급등 (금리 상승↑, 조달비용 증가)"
-    elif chg_10 >= 3:
-        direction_ko = "상승 (금리 상승↑)"
-    elif chg_10 >= -2:
-        direction_ko = "보합 (금리 변동 제한)"
-    elif chg_10 >= -6:
-        direction_ko = "하락 (금리 하락↓)"
-    else:
-        direction_ko = "급락 (금리 하락↓, 조달비용 감소)"
-
-    # ── 야간선물: 연합인포맥스 기사 우선, 없으면 미국 금리 기반 추론 ──
-    nf = night_futures or {}
-    if nf.get("headline"):
-        headline  = nf["headline"]
-        ticks     = nf.get("ticks", "")
-        direction = nf.get("direction", "flat")
-        driver    = nf.get("driver", "")
-        dir_kor   = ("금리 하락↓" if direction == "up"   # 선물 상승 = 금리 하락
-                     else ("금리 상승↑" if direction == "down"  # 선물 하락 = 금리 상승
-                           else "보합"))
-        tick_part = f" ({ticks}, {dir_kor})" if ticks else f" ({dir_kor})"
-        driver_part = f" — {driver}" if driver else ""
-        kr_night = f"국채선물 야간마감{tick_part}{driver_part}."
-    elif kr_chg is not None:
-        kr_sign  = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
-        kr_dir   = "금리 상승↑" if kr_chg > 0 else ("금리 하락↓" if kr_chg < 0 else "보합")
-        us_pred  = "상승↑" if chg_10 > 2 else ("하락↓" if chg_10 < -2 else "보합")
-        kr_night = (f"전일 국고채 10Y {kr_rate:.3f}% ({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}). "
-                    f"미국 금리 연동, 오늘 야간선물 {us_pred} 흐름 예상.")
-    elif chg_10 >= 5:
-        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 급등 → 오늘 국채 야간선물 금리 상승↑ 압력 강함.")
-    elif chg_10 >= 2:
-        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 상승 → 오늘 국채 야간선물 소폭 금리 상승↑ 예상.")
-    elif chg_10 <= -5:
-        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 급락 → 오늘 국채 야간선물 금리 하락↓ 흐름 예상.")
-    elif chg_10 <= -2:
-        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 하락 → 오늘 국채 야간선물 소폭 금리 하락↓ 기대.")
-    else:
-        kr_night = ("전일 미국 금리 보합 → 오늘 국채 야간선물 방향성 제한적.")
-
-    # ── 이벤트 감지 (한국어 기사 우선, 중복 타이틀 제외) ─────────────
-    detected   = {}
+    # ── 이벤트 감지 (한국어 우선, 중복 타이틀 제외) ─────────────────
+    detected    = {}
     seen_titles = set()
     for cat, kws, label in _EVENT_KW:
         for title, source, lang in all_headlines:
@@ -326,76 +288,101 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
 
     top_events = []
     for cat, _, _ in _EVENT_KW:
-        if cat in detected and len(top_events) < 4:
+        if cat in detected and len(top_events) < 3:
             top_events.append(detected[cat])
 
-    # ── 어제 채권시장 흐름 (자연스러운 문장) ──────────────────────────
-    # 첫 문장: 금리 수준 + 이동
+    # ── 1) 이벤트 문장 ────────────────────────────────────────────────
+    if top_events:
+        ev_parts = []
+        for ev in top_events:
+            t = ev.get("title")
+            if t:
+                ev_parts.append(f'"{t[:55]}"')
+            else:
+                ev_parts.append(ev["label"])
+        line_event = "주요 이슈: " + " / ".join(ev_parts) + "."
+        # 첫 번째 이벤트 영향 한 줄 추가
+        first_cat    = top_events[0]["cat"]
+        first_impact = _EVENT_IMPACT.get(first_cat, "")
+        if first_impact:
+            # 첫 문장만 사용 (마침표 기준)
+            first_sent = first_impact.split(". ")[0] + "."
+            line_event += " " + first_sent
+    else:
+        line_event = ""
+
+    # ── 2) 미국 반응 문장 ─────────────────────────────────────────────
     if chg_10 >= 7:
-        rate_sent = f"전일 미국 10Y 국채금리 +{chg_10:.1f}bp 급등({rate_10:.3f}%)."
+        us_move = f"급등 +{chg_10:.1f}bp"
+        us_feel = "금리 상승↑ 압력 강함"
     elif chg_10 >= 3:
-        rate_sent = f"전일 미국 10Y 국채금리 +{chg_10:.1f}bp 상승({rate_10:.3f}%)."
+        us_move = f"+{chg_10:.1f}bp 상승"
+        us_feel = "금리 상승↑"
     elif chg_10 >= -2:
-        rate_sent = f"전일 미국 10Y 국채금리 {chg_10:+.1f}bp 보합({rate_10:.3f}%)."
+        us_move = f"{chg_10:+.1f}bp 보합"
+        us_feel = "방향성 제한"
     elif chg_10 >= -6:
-        rate_sent = f"전일 미국 10Y 국채금리 {chg_10:.1f}bp 하락({rate_10:.3f}%)."
+        us_move = f"{chg_10:.1f}bp 하락"
+        us_feel = "금리 하락↓"
     else:
-        rate_sent = f"전일 미국 10Y 국채금리 {chg_10:.1f}bp 급락({rate_10:.3f}%)."
+        us_move = f"급락 {chg_10:.1f}bp"
+        us_feel = "금리 하락↓ 압력 강함"
 
-    # 이벤트 레이블 요약 (첫 줄 끝에 붙임)
-    ev_labels = [ev["label"] for ev in top_events[:3]]
-    if ev_labels:
-        rate_sent += f" 주요 이슈: {', '.join(ev_labels)}."
+    line_us = (f"미국 국채금리 10Y {rate_10:.3f}% ({us_move}), {us_feel}.")
+    if rate_2:
+        line_us += f" 2Y {rate_2:.3f}%"
+        if rate_30:
+            line_us += f" / 30Y {rate_30:.3f}%."
 
-    # 상세 문단: 주요 이벤트 2개까지 자연스럽게 서술
-    detail_parts = []
-    for ev in top_events[:2]:
-        cat    = ev["cat"]
-        title  = ev.get("title")
-        impact = _EVENT_IMPACT.get(cat, "")
-        crit   = _EVENT_CRITICAL.get(cat, "")
-        # 기사 제목 있으면 맥락으로 앞에 붙임
-        if title:
-            intro = f'"{title[:60]}" — '
-        else:
-            intro = ""
-        # 영향 + 다만(비판) 자연스럽게 연결
-        body = impact
-        if crit:
-            # "비판적 시각:", "반론:", "주의:" 등 레이블 제거 후 이어붙임
-            crit_clean = re.sub(r'^(비판적 시각|반론|주의)\s*:\s*', '', crit)
-            body += f" 다만 {crit_clean}"
-        detail_parts.append(intro + body)
+    # ── 3) 야간선물 문장 ─────────────────────────────────────────────
+    if nf.get("headline"):
+        ticks     = nf.get("ticks", "")
+        direction = nf.get("direction", "flat")
+        driver    = nf.get("driver", "")
+        dir_kor   = ("금리 하락↓" if direction == "up"
+                     else ("금리 상승↑" if direction == "down" else "보합"))
+        tick_part   = f"{ticks}, {dir_kor}" if ticks else dir_kor
+        driver_part = f" ({driver})" if driver else ""
+        line_night  = f"국채 야간선물: {tick_part}{driver_part}."
+    elif kr_chg is not None:
+        kr_sign = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
+        kr_dir  = "상승↑" if kr_chg > 0 else ("하락↓" if kr_chg < 0 else "보합")
+        line_night = (f"국고채 10Y {kr_rate:.3f}% ({kr_sign}{abs(kr_chg):.1f}bp) — "
+                      f"야간선물 {'상승↑' if chg_10 > 2 else ('하락↓' if chg_10 < -2 else '보합')} 예상.")
+    elif chg_10 >= 3:
+        line_night = f"야간선물: 미국 금리 상승 연동, 소폭 금리 상승↑ 예상."
+    elif chg_10 <= -3:
+        line_night = f"야간선물: 미국 금리 하락 연동, 소폭 금리 하락↓ 예상."
+    else:
+        line_night = "야간선물: 방향성 제한적."
 
-    detail_narrative = "\n\n".join(detail_parts)
-
-    # ── 국내 시장 전망 ────────────────────────────────────────────────
+    # ── 4) 오늘 전망 문장 ────────────────────────────────────────────
     if chg_10 >= 5:
-        kr_outlook = f"미국 금리 급등({chg_10:+.1f}bp) 영향으로 오늘 금리 상승↑ 압력 강함. 발행 시 조달비용 증가 유의."
+        line_outlook = f"오늘 국내 자금시장: 금리 상승↑ 압력, 발행 시 조달비용 증가 유의."
     elif chg_10 >= 2:
-        kr_outlook = f"미국 금리 소폭 상승({chg_10:+.1f}bp), 오늘 장기물 중심 금리 상승↑ 가능."
+        line_outlook = f"오늘 국내 자금시장: 장기물 중심 소폭 금리 상승↑ 가능."
     elif chg_10 >= -2:
-        kr_outlook = f"미국 금리 보합({chg_10:+.1f}bp), 오늘 국내 금리도 보합권 예상."
+        line_outlook = f"오늘 국내 자금시장: 보합권, 국내 수급·한국은행 스탠스 주목."
     elif chg_10 >= -5:
-        kr_outlook = f"미국 금리 하락({chg_10:+.1f}bp), 오늘 금리 하락↓ 기대. 발행 타이밍 유리."
+        line_outlook = f"오늘 국내 자금시장: 금리 하락↓ 기대, 발행 타이밍 유리."
     else:
-        kr_outlook = f"미국 금리 급락({chg_10:+.1f}bp), 오늘 금리 하락↓ 압력 강함. 발행 조건 개선."
+        line_outlook = f"오늘 국내 자금시장: 금리 하락↓ 압력 강함, 발행 조건 개선."
 
-    # ── 국내 뉴스 (이벤트 기사 제외) ─────────────────────────────────
+    # ── 국내 뉴스 ────────────────────────────────────────────────────
     event_titles = {ev["title"] for ev in top_events if ev.get("title")}
     featured_kr  = [(t, s) for t, s, lang in all_headlines
                     if lang == "ko" and t not in event_titles][:3]
 
     return {
-        "direction_ko":     direction_ko,
-        "chg_10":           chg_10,
-        "kr_night":         kr_night,
-        "nf_headline":      nf.get("headline", ""),
-        "nf_direction":     nf.get("direction", "flat"),
-        "us_summary":       rate_sent,
-        "detail_narrative": detail_narrative,
-        "kr_outlook":       kr_outlook,
-        "featured_kr":      featured_kr,
+        "chg_10":       chg_10,
+        "rate_10":      rate_10,
+        "us_rates":     us_rates,
+        "line_event":   line_event,
+        "line_us":      line_us,
+        "line_night":   line_night,
+        "nf_headline":  nf.get("headline", ""),
+        "line_outlook": line_outlook,
+        "featured_kr":  featured_kr,
     }
 
 
@@ -1646,90 +1633,89 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
 
 
 def market_news_section_html(us_rates, analysis):
-    """금융시장 동향 섹션 HTML. analysis = build_market_analysis() 반환값 dict"""
+    """금융시장 동향 섹션 HTML.
+    구성: 미국 금리 수치 → 이벤트+미국반응 → 야간선물 → 오늘전망 → 국내뉴스
+    """
     if not us_rates and not analysis:
         return ""
 
-    # ── 미국 국채 금리 바 ──────────────────────────────────────────────
+    # ── 상단 금리 수치 한 줄 ─────────────────────────────────────────
     rate_parts = []
     for tenor in ["2Y", "10Y", "30Y"]:
         if tenor in us_rates:
-            r = us_rates[tenor]
-            sign = "▲" if r["chg_bps"] > 0 else ("▼" if r["chg_bps"] < 0 else "–")
+            r     = us_rates[tenor]
+            sign  = "▲" if r["chg_bps"] > 0 else ("▼" if r["chg_bps"] < 0 else "–")
             color = "#dc2626" if r["chg_bps"] > 0 else ("#2563eb" if r["chg_bps"] < 0 else "#94a3b8")
             rate_parts.append(
-                f'{tenor} <strong style="color:{color}">{r["rate"]:.3f}%</strong>'
-                f'<span style="color:{color};font-size:.82em"> {sign}{abs(r["chg_bps"]):.1f}bp</span>'
+                f'<span style="font-size:.78rem;color:#64748b">{tenor}</span> '
+                f'<strong style="color:{color}">{r["rate"]:.3f}%</strong>'
+                f'<span style="color:{color};font-size:.75rem"> {sign}{abs(r["chg_bps"]):.1f}bp</span>'
             )
-    rate_line = " &nbsp;|&nbsp; ".join(rate_parts)
+    rate_line = "&nbsp;&nbsp;|&nbsp;&nbsp;".join(rate_parts)
 
-    direction_ko = analysis.get("direction_ko", "")
-    dir_color = "#dc2626" if "급등" in direction_ko or "상승" in direction_ko else (
-                "#2563eb" if "급락" in direction_ko or "하락" in direction_ko else "#64748b")
+    # ── 본문 4줄 ────────────────────────────────────────────────────
+    line_event   = analysis.get("line_event",   "")
+    line_us      = analysis.get("line_us",      "")
+    line_night   = analysis.get("line_night",   "")
+    nf_headline  = analysis.get("nf_headline",  "")
+    line_outlook = analysis.get("line_outlook", "")
+    chg_10       = analysis.get("chg_10", 0)
 
-    rate_block = (
-        f'<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;'
-        f'padding:11px 15px;margin-bottom:12px">'
-        f'<div style="font-size:.75rem;font-weight:700;color:#0369a1;margin-bottom:4px">📊 전일 미국 국채 (종가)</div>'
-        f'<div style="font-size:.86rem;color:#0c4a6e;line-height:1.8">'
-        f'미국 국채 &nbsp; {rate_line}</div>'
-        f'<div style="font-size:.78rem;margin-top:3px">'
-        f'→ <span style="color:{dir_color};font-weight:700">{_html.escape(direction_ko)}</span></div>'
-        f'</div>'
-    ) if rate_line else ""
+    # 야간선물 색상
+    nf_color = "#dc2626" if chg_10 > 2 else ("#2563eb" if chg_10 < -2 else "#475569")
 
-    # ── 국채 야간선물 동향 (항상 표시) ──────────────────────────────────
-    kr_night   = analysis.get("kr_night", "")
-    nf_headline = analysis.get("nf_headline", "")
-    nf_dir      = analysis.get("nf_direction", "flat")
-    nf_color    = "#dc2626" if nf_dir == "down" else ("#2563eb" if nf_dir == "up" else "#64748b")
-    # 연합인포맥스 원문 헤드라인 (있으면)
-    headline_sub = (
-        f'<div style="font-size:.78rem;color:{nf_color};font-weight:600;margin-top:4px">'
+    # 오늘 전망 색상
+    out_color = "#dc2626" if chg_10 >= 2 else ("#2563eb" if chg_10 <= -2 else "#475569")
+
+    # 연합인포맥스 원문 (있으면 야간선물 아래 이탤릭)
+    nf_sub = (
+        f'<div style="font-size:.76rem;color:{nf_color};margin-top:2px;font-style:italic">'
         f'{_html.escape(nf_headline)}</div>'
     ) if nf_headline else ""
-    night_block = (
-        f'<div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;'
-        f'padding:10px 15px;margin-bottom:12px">'
-        f'<div style="font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:3px">🌙 국채 야간선물 동향</div>'
-        f'<div style="font-size:.84rem;color:#78350f;line-height:1.65">{_html.escape(kr_night)}</div>'
-        f'{headline_sub}'
-        f'</div>'
-    ) if kr_night else ""
 
-    # ── 어제 채권시장 흐름 (자연스러운 문단) ─────────────────────────
-    us_summary       = analysis.get("us_summary", "")
-    detail_narrative = analysis.get("detail_narrative", "")
-    if us_summary or detail_narrative:
-        # detail_narrative의 단락 구분(\n\n)을 <br><br>로
-        detail_html = ""
-        if detail_narrative:
-            paras = [_html.escape(p.strip()) for p in detail_narrative.split("\n\n") if p.strip()]
-            detail_html = "".join(
-                f'<p style="margin:8px 0 0;font-size:.83rem;color:#334155;line-height:1.7">{p}</p>'
-                for p in paras
-            )
-        flow_block = (
-            f'<div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;'
-            f'padding:11px 15px;margin-bottom:12px">'
-            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:5px">📋 어제 채권시장 흐름</div>'
-            f'<p style="margin:0;font-size:.85rem;color:#1e293b;font-weight:600;line-height:1.6">'
-            f'{_html.escape(us_summary)}</p>'
-            f'{detail_html}'
+    body_rows = ""
+    if line_event:
+        body_rows += (
+            f'<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start">'
+            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;'
+            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">이슈</span>'
+            f'<div style="font-size:.84rem;color:#1e293b;line-height:1.6">{_html.escape(line_event)}</div>'
             f'</div>'
         )
-    else:
-        flow_block = ""
+    if line_us:
+        body_rows += (
+            f'<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start">'
+            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:#0369a1;'
+            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">미국</span>'
+            f'<div style="font-size:.84rem;color:#0c4a6e;line-height:1.6">{_html.escape(line_us)}</div>'
+            f'</div>'
+        )
+    if line_night:
+        body_rows += (
+            f'<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start">'
+            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:#92400e;'
+            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">야간</span>'
+            f'<div style="font-size:.84rem;color:#78350f;line-height:1.6">'
+            f'{_html.escape(line_night)}{nf_sub}</div>'
+            f'</div>'
+        )
+    if line_outlook:
+        body_rows += (
+            f'<div style="display:flex;gap:8px;padding:9px 0;align-items:flex-start">'
+            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:{out_color};'
+            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">전망</span>'
+            f'<div style="font-size:.84rem;color:#1e293b;font-weight:600;line-height:1.6">'
+            f'{_html.escape(line_outlook)}</div>'
+            f'</div>'
+        )
 
-    # ── 오늘 국내 채권시장 전망 ────────────────────────────────────────
-    kr_outlook = analysis.get("kr_outlook", "")
-    outlook_block = (
-        f'<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;'
-        f'padding:11px 15px;margin-bottom:12px">'
-        f'<div style="font-size:.75rem;font-weight:700;color:#166534;margin-bottom:4px">🇰🇷 오늘 국내 채권시장 전망</div>'
-        f'<div style="font-size:.84rem;color:#14532d;line-height:1.7">{_html.escape(kr_outlook)}</div>'
-        f'</div>'
-    ) if kr_outlook else ""
+    main_block = (
+        f'<div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;'
+        f'padding:0 14px;margin-bottom:12px">'
+        f'<div style="padding:9px 0 7px;border-bottom:1px solid #f1f5f9;font-size:.8rem;color:#64748b">'
+        f'📊 미국 국채(전일 종가) &nbsp; {rate_line}</div>'
+        f'{body_rows}</div>'
+    )
 
     # ── 국내 채권 뉴스 ────────────────────────────────────────────────
     featured_kr = analysis.get("featured_kr", [])
@@ -1754,10 +1740,7 @@ def market_news_section_html(us_rates, analysis):
     return f"""
 <section>
   <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
-  {rate_block}
-  {night_block}
-  {flow_block}
-  {outlook_block}
+  {main_block}
   {kr_news_block}
 </section>"""
 
