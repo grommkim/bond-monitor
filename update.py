@@ -132,6 +132,69 @@ def _parse_rss_title(raw):
     return raw, ""
 
 
+def fetch_night_futures():
+    """연합인포맥스 국채선물 야간 마감 기사를 Google News RSS로 가져옴.
+    반환: {"headline": str, "ticks": str, "direction": "up"/"down"/"flat", "driver": str} 또는 {}
+    """
+    import xml.etree.ElementTree as ET
+    from email.utils import parsedate_to_datetime
+    UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0"
+    url = ("https://news.google.com/rss/search"
+           "?q=국채선물+야간+인포맥스&hl=ko&gl=KR&ceid=KR:ko")
+    print("[ 야간선물 마감 기사 수집 ]")
+    try:
+        r = requests.get(url, timeout=12, headers={"User-Agent": UA})
+        root = ET.fromstring(r.content)
+        candidates = []
+        for it in root.findall(".//item")[:10]:
+            raw   = re.sub(r'<[^>]+>', '', it.findtext("title", "").strip())
+            m     = re.match(r'^(.*?)\s+-\s+([^-]+)$', raw)
+            title = m.group(1).strip() if m else raw
+            source = m.group(2).strip() if m else ""
+            pub   = it.findtext("pubDate", "")
+            # einfomax 또는 KB Think 야간선물 기사만
+            if "국채선물" in title and ("einfomax" in source.lower() or "kb" in source.lower()):
+                try:
+                    dt = parsedate_to_datetime(pub) if pub else None
+                except Exception:
+                    dt = None
+                candidates.append((dt, title))
+
+        if not candidates:
+            print("  → 야간선물 기사 없음")
+            return {}
+
+        # 최신순 정렬
+        candidates.sort(key=lambda x: x[0] if x[0] else 0, reverse=True)
+        _, headline = candidates[0]
+
+        # 틱수·방향 파싱: "...10년물 26틱↓" or "...3년물 13틱↑"
+        tick_m = re.search(r'(\d+년물)\s+(\d+틱)(↑|↓)', headline)
+        ticks     = ""
+        direction = "flat"
+        if tick_m:
+            tenor  = tick_m.group(1)   # "10년물" / "3년물"
+            count  = tick_m.group(2)   # "26틱"
+            arrow  = tick_m.group(3)   # ↑ or ↓
+            ticks  = f"{tenor} {count}{arrow}"
+            direction = "up" if arrow == "↑" else "down"
+
+        # 이유 부분 파싱: "국채선물, [이유]…" 에서 이유만 추출
+        driver_m = re.match(r'국채선물,\s*(.+?)(?:…|\.\.\.)', headline)
+        driver = driver_m.group(1).strip() if driver_m else ""
+
+        print(f"  → {headline[:70]}")
+        return {
+            "headline":  headline,
+            "ticks":     ticks,
+            "direction": direction,
+            "driver":    driver,
+        }
+    except Exception as e:
+        print(f"  야간선물 기사 오류: {e}")
+        return {}
+
+
 def fetch_bond_news_all():
     """채권/금리 관련 헤드라인 다수 수집. 반환: list of (title, source, lang)"""
     import xml.etree.ElementTree as ET
@@ -192,7 +255,7 @@ def fetch_bond_news_all():
     return items
 
 
-def build_market_analysis(us_rates, all_headlines, kr_bond=None):
+def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None):
     """
     미국 국채 금리 + 한국 국채 + 수집 헤드라인 → 채권시장 분석 딕셔너리 반환
     """
@@ -213,28 +276,35 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
     else:
         direction_ko = "급락 (금리 하락↓, 조달비용 감소)"
 
-    # ── 야간선물 한줄 ────────────────────────────────────────────────
-    if kr_chg is not None:
+    # ── 야간선물: 연합인포맥스 기사 우선, 없으면 미국 금리 기반 추론 ──
+    nf = night_futures or {}
+    if nf.get("headline"):
+        headline  = nf["headline"]
+        ticks     = nf.get("ticks", "")
+        direction = nf.get("direction", "flat")
+        driver    = nf.get("driver", "")
+        dir_kor   = ("금리 하락↓" if direction == "up"   # 선물 상승 = 금리 하락
+                     else ("금리 상승↑" if direction == "down"  # 선물 하락 = 금리 상승
+                           else "보합"))
+        tick_part = f" ({ticks}, {dir_kor})" if ticks else f" ({dir_kor})"
+        driver_part = f" — {driver}" if driver else ""
+        kr_night = f"국채선물 야간마감{tick_part}{driver_part}."
+    elif kr_chg is not None:
         kr_sign  = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
         kr_dir   = "금리 상승↑" if kr_chg > 0 else ("금리 하락↓" if kr_chg < 0 else "보합")
         us_pred  = "상승↑" if chg_10 > 2 else ("하락↓" if chg_10 < -2 else "보합")
         kr_night = (f"전일 국고채 10Y {kr_rate:.3f}% ({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}). "
-                    f"미국 금리 연동, 오늘 국채 야간선물 {us_pred} 흐름 예상.")
+                    f"미국 금리 연동, 오늘 야간선물 {us_pred} 흐름 예상.")
     elif chg_10 >= 5:
-        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 급등 → 오늘 국채 야간선물 금리 상승↑ 압력 강함. "
-                    "장 시작 시 갭업 가능성 유의.")
+        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 급등 → 오늘 국채 야간선물 금리 상승↑ 압력 강함.")
     elif chg_10 >= 2:
-        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 상승 → 오늘 국채 야간선물 소폭 금리 상승↑ 예상. "
-                    "장중 상승 압력 지속 여부 주목.")
+        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 상승 → 오늘 국채 야간선물 소폭 금리 상승↑ 예상.")
     elif chg_10 <= -5:
-        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 급락 → 오늘 국채 야간선물 금리 하락↓ 흐름 예상. "
-                    "발행 타이밍 유리, 갭다운 가능.")
+        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 급락 → 오늘 국채 야간선물 금리 하락↓ 흐름 예상.")
     elif chg_10 <= -2:
-        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 하락 → 오늘 국채 야간선물 소폭 금리 하락↓ 기대. "
-                    "한국은행 스탠스와 병행 주목.")
+        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 하락 → 오늘 국채 야간선물 소폭 금리 하락↓ 기대.")
     else:
-        kr_night = ("전일 미국 금리 보합 → 오늘 국채 야간선물 방향성 제한적. "
-                    "수급·한국은행 스탠스가 방향 결정 요인.")
+        kr_night = ("전일 미국 금리 보합 → 오늘 국채 야간선물 방향성 제한적.")
 
     # ── 이벤트 감지 (한국어 기사 우선, 중복 타이틀 제외) ─────────────
     detected   = {}
@@ -326,6 +396,8 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
         "direction_ko":     direction_ko,
         "chg_10":           chg_10,
         "kr_night":         kr_night,
+        "nf_headline":      nf.get("headline", ""),
+        "nf_direction":     nf.get("direction", "flat"),
         "us_summary":       rate_sent,
         "detail_narrative": detail_narrative,
         "kr_outlook":       kr_outlook,
@@ -1614,12 +1686,21 @@ def market_news_section_html(us_rates, analysis):
     ) if rate_line else ""
 
     # ── 국채 야간선물 동향 (항상 표시) ──────────────────────────────────
-    kr_night = analysis.get("kr_night", "")
+    kr_night   = analysis.get("kr_night", "")
+    nf_headline = analysis.get("nf_headline", "")
+    nf_dir      = analysis.get("nf_direction", "flat")
+    nf_color    = "#dc2626" if nf_dir == "down" else ("#2563eb" if nf_dir == "up" else "#64748b")
+    # 연합인포맥스 원문 헤드라인 (있으면)
+    headline_sub = (
+        f'<div style="font-size:.78rem;color:{nf_color};font-weight:600;margin-top:4px">'
+        f'{_html.escape(nf_headline)}</div>'
+    ) if nf_headline else ""
     night_block = (
         f'<div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;'
         f'padding:10px 15px;margin-bottom:12px">'
         f'<div style="font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:3px">🌙 국채 야간선물 동향</div>'
         f'<div style="font-size:.84rem;color:#78350f;line-height:1.65">{_html.escape(kr_night)}</div>'
+        f'{headline_sub}'
         f'</div>'
     ) if kr_night else ""
 
@@ -2019,8 +2100,9 @@ if __name__ == "__main__":
                 print(f"  국고채 10Y: {_curr_r}% (전일比 {kr_bond['chg_bps']:+.1f}bp)")
     except Exception as _e:
         print(f"  국고채 전일비 계산 실패: {_e}")
-    all_headlines = fetch_bond_news_all()
-    market_news   = build_market_analysis(us_rates, all_headlines, kr_bond)
+    all_headlines  = fetch_bond_news_all()
+    night_futures  = fetch_night_futures()
+    market_news    = build_market_analysis(us_rates, all_headlines, kr_bond, night_futures)
     issu_stats    = collect_issu_stats()
     kepco_rates, kepco_amts = collect_kepco_rates_ytd()
     ktb_rates,   ktb_amts   = collect_ktb3y_rates_ytd()
