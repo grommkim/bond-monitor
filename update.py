@@ -133,63 +133,62 @@ def _parse_rss_title(raw):
 
 
 def fetch_night_futures():
-    """연합인포맥스 국채선물 야간 마감 기사를 Google News RSS로 가져옴.
+    """연합인포맥스 국채선물 야간 마감 기사 수집. 오늘 기사만 사용(24시간 이내).
     반환: {"headline": str, "ticks": str, "direction": "up"/"down"/"flat", "driver": str} 또는 {}
     """
     import xml.etree.ElementTree as ET
     from email.utils import parsedate_to_datetime
-    UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0"
+    from datetime import timezone
+    UA  = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0"
     url = ("https://news.google.com/rss/search"
            "?q=국채선물+야간+인포맥스&hl=ko&gl=KR&ceid=KR:ko")
     print("[ 야간선물 마감 기사 수집 ]")
+    now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
     try:
-        r = requests.get(url, timeout=12, headers={"User-Agent": UA})
+        r    = requests.get(url, timeout=12, headers={"User-Agent": UA})
         root = ET.fromstring(r.content)
         candidates = []
-        for it in root.findall(".//item")[:10]:
-            raw   = re.sub(r'<[^>]+>', '', it.findtext("title", "").strip())
-            m     = re.match(r'^(.*?)\s+-\s+([^-]+)$', raw)
-            title = m.group(1).strip() if m else raw
+        for it in root.findall(".//item")[:15]:
+            raw    = re.sub(r'<[^>]+>', '', it.findtext("title", "").strip())
+            m      = re.match(r'^(.*?)\s+-\s+([^-]+)$', raw)
+            title  = m.group(1).strip() if m else raw
             source = m.group(2).strip() if m else ""
-            pub   = it.findtext("pubDate", "")
-            # einfomax 또는 KB Think 야간선물 기사만
-            if "국채선물" in title and ("einfomax" in source.lower() or "kb" in source.lower()):
-                try:
-                    dt = parsedate_to_datetime(pub) if pub else None
-                except Exception:
-                    dt = None
-                candidates.append((dt, title))
+            pub    = it.findtext("pubDate", "")
+            if "국채선물" not in title:
+                continue
+            if not ("einfomax" in source.lower() or "kb" in source.lower()):
+                continue
+            try:
+                dt = parsedate_to_datetime(pub) if pub else None
+            except Exception:
+                dt = None
+            # 24시간 이내 기사만 사용
+            if dt and (now_utc - dt).total_seconds() > 86400:
+                print(f"  건너뜀(오래됨): {title[:50]} ({pub})")
+                continue
+            candidates.append((dt, title))
 
         if not candidates:
-            print("  → 야간선물 기사 없음")
+            print("  → 오늘 야간선물 기사 없음")
             return {}
 
-        # 최신순 정렬
         candidates.sort(key=lambda x: x[0] if x[0] else 0, reverse=True)
         _, headline = candidates[0]
 
-        # 틱수·방향 파싱: "...10년물 26틱↓" or "...3년물 13틱↑"
-        tick_m = re.search(r'(\d+년물)\s+(\d+틱)(↑|↓)', headline)
+        # 틱수·방향 파싱 (예: "10년물 26틱↓", "3년물 13틱↑")
+        tick_m    = re.search(r'(\d+년물)\s+(\d+틱)(↑|↓)', headline)
         ticks     = ""
         direction = "flat"
         if tick_m:
-            tenor  = tick_m.group(1)   # "10년물" / "3년물"
-            count  = tick_m.group(2)   # "26틱"
-            arrow  = tick_m.group(3)   # ↑ or ↓
-            ticks  = f"{tenor} {count}{arrow}"
-            direction = "up" if arrow == "↑" else "down"
+            ticks     = f"{tick_m.group(1)} {tick_m.group(2)}{tick_m.group(3)}"
+            direction = "up" if tick_m.group(3) == "↑" else "down"
 
-        # 이유 부분 파싱: "국채선물, [이유]…" 에서 이유만 추출
+        # 이유 파싱: "국채선물, [이유]…"
         driver_m = re.match(r'국채선물,\s*(.+?)(?:…|\.\.\.)', headline)
-        driver = driver_m.group(1).strip() if driver_m else ""
+        driver   = driver_m.group(1).strip() if driver_m else ""
 
         print(f"  → {headline[:70]}")
-        return {
-            "headline":  headline,
-            "ticks":     ticks,
-            "direction": direction,
-            "driver":    driver,
-        }
+        return {"headline": headline, "ticks": ticks, "direction": direction, "driver": driver}
     except Exception as e:
         print(f"  야간선물 기사 오류: {e}")
         return {}
@@ -371,21 +370,16 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
     detail_narrative = "\n\n".join(detail_parts)
 
     # ── 국내 시장 전망 ────────────────────────────────────────────────
-    if chg_10 >= 7:
-        kr_outlook = (f"미국 금리 급등으로 국내 금리도 상승↑ 압력이 강할 것으로 보입니다. "
-                      "한전채 등 발행 시 금리 상승 환경 유의, 조달비용 증가 가능성.")
-    elif chg_10 >= 3:
-        kr_outlook = (f"미국 금리 상승 영향으로 국내 장기물 중심 소폭 상승↑ 예상. "
-                      "단기물은 한국은행 스탠스가 방어선 역할을 할 전망.")
+    if chg_10 >= 5:
+        kr_outlook = f"미국 금리 급등({chg_10:+.1f}bp) 영향으로 오늘 금리 상승↑ 압력 강함. 발행 시 조달비용 증가 유의."
+    elif chg_10 >= 2:
+        kr_outlook = f"미국 금리 소폭 상승({chg_10:+.1f}bp), 오늘 장기물 중심 금리 상승↑ 가능."
     elif chg_10 >= -2:
-        kr_outlook = ("미국 금리 보합권, 국내도 비슷한 흐름 예상. "
-                      "방향성보다 국내 수급·한국은행 스탠스가 변수.")
-    elif chg_10 >= -6:
-        kr_outlook = (f"미국 금리 하락으로 국내 금리도 소폭 하락↓ 기대. "
-                      "발행 타이밍 검토에 유리한 환경.")
+        kr_outlook = f"미국 금리 보합({chg_10:+.1f}bp), 오늘 국내 금리도 보합권 예상."
+    elif chg_10 >= -5:
+        kr_outlook = f"미국 금리 하락({chg_10:+.1f}bp), 오늘 금리 하락↓ 기대. 발행 타이밍 유리."
     else:
-        kr_outlook = (f"미국 금리 급락으로 국내 금리 하락↓ 압력 강함. "
-                      "적극적 발행 타이밍 고려 가능, 조달비용 감소 기회.")
+        kr_outlook = f"미국 금리 급락({chg_10:+.1f}bp), 오늘 금리 하락↓ 압력 강함. 발행 조건 개선."
 
     # ── 국내 뉴스 (이벤트 기사 제외) ─────────────────────────────────
     event_titles = {ev["title"] for ev in top_events if ev.get("title")}
@@ -1130,19 +1124,66 @@ def calc_ytd_debt_flows(positions):
 
 
 def calc_ytd_repay():
-    """올해 만기 상환금액 (debt_matured.json 기준)"""
-    year = str(date.today().year)
+    """올해 만기 상환금액.
+    엑셀(원천 데이터)에서 오늘까지 만기된 항목을 집계.
+    엑셀 없으면 debt_matured.json 폴백.
+    """
+    import openpyxl
+    today = date.today()
+    year  = today.year
+
+    # 엑셀 분류 → 내부 카테고리 매핑
+    _XCAT = {"전력채": "전력채", "단기사채": "단기사채",
+             "외화": "외화채권", "금융기관": "은행차입",
+             "중장기기업어음": "중장기기업어음"}
+    cats  = ["전력채", "단기사채", "외화채권", "중장기기업어음", "은행차입"]
+    repay = {c: 0 for c in cats}
+
+    if os.path.exists(EXCEL_FILE):
+        try:
+            wb = openpyxl.load_workbook(EXCEL_FILE, read_only=True, data_only=True)
+            ws = wb.active
+            for row in ws.iter_rows(min_row=3, values_only=True):
+                sub_raw = row[3]    # 분류
+                mat_col = row[16]   # 원금 최종상환일
+                amt_col = row[9]    # 원화환산잔액
+                if not sub_raw or not mat_col or not amt_col:
+                    continue
+                mat_date = mat_col.date() if hasattr(mat_col, 'date') else None
+                if not mat_date or mat_date.year != year or mat_date > today:
+                    continue
+                internal = _XCAT.get(str(sub_raw).strip())
+                if not internal:
+                    continue
+                try:
+                    repay[internal] += float(amt_col)
+                except (TypeError, ValueError):
+                    pass
+            wb.close()
+            # debt_matured.json의 엑셀 이후 항목도 추가
+            if os.path.exists(DEBT_MATURED):
+                try:
+                    for p in json.load(open(DEBT_MATURED)):
+                        cat = p.get("category", "")
+                        md  = p.get("maturity_date", "")
+                        if cat in repay and md.startswith(str(year)) and md > "2026-05-19":
+                            repay[cat] += p.get("amount", 0)
+                except Exception:
+                    pass
+            return repay
+        except Exception as e:
+            print(f"  엑셀 상환 집계 오류: {e}")
+
+    # 폴백: debt_matured.json
     if not os.path.exists(DEBT_MATURED):
-        return {}
+        return repay
     try:
-        matured = json.load(open(DEBT_MATURED))
+        for p in json.load(open(DEBT_MATURED)):
+            cat = p.get("category", "")
+            if cat in repay and (p.get("maturity_date") or "").startswith(str(year)):
+                repay[cat] += p.get("amount", 0)
     except Exception:
-        return {}
-    cats = ["전력채", "단기사채", "외화채권", "중장기기업어음", "은행차입"]
-    repay = {cat: sum(p["amount"] for p in matured
-                      if p["category"] == cat
-                      and (p.get("maturity_date") or "").startswith(year))
-             for cat in cats}
+        pass
     return repay
 
 
