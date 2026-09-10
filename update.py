@@ -1124,63 +1124,16 @@ def calc_ytd_debt_flows(positions):
 
 
 def calc_ytd_repay():
-    """올해 만기 상환금액.
-    엑셀(원천 데이터)에서 오늘까지 만기된 항목을 집계.
-    엑셀 없으면 debt_matured.json 폴백.
-    """
-    import openpyxl
-    today = date.today()
-    year  = today.year
-
-    # 엑셀 분류 → 내부 카테고리 매핑
-    _XCAT = {"전력채": "전력채", "단기사채": "단기사채",
-             "외화": "외화채권", "금융기관": "은행차입",
-             "중장기기업어음": "중장기기업어음"}
-    cats  = ["전력채", "단기사채", "외화채권", "중장기기업어음", "은행차입"]
+    """올해 만기 상환금액 (debt_matured.json 기준)"""
+    year = str(date.today().year)
+    cats = ["전력채", "단기사채", "외화채권", "중장기기업어음", "은행차입"]
     repay = {c: 0 for c in cats}
-
-    if os.path.exists(EXCEL_FILE):
-        try:
-            wb = openpyxl.load_workbook(EXCEL_FILE, read_only=True, data_only=True)
-            ws = wb.active
-            for row in ws.iter_rows(min_row=3, values_only=True):
-                sub_raw = row[3]    # 분류
-                mat_col = row[16]   # 원금 최종상환일
-                amt_col = row[9]    # 원화환산잔액
-                if not sub_raw or not mat_col or not amt_col:
-                    continue
-                mat_date = mat_col.date() if hasattr(mat_col, 'date') else None
-                if not mat_date or mat_date.year != year or mat_date > today:
-                    continue
-                internal = _XCAT.get(str(sub_raw).strip())
-                if not internal:
-                    continue
-                try:
-                    repay[internal] += float(amt_col)
-                except (TypeError, ValueError):
-                    pass
-            wb.close()
-            # debt_matured.json의 엑셀 이후 항목도 추가
-            if os.path.exists(DEBT_MATURED):
-                try:
-                    for p in json.load(open(DEBT_MATURED)):
-                        cat = p.get("category", "")
-                        md  = p.get("maturity_date", "")
-                        if cat in repay and md.startswith(str(year)) and md > "2026-05-19":
-                            repay[cat] += p.get("amount", 0)
-                except Exception:
-                    pass
-            return repay
-        except Exception as e:
-            print(f"  엑셀 상환 집계 오류: {e}")
-
-    # 폴백: debt_matured.json
     if not os.path.exists(DEBT_MATURED):
         return repay
     try:
         for p in json.load(open(DEBT_MATURED)):
             cat = p.get("category", "")
-            if cat in repay and (p.get("maturity_date") or "").startswith(str(year)):
+            if cat in repay and (p.get("maturity_date") or "").startswith(year):
                 repay[cat] += p.get("amount", 0)
     except Exception:
         pass
@@ -1566,17 +1519,16 @@ def recent_section_html(issuances):
 STB_YEAREND = 5_570_000_000_000  # 단기사채 작년말 기준: 5.57조
 
 def _stb_row(summary, prev_s, R, 조, diff_td, flow_td, ytd_r):
-    """단기사채 행: 조달 셀에 작년말比 순증/순감 표시"""
+    """단기사채 행: 계획 셀에 작년말比 순증/순감 표시 (색상 없이, 우정렬)"""
     stb_curr = summary["단기사채"]
     stb_diff = stb_curr - STB_YEAREND
     stb_sign = "순증" if stb_diff >= 0 else "순감"
-    stb_color = "#dc2626" if stb_diff >= 0 else "#2563eb"
-    stb_net_str = f'<span style="color:{stb_color};font-weight:700">{stb_sign} {abs(stb_diff)/1e12:.2f}조</span>'
+    stb_net_str = f'{stb_sign} {abs(stb_diff)/1e12:.2f}조'
     return (
         f'<tr>'
         f'<td style="padding-left:18px;color:#475569">단기사채</td>'
         f'<td style="background:#1a3a5c10;color:#94a3b8;text-align:right">–</td>'
-        f'<td style="text-align:center;font-size:.84rem">{stb_net_str}</td>'
+        f'<td {R} style="background:#1a3a5c10;font-size:.84rem;white-space:nowrap">{stb_net_str}</td>'
         f'{flow_td(ytd_r.get("단기사채"))}'
         f'<td {R}>{조(stb_curr)}</td>'
         f'{diff_td("단기사채", True)}'
