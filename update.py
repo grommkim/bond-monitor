@@ -34,67 +34,142 @@ def fetch_us_rates():
     return rates
 
 
-def _extract_title_source(raw_title):
-    """Google News 제목에서 '기사제목 - 출처' 분리. (clean_title, source) 반환"""
-    raw_title = re.sub(r'<[^>]+>', '', raw_title).strip()
-    m = re.match(r'^(.*?)\s+-\s+([^-]+)$', raw_title)
+# 이벤트 감지 키워드 (우선순위 순서)
+_EVENT_KW = [
+    ("buyback",   ["buyback","buy back","buy-back","바이백"],                "재무부 바이백"),
+    ("warsh",     ["warsh","워시"],                                           "워시 발언"),
+    ("trump",     ["trump","트럼프"],                                         "트럼프"),
+    ("tariff",    ["tariff","관세","trade war","무역전쟁"],                   "관세/무역"),
+    ("powell",    ["powell","파월"],                                          "파월 발언"),
+    ("fed",       ["federal reserve","fomc","연준","금통위"],                 "Fed/연준"),
+    ("auction",   ["auction","입찰","국채 발행"],                             "국채 입찰"),
+    ("cpi",       ["cpi","consumer price","inflation","인플레","물가"],       "물가/CPI"),
+    ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
+    ("gdp",       ["gdp","recession","경기침체","성장률"],                    "경제성장"),
+]
+
+
+def _parse_rss_title(raw):
+    """RSS 제목에서 HTML 태그 제거 후 '기사제목 - 출처' 분리"""
+    raw = re.sub(r'<[^>]+>', '', raw).strip()
+    m = re.match(r'^(.*?)\s+-\s+([^-]+)$', raw)
     if m:
         return m.group(1).strip(), m.group(2).strip()
-    return raw_title, ""
+    return raw, ""
 
 
-def fetch_market_news():
-    """채권/금리 관련 뉴스 수집. 반환: list of (typ, headline, source)"""
+def fetch_bond_news_all():
+    """채권/금리 관련 헤드라인 다수 수집. 반환: list of (title, source, lang)"""
     import xml.etree.ElementTree as ET
+    UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0"
     print("[ 금융시장 뉴스 수집 ]")
-    news = []  # (typ, headline, source)
+    items = []
 
-    # 글로벌 채권·금리 뉴스 — 한국어 Google News로 직접 수집
-    global_sources = [
-        ("https://news.google.com/rss/search?q=미국+국채+연준+금리&hl=ko&gl=KR&ceid=KR:ko", "global",
-         ["국채", "연준", "금리", "Fed", "국채금리", "기준금리", "인플레", "채권"]),
-        ("https://news.google.com/rss/search?q=글로벌+채권+금리+Fed+인플레이션&hl=ko&gl=KR&ceid=KR:ko", "global2",
-         ["국채", "연준", "금리", "글로벌", "채권", "인플레", "경제", "성장"]),
+    # ── 영문 소스 (CNBC, MarketWatch, Google News EN) ──────────────────
+    en_sources = [
+        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
+        "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines",
+        "https://news.google.com/rss/search?q=US+Treasury+yield+Fed+bond+buyback&hl=en&gl=US&ceid=US:en",
     ]
-    for url, typ, kw in global_sources:
-        if any(n[0] == typ for n in news):
-            continue
+    en_kw = ["treasury","yield","bond","fed","rate","powell","warsh","inflation","buyback","auction","tariff","trump"]
+    for url in en_sources:
         try:
-            resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+            resp = requests.get(url, timeout=12, headers={"User-Agent": UA})
             root = ET.fromstring(resp.content)
-            for item in root.findall(".//item")[:30]:
-                raw = item.findtext("title", "").strip()
-                title, source = _extract_title_source(raw)
-                if any(k in title for k in kw) and title not in [n[1] for n in news]:
-                    news.append((typ, title, source))
-                    break
+            cnt = 0
+            for it in root.findall(".//item")[:25]:
+                title, source = _parse_rss_title(it.findtext("title","").strip())
+                if any(k in title.lower() for k in en_kw) and title not in [x[0] for x in items]:
+                    items.append((title, source, "en"))
+                    cnt += 1
+                    if cnt >= 4:
+                        break
         except Exception as e:
-            print(f"  글로벌 뉴스 오류({typ}): {e}")
+            print(f"  영문 뉴스 오류: {e}")
 
-    # 국내 채권·자금시장 뉴스
-    kr_sources = [
-        "https://news.google.com/rss/search?q=국고채+채권+금리&hl=ko&gl=KR&ceid=KR:ko",
-        "https://news.google.com/rss/search?q=자금시장+한국은행+기준금리&hl=ko&gl=KR&ceid=KR:ko",
+    # ── 한국어 소스 (Google News KR) ──────────────────────────────────
+    ko_sources = [
+        ("https://news.google.com/rss/search?q=미국+국채+연준+바이백+워시+트럼프&hl=ko&gl=KR&ceid=KR:ko",
+         ["국채","연준","금리","바이백","채권","트럼프","워시","관세"]),
+        ("https://news.google.com/rss/search?q=인포맥스+채권+자금시장+국고채&hl=ko&gl=KR&ceid=KR:ko",
+         ["채권","금리","국고채","자금시장","한전채","기준금리","스프레드"]),
+        ("https://news.google.com/rss/search?q=국고채+채권+금리+한국은행+금통위&hl=ko&gl=KR&ceid=KR:ko",
+         ["채권","금리","국고채","자금시장","기준금리","금통위","크레딧"]),
     ]
-    kr_kw = ["채권", "금리", "국고채", "자금시장", "한전채", "기준금리", "한국은행", "금통위", "크레딧", "스프레드"]
-    for url in kr_sources:
+    ko_kw_all = ["채권","금리","국고채","자금시장","한전채","기준금리","연준","국채","트럼프","바이백"]
+    for url, kw in ko_sources:
         try:
-            resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+            resp = requests.get(url, timeout=12, headers={"User-Agent": UA})
             root = ET.fromstring(resp.content)
-            for item in root.findall(".//item")[:30]:
-                raw = item.findtext("title", "").strip()
-                title, source = _extract_title_source(raw)
-                if any(k in title for k in kr_kw) and title not in [n[1] for n in news]:
-                    news.append(("kr", title, source))
-                    break
-            if any(n[0] == "kr" for n in news):
+            cnt = 0
+            for it in root.findall(".//item")[:25]:
+                title, source = _parse_rss_title(it.findtext("title","").strip())
+                if any(k in title for k in kw) and title not in [x[0] for x in items]:
+                    items.append((title, source, "ko"))
+                    cnt += 1
+                    if cnt >= 3:
+                        break
+        except Exception as e:
+            print(f"  국내 뉴스 오류: {e}")
+
+    print(f"  → 총 {len(items)}개 헤드라인 수집")
+    for t, s, lang in items[:6]:
+        print(f"    [{lang}] {t[:65]} ({s})")
+    return items
+
+
+def build_market_analysis(us_rates, all_headlines):
+    """
+    미국 국채 금리 + 수집 헤드라인 → 채권시장 분석 딕셔너리 반환
+    {direction_ko, chg_10, events, kr_outlook, featured_kr}
+    """
+    chg_10 = us_rates.get("10Y", {}).get("chg_bps", 0)
+
+    # 방향성 & 국내 전망
+    if chg_10 >= 7:
+        direction_ko = "급등 (강한 약세)"
+        kr_outlook = (f"미국 국채 10Y +{chg_10:.0f}bp 급등으로 국내 채권시장 강한 약세 압력. "
+                      "국고채 전 구간 매도 우위 예상, 외국인 국채선물 순매도 여부 주목.")
+    elif chg_10 >= 3:
+        direction_ko = "상승 (약세)"
+        kr_outlook = (f"미국 국채 10Y +{chg_10:.0f}bp 상승 영향으로 국내 채권시장 약보합 예상. "
+                      "장기물 중심 약세, 단기물은 상대적으로 영향 제한될 전망.")
+    elif chg_10 >= -2:
+        direction_ko = "보합권"
+        kr_outlook = ("미국 금리 보합권 마감. 국내 채권시장 혼조세 예상, "
+                      "한국은행 스탠스 및 수급 재료가 방향성 결정할 것.")
+    elif chg_10 >= -6:
+        direction_ko = "하락 (강세)"
+        kr_outlook = (f"미국 국채 10Y {chg_10:.0f}bp 하락 영향으로 국내 채권시장 강세 예상. "
+                      "국고채 매수 우위, 외국인 선물 순매수 가능.")
+    else:
+        direction_ko = "급락 (강한 강세)"
+        kr_outlook = (f"미국 국채 10Y {chg_10:.0f}bp 급락으로 국내 채권시장 강한 강세. "
+                      "전 구간 매수 우위, 금리 하락폭 추가 확대 가능.")
+
+    # 이벤트 감지 (우선순위 순)
+    detected = {}
+    for cat, kws, label in _EVENT_KW:
+        for title, source, lang in all_headlines:
+            if any(kw.lower() in title.lower() for kw in kws):
+                detected[cat] = {"label": label, "title": title, "source": source}
                 break
-        except Exception as e:
-            print(f"  국내 뉴스 오류({url[:40]}): {e}")
 
-    for typ, headline, source in news:
-        print(f"  [{typ}] {headline[:70]} ({source})")
-    return news
+    events = []
+    for cat, _, _ in _EVENT_KW:
+        if cat in detected and len(events) < 3:
+            events.append(detected[cat])
+
+    # 국내 뉴스 상위 2건
+    featured_kr = [(t, s) for t, s, lang in all_headlines if lang == "ko"][:2]
+
+    return {
+        "direction_ko": direction_ko,
+        "chg_10":       chg_10,
+        "events":       events,
+        "kr_outlook":   kr_outlook,
+        "featured_kr":  featured_kr,
+    }
 
 
 # ── 설정 ────────────────────────────────────────────────────────────
@@ -1344,59 +1419,100 @@ def debt_section_html(summary, prev_s, as_of, is_pm, ytd_borrow=None, ytd_repay=
 </section>"""
 
 
-def market_news_section_html(us_rates, news_items):
-    """금융시장 동향 섹션 HTML"""
-    if not us_rates and not news_items:
+def market_news_section_html(us_rates, analysis):
+    """금융시장 동향 섹션 HTML. analysis = build_market_analysis() 반환값 dict"""
+    if not us_rates and not analysis:
         return ""
 
-    # US rates line
+    # ── 미국 국채 금리 바 ──────────────────────────────────────────────
     rate_parts = []
     for tenor in ["2Y", "10Y", "30Y"]:
         if tenor in us_rates:
             r = us_rates[tenor]
             sign = "▲" if r["chg_bps"] > 0 else ("▼" if r["chg_bps"] < 0 else "–")
             color = "#dc2626" if r["chg_bps"] > 0 else ("#2563eb" if r["chg_bps"] < 0 else "#94a3b8")
-            abs_chg = abs(r["chg_bps"])
             rate_parts.append(
-                f'미국 국채 {tenor} <strong style="color:{color}">{r["rate"]:.3f}%</strong>'
-                f' <span style="color:{color};font-size:.85em">{sign}{abs_chg:.1f}bp</span>'
+                f'{tenor} <strong style="color:{color}">{r["rate"]:.3f}%</strong>'
+                f'<span style="color:{color};font-size:.82em"> {sign}{abs(r["chg_bps"]):.1f}bp</span>'
             )
-    rate_line = " &nbsp;|&nbsp; ".join(rate_parts) if rate_parts else ""
+    rate_line = " &nbsp;|&nbsp; ".join(rate_parts)
 
-    # News lines
-    news_html = ""
-    type_icons = {"global": "🌐", "global2": "📰", "kr": "🇰🇷"}
-    type_labels = {"global": "글로벌", "global2": "글로벌", "kr": "국내"}
-    for item in news_items:
-        typ, headline = item[0], item[1]
-        source = item[2] if len(item) > 2 else ""
-        icon = type_icons.get(typ, "📌")
-        label = type_labels.get(typ, "")
-        source_html = (
-            f'<span style="font-size:.72rem;color:#94a3b8;margin-left:6px">{_html.escape(source)}</span>'
-        ) if source else ""
-        news_html += (
-            f'<div style="padding:8px 0;border-bottom:1px solid #f1f5f9;line-height:1.6">'
-            f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:6px">{icon} {label}</span>'
-            f'<span style="font-size:.85rem;color:#1e293b">{_html.escape(headline)}</span>'
-            f'{source_html}'
-            f'</div>'
-        )
+    direction_ko = analysis.get("direction_ko", "")
+    dir_color = "#dc2626" if "급등" in direction_ko or "상승" in direction_ko else (
+                "#2563eb" if "급락" in direction_ko or "하락" in direction_ko else "#64748b")
 
-    rate_section = (
-        f'<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 14px;'
-        f'font-size:.85rem;color:#0c4a6e;margin-bottom:12px;line-height:1.8">'
-        f'<span style="font-size:.75rem;font-weight:700;color:#0369a1;margin-right:8px">📊 전일 종가</span>'
-        f'{rate_line}</div>'
+    rate_block = (
+        f'<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;'
+        f'padding:11px 15px;margin-bottom:12px">'
+        f'<div style="font-size:.75rem;font-weight:700;color:#0369a1;margin-bottom:4px">📊 전일 미국 국채 (종가)</div>'
+        f'<div style="font-size:.86rem;color:#0c4a6e;line-height:1.8">'
+        f'미국 국채 &nbsp; {rate_line}</div>'
+        f'<div style="font-size:.78rem;margin-top:3px">'
+        f'→ <span style="color:{dir_color};font-weight:700">{_html.escape(direction_ko)}</span></div>'
+        f'</div>'
     ) if rate_line else ""
+
+    # ── 주요 이슈 ──────────────────────────────────────────────────────
+    events = analysis.get("events", [])
+    if events:
+        ev_rows = ""
+        for ev in events:
+            label = _html.escape(ev["label"])
+            title = _html.escape(ev["title"][:80])
+            source = _html.escape(ev.get("source",""))
+            source_span = f'<span style="color:#94a3b8;font-size:.75rem"> ({source})</span>' if source else ""
+            ev_rows += (
+                f'<div style="padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;line-height:1.5">'
+                f'<span style="background:#e0f2fe;color:#0369a1;font-size:.72rem;font-weight:700;'
+                f'padding:1px 5px;border-radius:3px;margin-right:6px">{label}</span>'
+                f'{title}{source_span}</div>'
+            )
+        event_block = (
+            f'<div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;'
+            f'padding:10px 14px;margin-bottom:12px">'
+            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:6px">🔍 주요 이슈</div>'
+            f'{ev_rows}</div>'
+        )
+    else:
+        event_block = ""
+
+    # ── 오늘 국내 채권시장 전망 ────────────────────────────────────────
+    kr_outlook = analysis.get("kr_outlook", "")
+    outlook_block = (
+        f'<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;'
+        f'padding:11px 15px;margin-bottom:12px">'
+        f'<div style="font-size:.75rem;font-weight:700;color:#166534;margin-bottom:4px">🇰🇷 오늘 국내 채권시장 전망</div>'
+        f'<div style="font-size:.84rem;color:#14532d;line-height:1.7">{_html.escape(kr_outlook)}</div>'
+        f'</div>'
+    ) if kr_outlook else ""
+
+    # ── 국내 채권 뉴스 ────────────────────────────────────────────────
+    featured_kr = analysis.get("featured_kr", [])
+    if featured_kr:
+        kr_rows = ""
+        for title, source in featured_kr:
+            src_span = (f'<span style="color:#94a3b8;font-size:.75rem"> {_html.escape(source)}</span>'
+                        if source else "")
+            kr_rows += (
+                f'<div style="padding:5px 0;border-bottom:1px solid #f1f5f9;'
+                f'font-size:.83rem;color:#1e293b;line-height:1.5">'
+                f'🇰🇷 {_html.escape(title)}{src_span}</div>'
+            )
+        kr_news_block = (
+            f'<div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;padding:10px 14px">'
+            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:6px">📰 국내 채권시장 뉴스</div>'
+            f'{kr_rows}</div>'
+        )
+    else:
+        kr_news_block = ""
 
     return f"""
 <section>
   <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
-  {rate_section}
-  <div style="background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-    {news_html if news_html else '<p style="color:#94a3b8;font-size:.84rem">뉴스를 불러오는 중...</p>'}
-  </div>
+  {rate_block}
+  {event_block}
+  {outlook_block}
+  {kr_news_block}
 </section>"""
 
 
@@ -1432,7 +1548,7 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
     today_html  = today_section_html(issuances)
     recent_html = recent_section_html(issuances)
     debt_html   = debt_section_html(debt_summary, debt_prev, debt_as_of, debt_is_pm, ytd_borrow, ytd_repay) if debt_summary else ""
-    news_html   = market_news_section_html(us_rates or {}, market_news or [])
+    news_html   = market_news_section_html(us_rates or {}, market_news or {})
     stats_html  = issu_stats_section_html(issu_stats) if issu_stats else ""
 
     THEAD = ('<thead><tr>'
@@ -1712,9 +1828,10 @@ if __name__ == "__main__":
     d_sum, d_prev, d_as_of, d_pm = collect_debt(issuances)
     ytd_borrow = calc_ytd_debt_flows(json.load(open(DEBT_FILE)))
     ytd_repay  = calc_ytd_repay()
-    us_rates   = fetch_us_rates()
-    market_news = fetch_market_news()
-    issu_stats       = collect_issu_stats()
+    us_rates      = fetch_us_rates()
+    all_headlines = fetch_bond_news_all()
+    market_news   = build_market_analysis(us_rates, all_headlines)
+    issu_stats    = collect_issu_stats()
     kepco_rates, kepco_amts = collect_kepco_rates_ytd()
     ktb_rates,   ktb_amts   = collect_ktb3y_rates_ytd()
 
