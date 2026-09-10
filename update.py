@@ -95,6 +95,23 @@ _EVENT_IMPACT = {
                 "단, 인플레 동반 시 스태그플레이션 우려로 금리 상승↑ 전환 가능.",
 }
 
+# 이벤트별 모순 설명 — 예상 하락 요인인데 실제 금리 상승한 경우
+_EVENT_CONTRADICT_DOWN_UP = {
+    "buyback":  "하지만 예상보다 바이백 물량이 적거나 만기 구성이 단기물 중심이어서 시장 기대에 못 미쳐 오히려 금리 상승.",
+    "gdp":      "하지만 인플레이션 우려가 동반되어 스태그플레이션 공포로 금리 상승 전환.",
+    "jobs":     "하지만 임금 상승·노동 참가율 등 세부 지표가 인플레 불안을 자극해 오히려 금리 상승.",
+    "cpi":      "하지만 세부 항목 또는 기대 인플레이션이 예상보다 강해 오히려 금리 상승.",
+}
+
+# 이벤트별 모순 설명 — 예상 상승 요인인데 실제 금리 하락한 경우
+_EVENT_CONTRADICT_UP_DOWN = {
+    "warsh":    "하지만 매파 발언이 기존 기대 범위 내라 시장은 오히려 안도하며 금리 하락.",
+    "trump":    "하지만 실제 집행 가능성 의구심으로 경기 둔화 우려가 앞서 금리 하락.",
+    "tariff":   "하지만 경기 침체 우려가 인플레 공포를 압도해 안전자산 선호로 금리 하락.",
+    "powell":   "하지만 비둘기파 신호가 더 강하게 전달되어 예상보다 큰 금리 하락.",
+    "auction":  "하지만 입찰 수요가 예상 이상으로 강해 오히려 금리 하락.",
+}
+
 # 이벤트별 비판적 시각 / 반대 해석
 _EVENT_CRITICAL = {
     "buyback":  "비판적 시각: 바이백 규모가 실질적 수급 개선에 미흡하다는 지적. "
@@ -130,6 +147,24 @@ def _parse_rss_title(raw):
     if m:
         return m.group(1).strip(), m.group(2).strip()
     return raw, ""
+
+
+def _ticks_to_bp(ticks_str):
+    """'10년물 26틱↓' → '약 3.1bp'  (KTB 선물 1틱=0.01, DV01 기준 환산)"""
+    m = re.match(r'(\d+)년물\s+(\d+)틱(↑|↓)', ticks_str)
+    if not m:
+        return ""
+    tenor = int(m.group(1))
+    ticks = int(m.group(2))
+    # DV01: 10년물 ≈ 80,000원/bp → 1tick(10,000원) ≈ 0.12bp
+    #        3년물 ≈ 28,000원/bp → 1tick(10,000원) ≈ 0.36bp
+    if tenor >= 10:
+        bp_per_tick = 0.12
+    elif tenor >= 5:
+        bp_per_tick = 0.20
+    else:
+        bp_per_tick = 0.36
+    return f"약 {round(ticks * bp_per_tick, 1)}bp"
 
 
 def fetch_night_futures():
@@ -293,21 +328,42 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
 
     # ── 1) 이벤트 문장 ────────────────────────────────────────────────
     if top_events:
+        # 타이틀 나열 (최대 3개)
         ev_parts = []
         for ev in top_events:
             t = ev.get("title")
             if t:
-                ev_parts.append(f'"{t[:55]}"')
+                ev_parts.append(f'"{t[:50]}"')
             else:
                 ev_parts.append(ev["label"])
         line_event = "주요 이슈: " + " / ".join(ev_parts) + "."
-        # 첫 번째 이벤트 영향 한 줄 추가
-        first_cat    = top_events[0]["cat"]
-        first_impact = _EVENT_IMPACT.get(first_cat, "")
-        if first_impact:
-            # 첫 문장만 사용 (마침표 기준)
-            first_sent = first_impact.split(". ")[0] + "."
-            line_event += " " + first_sent
+
+        # 각 이벤트 영향 첫 문장씩 (최대 2개)
+        impact_sents = []
+        for ev in top_events[:2]:
+            imp = _EVENT_IMPACT.get(ev["cat"], "")
+            if imp:
+                impact_sents.append(imp.split(". ")[0] + ".")
+        if impact_sents:
+            line_event += " " + " ".join(impact_sents)
+
+        # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10
+        first_imp = _EVENT_IMPACT.get(top_events[0]["cat"], "")
+        exp_down  = ("금리 하락↓ 요인" in first_imp or "금리 하락↓ 기대" in first_imp
+                     or "금리 하락↓" in first_imp.split(". ")[0])
+        exp_up    = ("금리 상승↑ 압력" in first_imp or "금리 상승↑ 요인" in first_imp
+                     or "금리 상승↑" in first_imp.split(". ")[0])
+        first_cat = top_events[0]["cat"]
+        if exp_down and not exp_up and chg_10 >= 3:
+            contra = _EVENT_CONTRADICT_DOWN_UP.get(
+                first_cat,
+                f"하지만 실제 미국 국채금리는 +{chg_10:.1f}bp 상승 — 시장이 기대와 달리 반응.")
+            line_event += " " + contra
+        elif exp_up and not exp_down and chg_10 <= -3:
+            contra = _EVENT_CONTRADICT_UP_DOWN.get(
+                first_cat,
+                f"하지만 실제 미국 국채금리는 {chg_10:.1f}bp 하락 — 시장이 기대와 달리 반응.")
+            line_event += " " + contra
     else:
         line_event = ""
 
@@ -341,7 +397,12 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         driver    = nf.get("driver", "")
         dir_kor   = ("금리 하락↓" if direction == "up"
                      else ("금리 상승↑" if direction == "down" else "보합"))
-        tick_part   = f"{ticks}, {dir_kor}" if ticks else dir_kor
+        if ticks:
+            bp_str    = _ticks_to_bp(ticks)
+            tick_part = (f"{ticks} → {bp_str} {dir_kor}" if bp_str
+                         else f"{ticks}, {dir_kor}")
+        else:
+            tick_part = dir_kor
         driver_part = f" ({driver})" if driver else ""
         line_night  = f"국채 야간선물: {tick_part}{driver_part}."
     elif kr_chg is not None:
