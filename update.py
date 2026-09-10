@@ -34,10 +34,31 @@ def fetch_us_rates():
     return rates
 
 
+def fetch_kr_bond_rate():
+    """Stooq에서 한국 국채 10Y 금리 수집 (야간선물 방향성 참고용)"""
+    import csv, io
+    try:
+        url = "https://stooq.com/q/d/l/?s=10kr.b&i=d"
+        resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+        rows = [r for r in csv.DictReader(io.StringIO(resp.text))
+                if r.get("Close") and r["Close"] != "null"]
+        if len(rows) >= 2:
+            curr = float(rows[-1]["Close"])
+            prev = float(rows[-2]["Close"])
+            chg  = round((curr - prev) * 100, 1)
+            print(f"  한국 국채 10Y: {curr:.3f}% ({chg:+.1f}bps)")
+            return {"rate": curr, "chg_bps": chg, "date": rows[-1].get("Date", "")}
+    except Exception as e:
+        print(f"  한국 국채 10Y 오류: {e}")
+    return {}
+
+
+
 # 이벤트 감지 키워드 (우선순위 순서)
 _EVENT_KW = [
     ("buyback",   ["buyback","buy back","buy-back","바이백"],                "재무부 바이백"),
     ("warsh",     ["warsh","워시"],                                           "워시 발언"),
+    ("bessent",   ["bessent","베센트","베선트"],                              "베센트 재무장관"),
     ("trump",     ["trump","트럼프"],                                         "트럼프"),
     ("tariff",    ["tariff","관세","trade war","무역전쟁"],                   "관세/무역"),
     ("powell",    ["powell","파월"],                                          "파월 발언"),
@@ -47,6 +68,32 @@ _EVENT_KW = [
     ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
     ("gdp",       ["gdp","recession","경기침체","성장률"],                    "경제성장"),
 ]
+
+# 이벤트별 시장 영향 설명
+_EVENT_IMPACT = {
+    "buyback":  "미 재무부 국채 바이백은 시장에서 국채를 매입해 단기적으로 금리 하락 요인. "
+                "단, 바이백 정책 신뢰성 논란 시 오히려 장기물 불안 → 금리 상승 전환 가능.",
+    "warsh":    "케빈 워시는 매파 성향으로, 금리 인하에 신중한 입장. "
+                "Fed 위원 지명 가능성이 있어 시장이 주목. 발언 강도에 따라 금리 상방 압력.",
+    "bessent":  "베센트 재무장관 발언은 국채 발행 계획·바이백 정책과 직결. "
+                "국채 공급 확대 시사 시 금리 상승, 축소 시사 시 금리 하락 요인.",
+    "trump":    "트럼프 정책(재정 확대·감세)은 국채 공급 증가 → 장기금리 상승 압력. "
+                "관세 이슈 시 인플레 우려로 금리 추가 상방 가능.",
+    "tariff":   "관세 부과는 수입물가 상승 → 인플레이션 기대 상승 → 금리 상방 압력. "
+                "단, 경기 둔화 우려 동반 시 안전자산 수요로 금리 하락 혼재.",
+    "powell":   "파월 의장 발언은 금리 방향의 핵심 신호. 매파적이면 금리 상승, "
+                "비둘기파적이면 금리 하락. 특히 '금리 인하 시기' 언급에 주목.",
+    "fed":      "연준 스탠스는 단기금리(2Y) 주도. 금리 인하 기대 후퇴 시 "
+                "단기 중심 금리 상승, 장단기 스프레드 플래트닝 진행.",
+    "auction":  "미 국채 입찰 결과가 시장 심리 결정. 낙찰률(bid-to-cover)이 낮으면 "
+                "수요 부진 → 금리 상승. 테일(tail) 발생 시 급등 가능.",
+    "cpi":      "물가 지표가 예상 상회 시 금리 인하 기대 후퇴 → 금리 상승. "
+                "국내 채권시장도 동조화 약세 예상.",
+    "jobs":     "강한 고용 = 경기 과열 → 금리 인하 명분 약화 → 금리 상승 요인. "
+                "비농업 고용자수와 실업률이 핵심 지표.",
+    "gdp":      "경기 둔화 시 안전자산 선호 → 채권 매수 → 금리 하락 요인. "
+                "단, 인플레와 동반 시 스태그플레이션 우려로 채권 약세 전환 가능.",
+}
 
 
 def _parse_rss_title(raw):
@@ -118,54 +165,81 @@ def fetch_bond_news_all():
     return items
 
 
-def build_market_analysis(us_rates, all_headlines):
+def build_market_analysis(us_rates, all_headlines, kr_bond=None):
     """
-    미국 국채 금리 + 수집 헤드라인 → 채권시장 분석 딕셔너리 반환
-    {direction_ko, chg_10, events, kr_outlook, featured_kr}
+    미국 국채 금리 + 한국 국채 + 수집 헤드라인 → 채권시장 분석 딕셔너리 반환
     """
     chg_10 = us_rates.get("10Y", {}).get("chg_bps", 0)
+    kr_chg = (kr_bond or {}).get("chg_bps", None)
 
-    # 방향성 & 국내 전망
+    # 방향성 판단 (미국 10Y 기준)
     if chg_10 >= 7:
         direction_ko = "급등 (강한 약세)"
-        kr_outlook = (f"미국 국채 10Y +{chg_10:.0f}bp 급등으로 국내 채권시장 강한 약세 압력. "
-                      "국고채 전 구간 매도 우위 예상, 외국인 국채선물 순매도 여부 주목.")
     elif chg_10 >= 3:
         direction_ko = "상승 (약세)"
-        kr_outlook = (f"미국 국채 10Y +{chg_10:.0f}bp 상승 영향으로 국내 채권시장 약보합 예상. "
-                      "장기물 중심 약세, 단기물은 상대적으로 영향 제한될 전망.")
     elif chg_10 >= -2:
         direction_ko = "보합권"
-        kr_outlook = ("미국 금리 보합권 마감. 국내 채권시장 혼조세 예상, "
-                      "한국은행 스탠스 및 수급 재료가 방향성 결정할 것.")
     elif chg_10 >= -6:
         direction_ko = "하락 (강세)"
-        kr_outlook = (f"미국 국채 10Y {chg_10:.0f}bp 하락 영향으로 국내 채권시장 강세 예상. "
-                      "국고채 매수 우위, 외국인 선물 순매수 가능.")
     else:
         direction_ko = "급락 (강한 강세)"
-        kr_outlook = (f"미국 국채 10Y {chg_10:.0f}bp 급락으로 국내 채권시장 강한 강세. "
-                      "전 구간 매수 우위, 금리 하락폭 추가 확대 가능.")
 
-    # 이벤트 감지 (우선순위 순)
+    # 한국 야간선물 방향 (국채 10Y 스팟 기준)
+    if kr_chg is not None:
+        kr_sign = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
+        kr_dir = "약세" if kr_chg > 0 else ("강세" if kr_chg < 0 else "보합")
+        kr_night = (f"전일 한국 국채 10Y {(kr_bond or {}).get('rate', 0):.3f}% "
+                    f"({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}) — "
+                    f"야간선물 포함 미국 금리 연동 {'약세' if chg_10 > 2 else '강세' if chg_10 < -2 else '보합'} 흐름 예상")
+    else:
+        kr_night = None
+
+    # 오늘 국내 전망 (미국+한국 종합)
+    if chg_10 >= 7:
+        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 급등으로 국내 채권시장 강한 약세 압력. "
+                      "국고채 전 구간 매도 우위, 외국인 국채선물 순매도 여부 주목. "
+                      "특히 10년물 중심 금리 상방 열려 있음.")
+    elif chg_10 >= 3:
+        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 상승 영향으로 국내 채권시장 약보합 예상. "
+                      "장기물 중심 약세, 단기물은 한국은행 스탠스가 방어선.")
+    elif chg_10 >= -2:
+        kr_outlook = ("미국 금리 보합권. 국내 채권시장 혼조세 예상, "
+                      "수급 및 한국은행 스탠스가 방향성 결정.")
+    elif chg_10 >= -6:
+        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 하락, 국내 채권시장 강세 예상. "
+                      "국고채 매수 우위, 외국인 선물 순매수 가능.")
+    else:
+        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 급락. 국내 채권시장 강한 강세. "
+                      "전 구간 매수 우위, 금리 하락폭 확대 가능.")
+
+    # 이벤트 감지 — 한국어 기사 우선, 영어는 감지용으로만
     detected = {}
     for cat, kws, label in _EVENT_KW:
+        # 한국어 먼저
         for title, source, lang in all_headlines:
-            if any(kw.lower() in title.lower() for kw in kws):
-                detected[cat] = {"label": label, "title": title, "source": source}
+            if lang == "ko" and any(kw.lower() in title.lower() for kw in kws):
+                impact = _EVENT_IMPACT.get(cat, "")
+                detected[cat] = {"label": label, "title": title, "source": source, "impact": impact, "lang": "ko"}
                 break
+        if cat not in detected:
+            for title, source, lang in all_headlines:
+                if lang == "en" and any(kw.lower() in title.lower() for kw in kws):
+                    impact = _EVENT_IMPACT.get(cat, "")
+                    detected[cat] = {"label": label, "title": None, "source": source, "impact": impact, "lang": "en"}
+                    break
 
     events = []
     for cat, _, _ in _EVENT_KW:
         if cat in detected and len(events) < 3:
             events.append(detected[cat])
 
-    # 국내 뉴스 상위 2건
+    # 국내 뉴스 대표 헤드라인 (한국어만)
     featured_kr = [(t, s) for t, s, lang in all_headlines if lang == "ko"][:2]
 
     return {
         "direction_ko": direction_ko,
         "chg_10":       chg_10,
+        "kr_night":     kr_night,
         "events":       events,
         "kr_outlook":   kr_outlook,
         "featured_kr":  featured_kr,
@@ -1452,25 +1526,43 @@ def market_news_section_html(us_rates, analysis):
         f'</div>'
     ) if rate_line else ""
 
-    # ── 주요 이슈 ──────────────────────────────────────────────────────
+    # ── 한국 국채 야간선물 ────────────────────────────────────────────
+    kr_night = analysis.get("kr_night")
+    night_block = (
+        f'<div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;'
+        f'padding:10px 15px;margin-bottom:12px">'
+        f'<div style="font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:3px">🌙 국채 야간선물 동향</div>'
+        f'<div style="font-size:.83rem;color:#78350f;line-height:1.6">{_html.escape(kr_night)}</div>'
+        f'</div>'
+    ) if kr_night else ""
+
+    # ── 주요 이슈 (영향 설명 포함) ────────────────────────────────────
     events = analysis.get("events", [])
     if events:
         ev_rows = ""
         for ev in events:
-            label = _html.escape(ev["label"])
-            title = _html.escape(ev["title"][:80])
-            source = _html.escape(ev.get("source",""))
-            source_span = f'<span style="color:#94a3b8;font-size:.75rem"> ({source})</span>' if source else ""
+            label  = _html.escape(ev["label"])
+            impact = _html.escape(ev.get("impact", ""))
+            # 한국어 헤드라인만 표시, 영어는 감지용으로만 사용
+            title_raw = ev.get("title")
+            headline_html = (
+                f'<div style="font-size:.82rem;color:#1e293b;margin:2px 0 3px">'
+                f'"{_html.escape(title_raw[:90])}"</div>'
+            ) if title_raw and ev.get("lang") == "ko" else ""
+            impact_html = (
+                f'<div style="font-size:.79rem;color:#475569;line-height:1.5;border-left:2px solid #cbd5e1;'
+                f'padding-left:8px;margin-top:3px">{impact}</div>'
+            ) if impact else ""
             ev_rows += (
-                f'<div style="padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;line-height:1.5">'
+                f'<div style="padding:8px 0;border-bottom:1px solid #f1f5f9">'
                 f'<span style="background:#e0f2fe;color:#0369a1;font-size:.72rem;font-weight:700;'
-                f'padding:1px 5px;border-radius:3px;margin-right:6px">{label}</span>'
-                f'{title}{source_span}</div>'
+                f'padding:2px 6px;border-radius:3px;margin-right:6px">{label}</span>'
+                f'{headline_html}{impact_html}</div>'
             )
         event_block = (
             f'<div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;'
             f'padding:10px 14px;margin-bottom:12px">'
-            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:6px">🔍 주요 이슈</div>'
+            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:4px">🔍 주요 이슈 및 시장 영향</div>'
             f'{ev_rows}</div>'
         )
     else:
@@ -1510,6 +1602,7 @@ def market_news_section_html(us_rates, analysis):
 <section>
   <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
   {rate_block}
+  {night_block}
   {event_block}
   {outlook_block}
   {kr_news_block}
@@ -1829,8 +1922,9 @@ if __name__ == "__main__":
     ytd_borrow = calc_ytd_debt_flows(json.load(open(DEBT_FILE)))
     ytd_repay  = calc_ytd_repay()
     us_rates      = fetch_us_rates()
+    kr_bond       = fetch_kr_bond_rate()
     all_headlines = fetch_bond_news_all()
-    market_news   = build_market_analysis(us_rates, all_headlines)
+    market_news   = build_market_analysis(us_rates, all_headlines, kr_bond)
     issu_stats    = collect_issu_stats()
     kepco_rates, kepco_amts = collect_kepco_rates_ytd()
     ktb_rates,   ktb_amts   = collect_ktb3y_rates_ytd()
