@@ -57,8 +57,10 @@ def fetch_kr_bond_rate():
 # 이벤트 감지 키워드 (우선순위 순서)
 _EVENT_KW = [
     ("buyback",   ["buyback","buy back","buy-back","바이백"],                "재무부 바이백"),
-    ("warsh",     ["warsh","워시"],                                           "워시 발언"),
+    ("warsh",     ["warsh","워시","kevin warsh","매파 본색"],                 "워시 발언"),
+    ("wgbi",      ["WGBI","wgbi","세계국채지수","채권지수 편입","wgbi 편입"], "WGBI 편입"),
     ("bessent",   ["bessent","베센트","베선트"],                              "베센트 재무장관"),
+    ("kr_close",  ["채권-마감","채권 마감","금리 급락","금리 급등"],          "채권 마감"),
     ("trump",     ["trump","트럼프"],                                         "트럼프"),
     ("tariff",    ["tariff","관세","trade war","무역전쟁"],                   "관세/무역"),
     ("powell",    ["powell","파월"],                                          "파월 발언"),
@@ -93,6 +95,10 @@ _EVENT_IMPACT = {
                 "약한 고용 → 경기 둔화 우려·인하 기대 → 금리 하락↓.",
     "gdp":      "경기 둔화 → 안전자산 선호·채권 매수 → 금리 하락↓. "
                 "단, 인플레 동반 시 스태그플레이션 우려로 금리 상승↑ 전환 가능.",
+    "wgbi":     "한국이 WGBI(세계국채지수)에 편입되어 글로벌 패시브 자금의 국채 매수 유입 기대. "
+                "외국인 장기 수요 증가 → 금리 하락↓ 압력 지속. 한전채 등 공기업채 스프레드 축소 가능.",
+    "kr_close": "전일 국내 채권시장 마감 — 실제 금리 움직임을 직접 반영한 시장 결과. "
+                "발행 계획·WGBI·환율 등 복합 요인이 맞물려 금리 방향성 결정.",
 }
 
 # 이벤트별 모순 설명 — 예상 하락 요인인데 실제 금리 상승한 경우
@@ -327,25 +333,19 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             top_events.append(detected[cat])
 
     # ── 1) 이벤트 문장 ────────────────────────────────────────────────
+    # 제목 나열 대신 이벤트 label + 실제 내용 서술
     if top_events:
-        # 타이틀 나열 (최대 3개)
-        ev_parts = []
-        for ev in top_events:
-            t = ev.get("title")
-            if t:
-                ev_parts.append(f'"{t[:50]}"')
-            else:
-                ev_parts.append(ev["label"])
-        line_event = "주요 이슈: " + " / ".join(ev_parts) + "."
-
-        # 각 이벤트 영향 첫 문장씩 (최대 2개)
-        impact_sents = []
-        for ev in top_events[:2]:
-            imp = _EVENT_IMPACT.get(ev["cat"], "")
+        event_sents = []
+        for ev in top_events[:3]:
+            cat   = ev["cat"]
+            label = ev["label"]
+            imp   = _EVENT_IMPACT.get(cat, "")
             if imp:
-                impact_sents.append(imp.split(". ")[0] + ".")
-        if impact_sents:
-            line_event += " " + " ".join(impact_sents)
+                first_sent = imp.split(". ")[0]
+                event_sents.append(f"{label}: {first_sent}.")
+            else:
+                event_sents.append(f"{label} 관련 동향.")
+        line_event = " ".join(event_sents)
 
         # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10
         first_imp = _EVENT_IMPACT.get(top_events[0]["cat"], "")
