@@ -172,45 +172,46 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
     chg_10 = us_rates.get("10Y", {}).get("chg_bps", 0)
     kr_chg = (kr_bond or {}).get("chg_bps", None)
 
-    # 방향성 판단 (미국 10Y 기준)
+    # 방향성 판단 (미국 10Y 기준) — 자금조달 관점: 금리 상승/하락 명시
     if chg_10 >= 7:
-        direction_ko = "급등 (강한 약세)"
+        direction_ko = "급등 (금리 상승↑, 조달비용 증가)"
     elif chg_10 >= 3:
-        direction_ko = "상승 (약세)"
+        direction_ko = "상승 (금리 상승↑)"
     elif chg_10 >= -2:
-        direction_ko = "보합권"
+        direction_ko = "보합 (금리 변동 제한)"
     elif chg_10 >= -6:
-        direction_ko = "하락 (강세)"
+        direction_ko = "하락 (금리 하락↓)"
     else:
-        direction_ko = "급락 (강한 강세)"
+        direction_ko = "급락 (금리 하락↓, 조달비용 감소)"
 
     # 한국 야간선물 방향 (국채 10Y 스팟 기준)
     if kr_chg is not None:
         kr_sign = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
-        kr_dir = "약세" if kr_chg > 0 else ("강세" if kr_chg < 0 else "보합")
+        kr_dir = "금리 상승↑" if kr_chg > 0 else ("금리 하락↓" if kr_chg < 0 else "보합")
+        us_dir = "금리 상승↑" if chg_10 > 2 else ("금리 하락↓" if chg_10 < -2 else "보합")
         kr_night = (f"전일 한국 국채 10Y {(kr_bond or {}).get('rate', 0):.3f}% "
                     f"({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}) — "
-                    f"야간선물 포함 미국 금리 연동 {'약세' if chg_10 > 2 else '강세' if chg_10 < -2 else '보합'} 흐름 예상")
+                    f"미국 금리 연동, 오늘 장중 {us_dir} 흐름 예상")
     else:
         kr_night = None
 
-    # 오늘 국내 전망 (미국+한국 종합)
+    # 오늘 국내 전망 (자금조달 관점 — 금리 방향 명시)
     if chg_10 >= 7:
-        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 급등으로 국내 채권시장 강한 약세 압력. "
-                      "국고채 전 구간 매도 우위, 외국인 국채선물 순매도 여부 주목. "
-                      "특히 10년물 중심 금리 상방 열려 있음.")
+        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 급등 → 국내 금리 상승 압력 강함. "
+                      "국고채 전 구간 금리 상승(가격 하락) 예상. "
+                      "조달비용 증가 가능성 — 한전채 발행 금리 상승 유의.")
     elif chg_10 >= 3:
-        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 상승 영향으로 국내 채권시장 약보합 예상. "
-                      "장기물 중심 약세, 단기물은 한국은행 스탠스가 방어선.")
+        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 상승 → 국내 금리 소폭 상승 가능. "
+                      "장기물(5년↑) 중심 금리 상승, 단기물은 한국은행 스탠스가 방어선.")
     elif chg_10 >= -2:
-        kr_outlook = ("미국 금리 보합권. 국내 채권시장 혼조세 예상, "
-                      "수급 및 한국은행 스탠스가 방향성 결정.")
+        kr_outlook = ("미국 금리 보합 → 국내 금리도 보합권 예상. "
+                      "방향성 부재, 수급·한국은행 스탠스에 따라 소폭 등락.")
     elif chg_10 >= -6:
-        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 하락, 국내 채권시장 강세 예상. "
-                      "국고채 매수 우위, 외국인 선물 순매수 가능.")
+        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 하락 → 국내 금리 하락 기대. "
+                      "조달비용 감소 가능성 — 발행 타이밍 검토 유리.")
     else:
-        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 급락. 국내 채권시장 강한 강세. "
-                      "전 구간 매수 우위, 금리 하락폭 확대 가능.")
+        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 급락 → 국내 금리 하락 압력 강함. "
+                      "조달비용 감소 기회 — 적극적 발행 타이밍 고려 가능.")
 
     # 이벤트 감지 — 한국어 기사 우선, 영어는 감지용으로만
     detected = {}
