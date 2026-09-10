@@ -71,28 +71,55 @@ _EVENT_KW = [
 
 # 이벤트별 시장 영향 설명
 _EVENT_IMPACT = {
-    "buyback":  "미 재무부 국채 바이백은 시장에서 국채를 매입해 단기적으로 금리 하락 요인. "
-                "단, 바이백 정책 신뢰성 논란 시 오히려 장기물 불안 → 금리 상승 전환 가능.",
-    "warsh":    "케빈 워시는 매파 성향으로, 금리 인하에 신중한 입장. "
-                "Fed 위원 지명 가능성이 있어 시장이 주목. 발언 강도에 따라 금리 상방 압력.",
-    "bessent":  "베센트 재무장관 발언은 국채 발행 계획·바이백 정책과 직결. "
-                "국채 공급 확대 시사 시 금리 상승, 축소 시사 시 금리 하락 요인.",
-    "trump":    "트럼프 정책(재정 확대·감세)은 국채 공급 증가 → 장기금리 상승 압력. "
-                "관세 이슈 시 인플레 우려로 금리 추가 상방 가능.",
-    "tariff":   "관세 부과는 수입물가 상승 → 인플레이션 기대 상승 → 금리 상방 압력. "
-                "단, 경기 둔화 우려 동반 시 안전자산 수요로 금리 하락 혼재.",
-    "powell":   "파월 의장 발언은 금리 방향의 핵심 신호. 매파적이면 금리 상승, "
-                "비둘기파적이면 금리 하락. 특히 '금리 인하 시기' 언급에 주목.",
+    "buyback":  "재무부가 시장에서 국채를 직접 매입 → 단기적으로 공급 축소 효과, 금리 하락↓ 요인. "
+                "특히 장기물(20Y·30Y) 중심 매입 시 장기금리 하락 기대. 한전채 등 공기업채 발행 조건 개선 가능.",
+    "warsh":    "케빈 워시는 대표적 매파(hawkish) 인사로 금리 인하에 극히 신중한 입장. "
+                "Fed 의장·고위직 지명 가능성 거론 시 '더 높고 더 오래(higher for longer)' 기대 → 금리 상승↑ 압력.",
+    "bessent":  "베센트 재무장관은 국채 발행 계획·바이백·만기 구조를 직접 결정. "
+                "장기물 발행 억제 시사 → 금리 하락↓, 장기물 확대 시사 → 금리 상승↑ 요인.",
+    "trump":    "트럼프 재정 확대·감세 정책은 국채 공급 증가 → 장기금리 상승↑ 압력. "
+                "관세 인상 동반 시 인플레 우려로 금리 추가 상방 가능.",
+    "tariff":   "관세는 수입물가 상승 → 인플레이션 기대 상승 → 금리 상방↑ 압력. "
+                "단, 경기 둔화 우려 동반 시 안전자산 수요로 금리 하락↓ 혼재.",
+    "powell":   "파월 발언은 금리 방향의 핵심 신호. 매파적 → 금리 상승↑, 비둘기파적 → 금리 하락↓. "
+                "'금리 인하 시기' 및 '인플레 목표 달성' 표현에 주목.",
     "fed":      "연준 스탠스는 단기금리(2Y) 주도. 금리 인하 기대 후퇴 시 "
-                "단기 중심 금리 상승, 장단기 스프레드 플래트닝 진행.",
-    "auction":  "미 국채 입찰 결과가 시장 심리 결정. 낙찰률(bid-to-cover)이 낮으면 "
-                "수요 부진 → 금리 상승. 테일(tail) 발생 시 급등 가능.",
-    "cpi":      "물가 지표가 예상 상회 시 금리 인하 기대 후퇴 → 금리 상승. "
-                "국내 채권시장도 동조화 약세 예상.",
-    "jobs":     "강한 고용 = 경기 과열 → 금리 인하 명분 약화 → 금리 상승 요인. "
-                "비농업 고용자수와 실업률이 핵심 지표.",
-    "gdp":      "경기 둔화 시 안전자산 선호 → 채권 매수 → 금리 하락 요인. "
-                "단, 인플레와 동반 시 스태그플레이션 우려로 채권 약세 전환 가능.",
+                "단기물 중심 금리 상승↑, 장단기 스프레드 플래트닝 진행.",
+    "auction":  "미 국채 입찰 수요 부진(낮은 bid-to-cover, 테일 발생) → 금리 상승↑. "
+                "강한 수요(외국인·연기금) → 금리 하락↓. 한국 시간 새벽에 결과 발표.",
+    "cpi":      "물가 예상 상회 → 금리 인하 기대 후퇴 → 금리 상승↑. "
+                "예상 하회 → 인하 기대 강화 → 금리 하락↓. 국내 채권시장 동조화 강함.",
+    "jobs":     "강한 고용 → 경기 과열·인하 명분 약화 → 금리 상승↑. "
+                "약한 고용 → 경기 둔화 우려·인하 기대 → 금리 하락↓.",
+    "gdp":      "경기 둔화 → 안전자산 선호·채권 매수 → 금리 하락↓. "
+                "단, 인플레 동반 시 스태그플레이션 우려로 금리 상승↑ 전환 가능.",
+}
+
+# 이벤트별 비판적 시각 / 반대 해석
+_EVENT_CRITICAL = {
+    "buyback":  "비판적 시각: 바이백 규모가 실질적 수급 개선에 미흡하다는 지적. "
+                "재정적자 심화 속 단순 만기 교환에 그칠 경우 장기금리 상승↑ 전환 가능. "
+                "시장 신뢰성 논란 시 역효과 우려.",
+    "warsh":    "반론: 과도한 긴축은 경기 침체를 앞당겨 결국 급격한 금리 인하로 이어질 수 있다는 주장. "
+                "시장은 매파 발언에도 인하 기대를 유지하는 경향.",
+    "bessent":  "반론: 장기물 발행 억제는 단기적 호재이나 이후 장기물 공급 집중 우려를 키울 수 있음. "
+                "정치적 목적의 금리 개입이라는 비판도 존재.",
+    "trump":    "반론: 관세·감세 정책이 실제 집행되지 않을 경우(의회 협상) 금리 영향 제한적. "
+                "정치적 발언과 실제 정책 간 괴리가 큰 사례 다수.",
+    "tariff":   "반론: 관세가 오히려 수요를 위축시켜 경기 둔화 → 금리 인하 압력으로 이어질 수도. "
+                "인플레와 침체 동시 우려(스태그플레이션) 시 채권 방향 불확실.",
+    "powell":   "반론: 파월 발언이 시장 기대와 다를 경우 단기 변동성만 유발하고 방향성은 데이터에 수렴. "
+                "연설 전후 금리 되돌림 현상 빈번.",
+    "fed":      "반론: 연준 내 의견 분화(매파/비둘기파 혼재) 시 시장에 혼선 가능. "
+                "점도표(dot plot)와 실제 정책 괴리가 종종 발생.",
+    "auction":  "주의: 입찰 직전 금리 상승 후 낙찰 시 금리 하락 패턴(cycle) 반복되는 경향. "
+                "단순 수급보다 수급 이후의 딜러 포지션 해소 흐름이 더 중요.",
+    "cpi":      "주의: CPI 발표 직후 변동성이 크지만 수 시간 내 반등·되돌림 빈번. "
+                "시장의 선반영(priced-in) 여부 확인 필요.",
+    "jobs":     "주의: 고용지표는 후행성이 강해 실제 경기를 늦게 반영. "
+                "임시직·시간제 증가 등 고용의 질 저하 시 강한 수치도 해석 유의.",
+    "gdp":      "반론: GDP 초기 발표치는 수정 폭이 크고 시장 반응이 단기적. "
+                "시장은 GDP보다 고용·물가의 선행 지표를 더 중시하는 경향.",
 }
 
 
@@ -184,7 +211,7 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
     else:
         direction_ko = "급락 (금리 하락↓, 조달비용 감소)"
 
-    # 한국 야간선물 방향 (국채 10Y 스팟 기준)
+    # 한국 야간선물 방향 (국채 10Y 스팟 기준, 없으면 미국 금리 연동 추론)
     if kr_chg is not None:
         kr_sign = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
         kr_dir = "금리 상승↑" if kr_chg > 0 else ("금리 하락↓" if kr_chg < 0 else "보합")
@@ -192,8 +219,21 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
         kr_night = (f"전일 한국 국채 10Y {(kr_bond or {}).get('rate', 0):.3f}% "
                     f"({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}) — "
                     f"미국 금리 연동, 오늘 장중 {us_dir} 흐름 예상")
+    elif chg_10 >= 5:
+        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 급등 → 국채 야간선물 금리 상승↑ 압력 강함. "
+                    "오늘 국내 장 시작 시 금리 상승 갭업 가능성 유의.")
+    elif chg_10 >= 2:
+        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 상승 → 국채 야간선물 소폭 금리 상승↑ 예상. "
+                    "오늘 장중 상승 압력, 단기물 방어 주목.")
+    elif chg_10 <= -5:
+        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 급락 → 국채 야간선물 금리 하락↓ 흐름 예상. "
+                    "오늘 국내 금리 하락 갭다운 가능, 발행 타이밍 유리.")
+    elif chg_10 <= -2:
+        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 하락 → 국채 야간선물 소폭 금리 하락↓ 기대. "
+                    "오늘 장중 하락 지지, 한국은행 스탠스 병행 주목.")
     else:
-        kr_night = None
+        kr_night = ("전일 미국 10Y 금리 보합 → 국채 야간선물 방향성 제한적. "
+                    "오늘 장중 국내 수급·한국은행 스탠스가 방향 결정 요인.")
 
     # 오늘 국내 전망 (자금조달 관점 — 금리 방향 명시)
     if chg_10 >= 7:
@@ -213,20 +253,30 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
         kr_outlook = (f"미국 10Y {chg_10:.0f}bp 급락 → 국내 금리 하락 압력 강함. "
                       "조달비용 감소 기회 — 적극적 발행 타이밍 고려 가능.")
 
-    # 이벤트 감지 — 한국어 기사 우선, 영어는 감지용으로만
+    # 이벤트 감지 — 같은 기사가 여러 카테고리에 중복 등록되지 않도록 seen_titles 사용
     detected = {}
+    seen_titles = set()
     for cat, kws, label in _EVENT_KW:
-        # 한국어 먼저
+        # 한국어 기사 우선 (이미 다른 카테고리에 쓰인 타이틀 제외)
         for title, source, lang in all_headlines:
-            if lang == "ko" and any(kw.lower() in title.lower() for kw in kws):
-                impact = _EVENT_IMPACT.get(cat, "")
-                detected[cat] = {"label": label, "title": title, "source": source, "impact": impact, "lang": "ko"}
+            if lang == "ko" and any(kw.lower() in title.lower() for kw in kws) and title not in seen_titles:
+                seen_titles.add(title)
+                detected[cat] = {
+                    "label": label, "title": title, "source": source,
+                    "impact": _EVENT_IMPACT.get(cat, ""),
+                    "critical": _EVENT_CRITICAL.get(cat, ""),
+                    "lang": "ko",
+                }
                 break
         if cat not in detected:
             for title, source, lang in all_headlines:
                 if lang == "en" and any(kw.lower() in title.lower() for kw in kws):
-                    impact = _EVENT_IMPACT.get(cat, "")
-                    detected[cat] = {"label": label, "title": None, "source": source, "impact": impact, "lang": "en"}
+                    detected[cat] = {
+                        "label": label, "title": None, "source": source,
+                        "impact": _EVENT_IMPACT.get(cat, ""),
+                        "critical": _EVENT_CRITICAL.get(cat, ""),
+                        "lang": "en",
+                    }
                     break
 
     events = []
@@ -234,8 +284,10 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
         if cat in detected and len(events) < 3:
             events.append(detected[cat])
 
-    # 국내 뉴스 대표 헤드라인 (한국어만)
-    featured_kr = [(t, s) for t, s, lang in all_headlines if lang == "ko"][:2]
+    # 국내 뉴스 (이벤트에 이미 쓰인 기사 제외)
+    event_titles = {ev["title"] for ev in events if ev.get("title")}
+    featured_kr = [(t, s) for t, s, lang in all_headlines
+                   if lang == "ko" and t not in event_titles][:3]
 
     return {
         "direction_ko": direction_ko,
@@ -1537,28 +1589,34 @@ def market_news_section_html(us_rates, analysis):
         f'</div>'
     ) if kr_night else ""
 
-    # ── 주요 이슈 (영향 설명 포함) ────────────────────────────────────
+    # ── 주요 이슈 (영향 설명 + 비판적 시각 포함) ─────────────────────
     events = analysis.get("events", [])
     if events:
         ev_rows = ""
         for ev in events:
-            label  = _html.escape(ev["label"])
-            impact = _html.escape(ev.get("impact", ""))
-            # 한국어 헤드라인만 표시, 영어는 감지용으로만 사용
+            label    = _html.escape(ev["label"])
+            impact   = _html.escape(ev.get("impact", ""))
+            critical = _html.escape(ev.get("critical", ""))
             title_raw = ev.get("title")
             headline_html = (
-                f'<div style="font-size:.82rem;color:#1e293b;margin:2px 0 3px">'
+                f'<div style="font-size:.82rem;color:#1e293b;font-style:italic;margin:3px 0 4px">'
                 f'"{_html.escape(title_raw[:90])}"</div>'
             ) if title_raw and ev.get("lang") == "ko" else ""
             impact_html = (
-                f'<div style="font-size:.79rem;color:#475569;line-height:1.5;border-left:2px solid #cbd5e1;'
-                f'padding-left:8px;margin-top:3px">{impact}</div>'
+                f'<div style="font-size:.79rem;color:#1e40af;line-height:1.55;'
+                f'border-left:3px solid #bfdbfe;padding-left:8px;margin-top:4px">'
+                f'📌 시장 영향: {impact}</div>'
             ) if impact else ""
+            critical_html = (
+                f'<div style="font-size:.79rem;color:#7c3aed;line-height:1.55;'
+                f'border-left:3px solid #ddd6fe;padding-left:8px;margin-top:5px">'
+                f'⚠ 비판적 시각: {critical}</div>'
+            ) if critical else ""
             ev_rows += (
-                f'<div style="padding:8px 0;border-bottom:1px solid #f1f5f9">'
+                f'<div style="padding:9px 0;border-bottom:1px solid #f1f5f9">'
                 f'<span style="background:#e0f2fe;color:#0369a1;font-size:.72rem;font-weight:700;'
-                f'padding:2px 6px;border-radius:3px;margin-right:6px">{label}</span>'
-                f'{headline_html}{impact_html}</div>'
+                f'padding:2px 7px;border-radius:3px;margin-right:6px">{label}</span>'
+                f'{headline_html}{impact_html}{critical_html}</div>'
             )
         event_block = (
             f'<div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;'
