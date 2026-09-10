@@ -34,23 +34,22 @@ def fetch_us_rates():
     return rates
 
 
-def _rss_desc(item):
-    """RSS item에서 description 텍스트 추출 (HTML 태그 제거, 110자 이내)"""
-    raw = item.findtext("description", "") or ""
-    raw = re.sub(r'<[^>]+>', ' ', raw)
-    raw = re.sub(r'\s+', ' ', raw).strip()
-    if len(raw) > 110:
-        raw = raw[:107] + "…"
-    return raw
+def _extract_title_source(raw_title):
+    """Google News 제목에서 '기사제목 - 출처' 분리. (clean_title, source) 반환"""
+    raw_title = re.sub(r'<[^>]+>', '', raw_title).strip()
+    m = re.match(r'^(.*?)\s+-\s+([^-]+)$', raw_title)
+    if m:
+        return m.group(1).strip(), m.group(2).strip()
+    return raw_title, ""
 
 
 def fetch_market_news():
-    """채권/금리 관련 뉴스 수집. 반환: list of (typ, headline, desc)"""
+    """채권/금리 관련 뉴스 수집. 반환: list of (typ, headline, source)"""
     import xml.etree.ElementTree as ET
     print("[ 금융시장 뉴스 수집 ]")
-    news = []  # (typ, headline, desc)
+    news = []  # (typ, headline, source)
 
-    # 글로벌 채권·금리 뉴스 — 한국어 Google News로 직접 수집 (번역 불필요)
+    # 글로벌 채권·금리 뉴스 — 한국어 Google News로 직접 수집
     global_sources = [
         ("https://news.google.com/rss/search?q=미국+국채+연준+금리&hl=ko&gl=KR&ceid=KR:ko", "global",
          ["국채", "연준", "금리", "Fed", "국채금리", "기준금리", "인플레", "채권"]),
@@ -64,12 +63,10 @@ def fetch_market_news():
             resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
             root = ET.fromstring(resp.content)
             for item in root.findall(".//item")[:30]:
-                title = item.findtext("title", "").strip()
-                title = re.sub(r'<[^>]+>', '', title)
-                title = re.sub(r'\s*-\s*\S+$', '', title).strip()
+                raw = item.findtext("title", "").strip()
+                title, source = _extract_title_source(raw)
                 if any(k in title for k in kw) and title not in [n[1] for n in news]:
-                    desc = _rss_desc(item)
-                    news.append((typ, title, desc))
+                    news.append((typ, title, source))
                     break
         except Exception as e:
             print(f"  글로벌 뉴스 오류({typ}): {e}")
@@ -85,19 +82,18 @@ def fetch_market_news():
             resp = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
             root = ET.fromstring(resp.content)
             for item in root.findall(".//item")[:30]:
-                title = item.findtext("title", "").strip()
-                title = re.sub(r'<[^>]+>', '', title)
+                raw = item.findtext("title", "").strip()
+                title, source = _extract_title_source(raw)
                 if any(k in title for k in kr_kw) and title not in [n[1] for n in news]:
-                    desc = _rss_desc(item)
-                    news.append(("kr", title, desc))
+                    news.append(("kr", title, source))
                     break
             if any(n[0] == "kr" for n in news):
                 break
         except Exception as e:
             print(f"  국내 뉴스 오류({url[:40]}): {e}")
 
-    for typ, headline, _ in news:
-        print(f"  [{typ}] {headline[:80]}")
+    for typ, headline, source in news:
+        print(f"  [{typ}] {headline[:70]} ({source})")
     return news
 
 
@@ -1373,19 +1369,17 @@ def market_news_section_html(us_rates, news_items):
     type_labels = {"global": "글로벌", "global2": "글로벌", "kr": "국내"}
     for item in news_items:
         typ, headline = item[0], item[1]
-        desc = item[2] if len(item) > 2 else ""
+        source = item[2] if len(item) > 2 else ""
         icon = type_icons.get(typ, "📌")
         label = type_labels.get(typ, "")
-        desc_html = (
-            f'<div style="font-size:.78rem;color:#64748b;margin-top:3px;line-height:1.4">'
-            f'{_html.escape(desc)}</div>'
-        ) if desc else ""
+        source_html = (
+            f'<span style="font-size:.72rem;color:#94a3b8;margin-left:6px">{_html.escape(source)}</span>'
+        ) if source else ""
         news_html += (
-            f'<div style="padding:8px 0;border-bottom:1px solid #f1f5f9;line-height:1.5">'
-            f'<div style="font-size:.84rem;color:#334155">'
-            f'<span style="font-size:.75rem;font-weight:600;color:#64748b;margin-right:6px">{icon} {label}</span>'
-            f'{_html.escape(headline)}</div>'
-            f'{desc_html}'
+            f'<div style="padding:8px 0;border-bottom:1px solid #f1f5f9;line-height:1.6">'
+            f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:6px">{icon} {label}</span>'
+            f'<span style="font-size:.85rem;color:#1e293b">{_html.escape(headline)}</span>'
+            f'{source_html}'
             f'</div>'
         )
 
