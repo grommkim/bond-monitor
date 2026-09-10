@@ -196,10 +196,12 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
     """
     미국 국채 금리 + 한국 국채 + 수집 헤드라인 → 채권시장 분석 딕셔너리 반환
     """
-    chg_10 = us_rates.get("10Y", {}).get("chg_bps", 0)
-    kr_chg = (kr_bond or {}).get("chg_bps", None)
+    chg_10  = us_rates.get("10Y", {}).get("chg_bps", 0)
+    rate_10 = us_rates.get("10Y", {}).get("rate", 0)
+    kr_chg  = (kr_bond or {}).get("chg_bps", None)
+    kr_rate = (kr_bond or {}).get("rate", 0)
 
-    # 방향성 판단 (미국 10Y 기준) — 자금조달 관점: 금리 상승/하락 명시
+    # 미국 10Y 방향 레이블 (rate_block 표시용)
     if chg_10 >= 7:
         direction_ko = "급등 (금리 상승↑, 조달비용 증가)"
     elif chg_10 >= 3:
@@ -211,91 +213,123 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None):
     else:
         direction_ko = "급락 (금리 하락↓, 조달비용 감소)"
 
-    # 한국 야간선물 방향 (국채 10Y 스팟 기준, 없으면 미국 금리 연동 추론)
+    # ── 야간선물 한줄 ────────────────────────────────────────────────
     if kr_chg is not None:
-        kr_sign = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
-        kr_dir = "금리 상승↑" if kr_chg > 0 else ("금리 하락↓" if kr_chg < 0 else "보합")
-        us_dir = "금리 상승↑" if chg_10 > 2 else ("금리 하락↓" if chg_10 < -2 else "보합")
-        kr_night = (f"전일 한국 국채 10Y {(kr_bond or {}).get('rate', 0):.3f}% "
-                    f"({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}) — "
-                    f"미국 금리 연동, 오늘 장중 {us_dir} 흐름 예상")
+        kr_sign  = "▲" if kr_chg > 0 else ("▼" if kr_chg < 0 else "–")
+        kr_dir   = "금리 상승↑" if kr_chg > 0 else ("금리 하락↓" if kr_chg < 0 else "보합")
+        us_pred  = "상승↑" if chg_10 > 2 else ("하락↓" if chg_10 < -2 else "보합")
+        kr_night = (f"전일 국고채 10Y {kr_rate:.3f}% ({kr_sign}{abs(kr_chg):.1f}bp, {kr_dir}). "
+                    f"미국 금리 연동, 오늘 국채 야간선물 {us_pred} 흐름 예상.")
     elif chg_10 >= 5:
-        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 급등 → 국채 야간선물 금리 상승↑ 압력 강함. "
-                    "오늘 국내 장 시작 시 금리 상승 갭업 가능성 유의.")
+        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 급등 → 오늘 국채 야간선물 금리 상승↑ 압력 강함. "
+                    "장 시작 시 갭업 가능성 유의.")
     elif chg_10 >= 2:
-        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 상승 → 국채 야간선물 소폭 금리 상승↑ 예상. "
-                    "오늘 장중 상승 압력, 단기물 방어 주목.")
+        kr_night = (f"전일 미국 10Y +{chg_10:.1f}bp 상승 → 오늘 국채 야간선물 소폭 금리 상승↑ 예상. "
+                    "장중 상승 압력 지속 여부 주목.")
     elif chg_10 <= -5:
-        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 급락 → 국채 야간선물 금리 하락↓ 흐름 예상. "
-                    "오늘 국내 금리 하락 갭다운 가능, 발행 타이밍 유리.")
+        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 급락 → 오늘 국채 야간선물 금리 하락↓ 흐름 예상. "
+                    "발행 타이밍 유리, 갭다운 가능.")
     elif chg_10 <= -2:
-        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 하락 → 국채 야간선물 소폭 금리 하락↓ 기대. "
-                    "오늘 장중 하락 지지, 한국은행 스탠스 병행 주목.")
+        kr_night = (f"전일 미국 10Y {chg_10:.1f}bp 하락 → 오늘 국채 야간선물 소폭 금리 하락↓ 기대. "
+                    "한국은행 스탠스와 병행 주목.")
     else:
-        kr_night = ("전일 미국 10Y 금리 보합 → 국채 야간선물 방향성 제한적. "
-                    "오늘 장중 국내 수급·한국은행 스탠스가 방향 결정 요인.")
+        kr_night = ("전일 미국 금리 보합 → 오늘 국채 야간선물 방향성 제한적. "
+                    "수급·한국은행 스탠스가 방향 결정 요인.")
 
-    # 오늘 국내 전망 (자금조달 관점 — 금리 방향 명시)
-    if chg_10 >= 7:
-        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 급등 → 국내 금리 상승 압력 강함. "
-                      "국고채 전 구간 금리 상승(가격 하락) 예상. "
-                      "조달비용 증가 가능성 — 한전채 발행 금리 상승 유의.")
-    elif chg_10 >= 3:
-        kr_outlook = (f"미국 10Y +{chg_10:.0f}bp 상승 → 국내 금리 소폭 상승 가능. "
-                      "장기물(5년↑) 중심 금리 상승, 단기물은 한국은행 스탠스가 방어선.")
-    elif chg_10 >= -2:
-        kr_outlook = ("미국 금리 보합 → 국내 금리도 보합권 예상. "
-                      "방향성 부재, 수급·한국은행 스탠스에 따라 소폭 등락.")
-    elif chg_10 >= -6:
-        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 하락 → 국내 금리 하락 기대. "
-                      "조달비용 감소 가능성 — 발행 타이밍 검토 유리.")
-    else:
-        kr_outlook = (f"미국 10Y {chg_10:.0f}bp 급락 → 국내 금리 하락 압력 강함. "
-                      "조달비용 감소 기회 — 적극적 발행 타이밍 고려 가능.")
-
-    # 이벤트 감지 — 같은 기사가 여러 카테고리에 중복 등록되지 않도록 seen_titles 사용
-    detected = {}
+    # ── 이벤트 감지 (한국어 기사 우선, 중복 타이틀 제외) ─────────────
+    detected   = {}
     seen_titles = set()
     for cat, kws, label in _EVENT_KW:
-        # 한국어 기사 우선 (이미 다른 카테고리에 쓰인 타이틀 제외)
         for title, source, lang in all_headlines:
-            if lang == "ko" and any(kw.lower() in title.lower() for kw in kws) and title not in seen_titles:
+            if (lang == "ko"
+                    and any(kw.lower() in title.lower() for kw in kws)
+                    and title not in seen_titles):
                 seen_titles.add(title)
-                detected[cat] = {
-                    "label": label, "title": title, "source": source,
-                    "impact": _EVENT_IMPACT.get(cat, ""),
-                    "critical": _EVENT_CRITICAL.get(cat, ""),
-                    "lang": "ko",
-                }
+                detected[cat] = {"cat": cat, "label": label,
+                                 "title": title, "source": source, "lang": "ko"}
                 break
         if cat not in detected:
             for title, source, lang in all_headlines:
                 if lang == "en" and any(kw.lower() in title.lower() for kw in kws):
-                    detected[cat] = {
-                        "label": label, "title": None, "source": source,
-                        "impact": _EVENT_IMPACT.get(cat, ""),
-                        "critical": _EVENT_CRITICAL.get(cat, ""),
-                        "lang": "en",
-                    }
+                    detected[cat] = {"cat": cat, "label": label,
+                                     "title": None, "source": source, "lang": "en"}
                     break
 
-    events = []
+    top_events = []
     for cat, _, _ in _EVENT_KW:
-        if cat in detected and len(events) < 3:
-            events.append(detected[cat])
+        if cat in detected and len(top_events) < 4:
+            top_events.append(detected[cat])
 
-    # 국내 뉴스 (이벤트에 이미 쓰인 기사 제외)
-    event_titles = {ev["title"] for ev in events if ev.get("title")}
-    featured_kr = [(t, s) for t, s, lang in all_headlines
-                   if lang == "ko" and t not in event_titles][:3]
+    # ── 어제 채권시장 흐름 (자연스러운 문장) ──────────────────────────
+    # 첫 문장: 금리 수준 + 이동
+    if chg_10 >= 7:
+        rate_sent = f"전일 미국 10Y 국채금리 +{chg_10:.1f}bp 급등({rate_10:.3f}%)."
+    elif chg_10 >= 3:
+        rate_sent = f"전일 미국 10Y 국채금리 +{chg_10:.1f}bp 상승({rate_10:.3f}%)."
+    elif chg_10 >= -2:
+        rate_sent = f"전일 미국 10Y 국채금리 {chg_10:+.1f}bp 보합({rate_10:.3f}%)."
+    elif chg_10 >= -6:
+        rate_sent = f"전일 미국 10Y 국채금리 {chg_10:.1f}bp 하락({rate_10:.3f}%)."
+    else:
+        rate_sent = f"전일 미국 10Y 국채금리 {chg_10:.1f}bp 급락({rate_10:.3f}%)."
+
+    # 이벤트 레이블 요약 (첫 줄 끝에 붙임)
+    ev_labels = [ev["label"] for ev in top_events[:3]]
+    if ev_labels:
+        rate_sent += f" 주요 이슈: {', '.join(ev_labels)}."
+
+    # 상세 문단: 주요 이벤트 2개까지 자연스럽게 서술
+    detail_parts = []
+    for ev in top_events[:2]:
+        cat    = ev["cat"]
+        title  = ev.get("title")
+        impact = _EVENT_IMPACT.get(cat, "")
+        crit   = _EVENT_CRITICAL.get(cat, "")
+        # 기사 제목 있으면 맥락으로 앞에 붙임
+        if title:
+            intro = f'"{title[:60]}" — '
+        else:
+            intro = ""
+        # 영향 + 다만(비판) 자연스럽게 연결
+        body = impact
+        if crit:
+            # "비판적 시각:", "반론:", "주의:" 등 레이블 제거 후 이어붙임
+            crit_clean = re.sub(r'^(비판적 시각|반론|주의)\s*:\s*', '', crit)
+            body += f" 다만 {crit_clean}"
+        detail_parts.append(intro + body)
+
+    detail_narrative = "\n\n".join(detail_parts)
+
+    # ── 국내 시장 전망 ────────────────────────────────────────────────
+    if chg_10 >= 7:
+        kr_outlook = (f"미국 금리 급등으로 국내 금리도 상승↑ 압력이 강할 것으로 보입니다. "
+                      "한전채 등 발행 시 금리 상승 환경 유의, 조달비용 증가 가능성.")
+    elif chg_10 >= 3:
+        kr_outlook = (f"미국 금리 상승 영향으로 국내 장기물 중심 소폭 상승↑ 예상. "
+                      "단기물은 한국은행 스탠스가 방어선 역할을 할 전망.")
+    elif chg_10 >= -2:
+        kr_outlook = ("미국 금리 보합권, 국내도 비슷한 흐름 예상. "
+                      "방향성보다 국내 수급·한국은행 스탠스가 변수.")
+    elif chg_10 >= -6:
+        kr_outlook = (f"미국 금리 하락으로 국내 금리도 소폭 하락↓ 기대. "
+                      "발행 타이밍 검토에 유리한 환경.")
+    else:
+        kr_outlook = (f"미국 금리 급락으로 국내 금리 하락↓ 압력 강함. "
+                      "적극적 발행 타이밍 고려 가능, 조달비용 감소 기회.")
+
+    # ── 국내 뉴스 (이벤트 기사 제외) ─────────────────────────────────
+    event_titles = {ev["title"] for ev in top_events if ev.get("title")}
+    featured_kr  = [(t, s) for t, s, lang in all_headlines
+                    if lang == "ko" and t not in event_titles][:3]
 
     return {
-        "direction_ko": direction_ko,
-        "chg_10":       chg_10,
-        "kr_night":     kr_night,
-        "events":       events,
-        "kr_outlook":   kr_outlook,
-        "featured_kr":  featured_kr,
+        "direction_ko":     direction_ko,
+        "chg_10":           chg_10,
+        "kr_night":         kr_night,
+        "us_summary":       rate_sent,
+        "detail_narrative": detail_narrative,
+        "kr_outlook":       kr_outlook,
+        "featured_kr":      featured_kr,
     }
 
 
@@ -1579,53 +1613,39 @@ def market_news_section_html(us_rates, analysis):
         f'</div>'
     ) if rate_line else ""
 
-    # ── 한국 국채 야간선물 ────────────────────────────────────────────
-    kr_night = analysis.get("kr_night")
+    # ── 국채 야간선물 동향 (항상 표시) ──────────────────────────────────
+    kr_night = analysis.get("kr_night", "")
     night_block = (
         f'<div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;'
         f'padding:10px 15px;margin-bottom:12px">'
         f'<div style="font-size:.75rem;font-weight:700;color:#92400e;margin-bottom:3px">🌙 국채 야간선물 동향</div>'
-        f'<div style="font-size:.83rem;color:#78350f;line-height:1.6">{_html.escape(kr_night)}</div>'
+        f'<div style="font-size:.84rem;color:#78350f;line-height:1.65">{_html.escape(kr_night)}</div>'
         f'</div>'
     ) if kr_night else ""
 
-    # ── 주요 이슈 (영향 설명 + 비판적 시각 포함) ─────────────────────
-    events = analysis.get("events", [])
-    if events:
-        ev_rows = ""
-        for ev in events:
-            label    = _html.escape(ev["label"])
-            impact   = _html.escape(ev.get("impact", ""))
-            critical = _html.escape(ev.get("critical", ""))
-            title_raw = ev.get("title")
-            headline_html = (
-                f'<div style="font-size:.82rem;color:#1e293b;font-style:italic;margin:3px 0 4px">'
-                f'"{_html.escape(title_raw[:90])}"</div>'
-            ) if title_raw and ev.get("lang") == "ko" else ""
-            impact_html = (
-                f'<div style="font-size:.79rem;color:#1e40af;line-height:1.55;'
-                f'border-left:3px solid #bfdbfe;padding-left:8px;margin-top:4px">'
-                f'📌 시장 영향: {impact}</div>'
-            ) if impact else ""
-            critical_html = (
-                f'<div style="font-size:.79rem;color:#7c3aed;line-height:1.55;'
-                f'border-left:3px solid #ddd6fe;padding-left:8px;margin-top:5px">'
-                f'⚠ 비판적 시각: {critical}</div>'
-            ) if critical else ""
-            ev_rows += (
-                f'<div style="padding:9px 0;border-bottom:1px solid #f1f5f9">'
-                f'<span style="background:#e0f2fe;color:#0369a1;font-size:.72rem;font-weight:700;'
-                f'padding:2px 7px;border-radius:3px;margin-right:6px">{label}</span>'
-                f'{headline_html}{impact_html}{critical_html}</div>'
+    # ── 어제 채권시장 흐름 (자연스러운 문단) ─────────────────────────
+    us_summary       = analysis.get("us_summary", "")
+    detail_narrative = analysis.get("detail_narrative", "")
+    if us_summary or detail_narrative:
+        # detail_narrative의 단락 구분(\n\n)을 <br><br>로
+        detail_html = ""
+        if detail_narrative:
+            paras = [_html.escape(p.strip()) for p in detail_narrative.split("\n\n") if p.strip()]
+            detail_html = "".join(
+                f'<p style="margin:8px 0 0;font-size:.83rem;color:#334155;line-height:1.7">{p}</p>'
+                for p in paras
             )
-        event_block = (
+        flow_block = (
             f'<div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;'
-            f'padding:10px 14px;margin-bottom:12px">'
-            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:4px">🔍 주요 이슈 및 시장 영향</div>'
-            f'{ev_rows}</div>'
+            f'padding:11px 15px;margin-bottom:12px">'
+            f'<div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:5px">📋 어제 채권시장 흐름</div>'
+            f'<p style="margin:0;font-size:.85rem;color:#1e293b;font-weight:600;line-height:1.6">'
+            f'{_html.escape(us_summary)}</p>'
+            f'{detail_html}'
+            f'</div>'
         )
     else:
-        event_block = ""
+        flow_block = ""
 
     # ── 오늘 국내 채권시장 전망 ────────────────────────────────────────
     kr_outlook = analysis.get("kr_outlook", "")
@@ -1662,7 +1682,7 @@ def market_news_section_html(us_rates, analysis):
   <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
   {rate_block}
   {night_block}
-  {event_block}
+  {flow_block}
   {outlook_block}
   {kr_news_block}
 </section>"""
@@ -1981,7 +2001,24 @@ if __name__ == "__main__":
     ytd_borrow = calc_ytd_debt_flows(json.load(open(DEBT_FILE)))
     ytd_repay  = calc_ytd_repay()
     us_rates      = fetch_us_rates()
-    kr_bond       = fetch_kr_bond_rate()
+    # 국고채 전일비: KOFIA 캐시 최근 2일치 사용 (Stooq 대체)
+    kr_bond = {}
+    try:
+        with open(CACHE_FILE, encoding="utf-8") as _f:
+            _cache = json.load(_f)
+        _dates = sorted(_cache.keys())
+        if len(_dates) >= 2:
+            _curr_r = _cache[_dates[-1]].get("국고채", 0)
+            _prev_r = _cache[_dates[-2]].get("국고채", 0)
+            if _curr_r and _prev_r:
+                kr_bond = {
+                    "rate":     _curr_r,
+                    "chg_bps":  round((_curr_r - _prev_r) * 100, 1),
+                    "date":     _dates[-1],
+                }
+                print(f"  국고채 10Y: {_curr_r}% (전일比 {kr_bond['chg_bps']:+.1f}bp)")
+    except Exception as _e:
+        print(f"  국고채 전일비 계산 실패: {_e}")
     all_headlines = fetch_bond_news_all()
     market_news   = build_market_analysis(us_rates, all_headlines, kr_bond)
     issu_stats    = collect_issu_stats()
