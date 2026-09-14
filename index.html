@@ -46,7 +46,6 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 </head>
 <body>
 
-<!-- 비밀번호 게이트 -->
 <div id="pw-gate" style="display:none;position:fixed;inset:0;background:#0f172a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
   <div style="color:#94a3b8;font-size:.85rem;letter-spacing:.05em">KEPCO BOND MONITOR</div>
   <div style="font-size:1.5rem;color:#e2e8f0;font-weight:700">비밀번호를 입력하세요</div>
@@ -60,18 +59,13 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <script>
 (function(){
   var H='83c646547063fe75e45e6f9f058036e444bee652b7010d645f51204faab727b3';
-  function sha256hex(s){
-    var b=new TextEncoder().encode(s);
-    return crypto.subtle.digest('SHA-256',b).then(function(buf){
-      return Array.from(new Uint8Array(buf)).map(function(x){return x.toString(16).padStart(2,'0')}).join('');
-    });
-  }
   function unlock(){document.getElementById('pw-gate').style.display='none';}
   if(sessionStorage.getItem('bm_auth')==='1'){unlock();return;}
   document.getElementById('pw-gate').style.display='flex';
   window.checkPw=function(){
     var v=document.getElementById('pw-input').value;
-    sha256hex(v).then(function(h){
+    crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(function(buf){
+      var h=Array.from(new Uint8Array(buf)).map(function(x){return x.toString(16).padStart(2,'0')}).join('');
       if(h===H){sessionStorage.setItem('bm_auth','1');unlock();}
       else{document.getElementById('pw-err').textContent='비밀번호가 틀렸습니다.';}
     });
@@ -109,7 +103,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 
 <section>
   <h2 style="border-left-color:#6366f1">차입금 현황</h2>
-  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">⏰ 전일 현황 기준 · 당일 발행 반영은 오후 4시 업데이트 예정</p>
+  
   <div class="table-wrap" style="max-width:800px">
     <table>
       <thead>
@@ -122,7 +116,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
           <th style="text-align:right">전일비</th>
         </tr>
       </thead>
-      <tbody><tr style="background:#eef2ff"><td colspan="6" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr><tr><td style="padding-left:18px;color:#475569">전력채</td><td style="text-align:right;white-space:nowrap">13.70조원</td><td style="text-align:right;white-space:nowrap">13.42조원</td><td style="text-align:right;white-space:nowrap">6.52조원</td><td style="text-align:right;white-space:nowrap">59.85조원</td><td style="color:#dc2626;font-weight:600;text-align:right;white-space:nowrap">+0.15조</td></tr><tr><td style="padding-left:18px;color:#475569">단기사채</td><td style="background:#1a3a5c10;color:#94a3b8;text-align:right">–</td><td style="text-align:right;white-space:nowrap" style="background:#1a3a5c10;font-size:.84rem;white-space:nowrap">순증 2.50조</td><td style="text-align:right;white-space:nowrap">7.21조원</td><td style="text-align:right;white-space:nowrap">8.07조원</td><td style="color:#dc2626;font-weight:600;text-align:right;white-space:nowrap">+0.73조</td></tr><tr><td style="padding-left:18px;color:#475569">외화채권</td><td style="text-align:right;white-space:nowrap">2.70조원</td><td style="text-align:right;white-space:nowrap">1.04조원</td><td style="text-align:right;white-space:nowrap">1.28조원</td><td style="text-align:right;white-space:nowrap">7.19조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td><td style="text-align:right;white-space:nowrap">16.40조원</td><td style="text-align:right;white-space:nowrap">22.53조원</td><td style="text-align:right;white-space:nowrap">15.01조원</td><td style="text-align:right;white-space:nowrap">75.11조원</td><td style="color:#dc2626;font-weight:600;text-align:right;white-space:nowrap">+0.88조</td></tr><tr style="background:#f0fdf4"><td colspan="6" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr><tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td style="text-align:right;white-space:nowrap">2.00조원</td><td style="text-align:right;white-space:nowrap">1.60조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8">–</td><td style="text-align:right;white-space:nowrap">9.95조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr><td style="padding-left:18px;color:#475569">은행차입</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td><td style="text-align:right;white-space:nowrap">4.60조원</td><td style="text-align:right;white-space:nowrap">4.20조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">12.56조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td><td style="font-weight:700;text-align:right;white-space:nowrap">21.00조원</td><td style="font-weight:700;text-align:right;white-space:nowrap">26.73조원</td><td style="font-weight:700;text-align:right;white-space:nowrap">17.61조원</td><td style="font-weight:700;font-size:1rem;text-align:right;white-space:nowrap">87.68조원</td><td style="color:#fca5a5;font-weight:600;text-align:right;white-space:nowrap">+0.88조</td></tr></tbody>
+      <tbody><tr style="background:#eef2ff"><td colspan="6" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr><tr><td style="padding-left:18px;color:#475569">전력채</td><td style="text-align:right;white-space:nowrap">13.70조원</td><td style="text-align:right;white-space:nowrap">13.42조원</td><td style="text-align:right;white-space:nowrap">6.52조원</td><td style="text-align:right;white-space:nowrap">59.85조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr><td style="padding-left:18px;color:#475569">단기사채</td><td style="background:#1a3a5c10;color:#94a3b8;text-align:right">–</td><td style="text-align:right;white-space:nowrap" style="background:#1a3a5c10;font-size:.84rem;white-space:nowrap">순증 2.50조</td><td style="text-align:right;white-space:nowrap">7.21조원</td><td style="text-align:right;white-space:nowrap">8.07조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr><td style="padding-left:18px;color:#475569">외화채권</td><td style="text-align:right;white-space:nowrap">2.70조원</td><td style="text-align:right;white-space:nowrap">1.04조원</td><td style="text-align:right;white-space:nowrap">1.28조원</td><td style="text-align:right;white-space:nowrap">7.19조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td><td style="text-align:right;white-space:nowrap">16.40조원</td><td style="text-align:right;white-space:nowrap">22.53조원</td><td style="text-align:right;white-space:nowrap">15.01조원</td><td style="text-align:right;white-space:nowrap">75.11조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f0fdf4"><td colspan="6" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr><tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td style="text-align:right;white-space:nowrap">2.00조원</td><td style="text-align:right;white-space:nowrap">1.60조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8">–</td><td style="text-align:right;white-space:nowrap">9.95조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr><td style="padding-left:18px;color:#475569">은행차입</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td><td style="text-align:right;white-space:nowrap">4.60조원</td><td style="text-align:right;white-space:nowrap">4.20조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">12.56조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td><td style="font-weight:700;text-align:right;white-space:nowrap">21.00조원</td><td style="font-weight:700;text-align:right;white-space:nowrap">26.73조원</td><td style="font-weight:700;text-align:right;white-space:nowrap">17.61조원</td><td style="font-weight:700;font-size:1rem;text-align:right;white-space:nowrap">87.68조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr></tbody>
     </table>
   </div>
 </section>
@@ -130,24 +124,22 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 
 <section>
   <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
-  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0 14px;margin-bottom:12px"><div style="padding:9px 0 7px;border-bottom:1px solid #f1f5f9;font-size:.8rem;color:#64748b">📊 미국 국채(전일 종가) &nbsp; </div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">이슈</span><div style="font-size:.84rem;color:#1e293b;line-height:1.6">트럼프: 트럼프 재정 확대·감세 정책은 국채 공급 증가 → 장기금리 상승↑ 압력. 파월 발언: 파월 발언은 금리 방향의 핵심 신호. 물가/CPI: 물가 예상 상회 → 금리 인하 기대 후퇴 → 금리 상승↑.</div></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#0369a1;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">미국</span><div style="font-size:.84rem;color:#0c4a6e;line-height:1.6">미국 국채금리 10Y 0.000% (+0.0bp 보합), 방향성 제한.</div></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#92400e;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">야간</span><div style="font-size:.84rem;color:#78350f;line-height:1.6">국고채 10Y 4.020% (▲9.3bp) — 야간선물 보합 예상.</div></div><div style="display:flex;gap:8px;padding:9px 0;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">전망</span><div style="font-size:.84rem;color:#1e293b;font-weight:600;line-height:1.6">오늘 국내 자금시장: 보합권, 국내 수급·한국은행 스탠스 주목.</div></div></div>
-  
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0 14px;margin-bottom:12px"><div style="padding:9px 0 7px;border-bottom:1px solid #f1f5f9;font-size:.8rem;color:#64748b">📊 미국 국채(전일 종가) &nbsp; </div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">이슈</span><div style="font-size:.84rem;color:#1e293b;line-height:1.6">재무부 바이백: 재무부가 시장에서 국채를 직접 매입 → 단기적으로 공급 축소 효과, 금리 하락↓ 요인. 워시 발언: 케빈 워시는 대표적 매파(hawkish) 인사로 금리 인하에 극히 신중한 입장. WGBI 편입: 한국이 WGBI(세계국채지수)에 편입되어 글로벌 패시브 자금의 국채 매수 유입 기대.</div></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#0369a1;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">미국</span><div style="font-size:.84rem;color:#0c4a6e;line-height:1.6">미국 국채금리 10Y 0.000% (+0.0bp 보합), 방향성 제한.</div></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#92400e;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">야간</span><div style="font-size:.84rem;color:#78350f;line-height:1.6">국고채 10Y 4.020% (▲9.3bp) — 야간선물 보합 예상.</div></div><div style="display:flex;gap:8px;padding:9px 0;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">전망</span><div style="font-size:.84rem;color:#1e293b;font-weight:600;line-height:1.6">오늘 국내 자금시장: 보합권, 국내 수급·한국은행 스탠스 주목.</div></div></div>
+  <div style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;padding:10px 14px"><div style="font-size:.75rem;font-weight:700;color:#334155;margin-bottom:6px">📰 국내 채권시장 뉴스</div><div style="padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;color:#1e293b;line-height:1.5">🇰🇷 국채금리 잡으려는 베선트, 인플레 잡으려는 워시…美재무·연준 &#x27;엇박자&#x27;<span style="color:#94a3b8;font-size:.75rem"> 뉴시스</span></div><div style="padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;color:#1e293b;line-height:1.5">🇰🇷 WGBI 편입효과일까…韓 채권시장서 유럽자금 두각<span style="color:#94a3b8;font-size:.75rem"> 연합인포맥스</span></div><div style="padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;color:#1e293b;line-height:1.5">🇰🇷 당정 &quot;국고채 바이백 준비 중…회사채 6천억 긴급 매입&quot;(종합)<span style="color:#94a3b8;font-size:.75rem"> 연합인포맥스</span></div></div>
 </section>
 
 
 <section>
   <h2 style="border-left-color:#f97316">채권 발행현황</h2>
-  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">⏰ 금일 발행 데이터는 오후 3시 업데이트 예정 · 현재 전일(09/11) 기준</p>
+  
   <div class="today-grid">
     <div>
       <h3 class="sub-h3" style="color:#f97316">⚡ 한국전력공사</h3>
-      <div class="table-wrap"><table><thead><tr><th>발행일</th><th>발행기관</th><th>종목명</th><th>만기</th><th>발행금액</th><th>발행금리</th><th>전일 민평</th><th>발행-민평</th></tr></thead><tbody><tr><td style="white-space:nowrap">2026-09-11</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1620</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">4.18%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.142%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(09/10)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.038%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-09-11</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1621</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,900억원</td><td class="rate" style="white-space:nowrap">4.36%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.317%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(09/10)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.043%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-09-11</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1622</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">800억원</td><td class="rate" style="white-space:nowrap">4.59%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.546%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(09/10)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.044%p</span></td></tr></tbody></table></div>
+      <p style="color:#94a3b8;font-size:.87rem;padding:14px 0">발행 없음</p>
     </div>
     <div>
       <h3 class="sub-h3" style="color:#2563eb">🏛 타기관 공사채</h3>
-      <div class="table-wrap"><table><thead><tr><th>발행일</th><th>발행기관</th><th>종목명</th><th>만기</th><th>발행금액</th><th>발행금리</th><th>전일 민평</th><th>발행-민평</th></tr></thead><tbody><tr><td style="white-space:nowrap">2026-09-11</td><td><strong>국가철도공단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">국가철도공단채권 456</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,200억원</td><td class="rate" style="white-space:nowrap">4.31%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.266%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(09/10)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.044%p</span></td></tr></tbody></table></div>
+      <p style="color:#94a3b8;font-size:.87rem;padding:14px 0">발행 없음</p>
     </div>
   </div>
 </section>
@@ -172,11 +164,11 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
   <div style="display:flex;gap:20px;flex-wrap:wrap">
     <div style="text-align:center">
       <div style="font-size:.72rem;color:#92400e">특수채 내 비중</div>
-      <div style="font-size:1.3rem;font-weight:700;color:#f97316">16.6%</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">16.5%</div>
     </div>
     <div style="text-align:center">
       <div style="font-size:.72rem;color:#92400e">전체 채권 내 비중</div>
-      <div style="font-size:1.3rem;font-weight:700;color:#f97316">3.2%</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">3.1%</div>
     </div>
   </div>
 </div>
@@ -195,7 +187,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">특수채(전력채 외)</span>
-    <span style="font-weight:600;color:#a78bfa">67.63조 <span style="font-weight:400;color:#94a3b8">(15%)</span></span>
+    <span style="font-weight:600;color:#a78bfa">67.74조 <span style="font-weight:400;color:#94a3b8">(15%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
     <div style="background:#a78bfa;width:15%;height:10px;border-radius:4px;transition:width .4s"></div>
@@ -204,7 +196,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">국채</span>
-    <span style="font-weight:600;color:#3b82f6">114.70조 <span style="font-weight:400;color:#94a3b8">(27%)</span></span>
+    <span style="font-weight:600;color:#3b82f6">117.50조 <span style="font-weight:400;color:#94a3b8">(27%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
     <div style="background:#3b82f6;width:27%;height:10px;border-radius:4px;transition:width .4s"></div>
@@ -213,7 +205,7 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <div style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
     <span style="color:#475569">기타(금융채·회사채 등)</span>
-    <span style="font-weight:600;color:#94a3b8">227.40조 <span style="font-weight:400;color:#94a3b8">(53%)</span></span>
+    <span style="font-weight:600;color:#94a3b8">227.84조 <span style="font-weight:400;color:#94a3b8">(53%)</span></span>
   </div>
   <div style="background:#e2e8f0;border-radius:4px;height:10px">
     <div style="background:#94a3b8;width:53%;height:10px;border-radius:4px;transition:width .4s"></div>
@@ -224,13 +216,13 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 <script>
 (function(){
   var ctx=document.getElementById('statChart_2026').getContext('2d');
-  var totalLabel='423.15조';
+  var totalLabel='426.50조';
   new Chart(ctx,{
     type:'doughnut',
     data:{
       labels:['전력채','특수채(전력채외)','국채','기타'],
       datasets:[{
-        data:[13.42,67.63,114.7,227.4],
+        data:[13.42,67.74,117.5,227.84],
         backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
         borderWidth:2,borderColor:'#fff',
         hoverOffset:8
