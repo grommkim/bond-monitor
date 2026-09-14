@@ -13,24 +13,50 @@ except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
 def fetch_us_rates():
-    """Stooq.com에서 미국 국채 금리 수집 (2Y, 10Y, 30Y)"""
+    """미국 국채 금리 수집 — FRED(St. Louis Fed) 우선, Stooq 폴백"""
     import csv, io
-    print("[ 미국 국채 금리 수집 (Stooq) ]")
+    print("[ 미국 국채 금리 수집 ]")
     rates = {}
+
+    # ── FRED fredgraph.csv (인증 불필요, 안정적) ──────────────────────
+    fred_map = [("10Y", "DGS10"), ("2Y", "DGS2"), ("30Y", "DGS30")]
+    try:
+        for tenor, series in fred_map:
+            url  = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
+            resp = requests.get(url, timeout=15,
+                                headers={"User-Agent": "Mozilla/5.0"})
+            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
+                    if r.get(series, "").strip() not in ("", ".")]
+            if len(rows) >= 2:
+                curr = float(rows[-1][series])
+                prev = float(rows[-2][series])
+                chg  = round((curr - prev) * 100, 1)
+                rates[tenor] = {"rate": curr, "chg_bps": chg,
+                                "date": rows[-1].get("DATE", "")}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [FRED]")
+        if rates:
+            return rates
+    except Exception as e:
+        print(f"  FRED 오류: {e}")
+
+    # ── Stooq 폴백 ───────────────────────────────────────────────────
+    print("  FRED 실패 → Stooq 시도")
     for tenor, symbol in [("2Y", "2us.b"), ("10Y", "10us.b"), ("30Y", "30us.b")]:
         url = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
         try:
-            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
-            rows = list(csv.DictReader(io.StringIO(resp.text)))
-            rows = [r for r in rows if r.get("Close") and r["Close"] != "null"]
+            resp = requests.get(url, timeout=15,
+                                headers={"User-Agent": "Mozilla/5.0"})
+            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
+                    if r.get("Close") and r["Close"] != "null"]
             if len(rows) >= 2:
                 curr = float(rows[-1]["Close"])
                 prev = float(rows[-2]["Close"])
-                chg = round((curr - prev) * 100, 1)
-                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rows[-1].get("Date", "")}
-                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps)")
+                chg  = round((curr - prev) * 100, 1)
+                rates[tenor] = {"rate": curr, "chg_bps": chg,
+                                "date": rows[-1].get("Date", "")}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Stooq]")
         except Exception as e:
-            print(f"  {tenor} 오류: {e}")
+            print(f"  {tenor} Stooq 오류: {e}")
     return rates
 
 
