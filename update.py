@@ -1920,6 +1920,34 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 </style>
 </head>
 <body>
+
+<div id="pw-gate" style="display:none;position:fixed;inset:0;background:#0f172a;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="color:#94a3b8;font-size:.85rem;letter-spacing:.05em">KEPCO BOND MONITOR</div>
+  <div style="font-size:1.5rem;color:#e2e8f0;font-weight:700">비밀번호를 입력하세요</div>
+  <input id="pw-input" type="password" placeholder="Password"
+    style="padding:10px 18px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-size:1rem;width:220px;text-align:center;outline:none"
+    onkeydown="if(event.key==='Enter')checkPw()">
+  <button onclick="checkPw()"
+    style="padding:10px 32px;background:#1d4ed8;color:#fff;border:none;border-radius:8px;font-size:.95rem;cursor:pointer">입장</button>
+  <div id="pw-err" style="color:#ef4444;font-size:.85rem;min-height:18px"></div>
+</div>
+<script>
+(function(){{
+  var H='83c646547063fe75e45e6f9f058036e444bee652b7010d645f51204faab727b3';
+  function unlock(){{document.getElementById('pw-gate').style.display='none';}}
+  if(sessionStorage.getItem('bm_auth')==='1'){{unlock();return;}}
+  document.getElementById('pw-gate').style.display='flex';
+  window.checkPw=function(){{
+    var v=document.getElementById('pw-input').value;
+    crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(function(buf){{
+      var h=Array.from(new Uint8Array(buf)).map(function(x){{return x.toString(16).padStart(2,'0')}}).join('');
+      if(h===H){{sessionStorage.setItem('bm_auth','1');unlock();}}
+      else{{document.getElementById('pw-err').textContent='비밀번호가 틀렸습니다.';}}
+    }});
+  }};
+}})();
+</script>
+
 <header>
   <div><h1>📊 채권 시장 모니터</h1>
   <div class="sub">국고채 · 한전채 민평금리 · 공사채 발행현황</div></div>
