@@ -2149,5 +2149,14 @@
     "maturity_date": "2026-09-10",
     "rate": null,
     "source": "excel"
+  },
+  {
+    "id": "전력채|2023-09-11|2026-09-11|190000000000|r770",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2023-09-11",
+    "maturity_date": "2026-09-11",
+    "rate": null,
+    "source": "excel"
   }
 ]
