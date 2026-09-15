@@ -13,47 +13,85 @@ except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
 def fetch_us_rates():
-    """미국 국채 금리 수집 — FRED(St. Louis Fed) 우선, Stooq 폴백"""
-    import csv, io
+    """미국 국채 금리 수집 — US Treasury XML → FRED → Stooq 순 폴백"""
+    import csv, io, xml.etree.ElementTree as ET
     print("[ 미국 국채 금리 수집 ]")
     rates = {}
 
-    # ── FRED fredgraph.csv (인증 불필요, 안정적) ──────────────────────
-    fred_map = [("10Y", "DGS10"), ("2Y", "DGS2"), ("30Y", "DGS30")]
+    # ── 1순위: US Treasury 공식 XML ──────────────────────────────────
+    # https://home.treasury.gov 공개 XML (인증 불필요)
     try:
+        ym = datetime.utcnow().strftime("%Y%m")
+        url = (f"https://home.treasury.gov/resource-center/data-chart-center/"
+               f"interest-rates/pages/xml?data=daily_treasury_yield_curve"
+               f"&field_tdr_date_value={ym}")
+        resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        ns   = {"m": "http://www.w3.org/2005/Atom",
+                "d": "http://schemas.microsoft.com/ado/2007/08/dataservices",
+                "p": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"}
+        root = ET.fromstring(resp.content)
+        entries = root.findall(".//m:entry", ns) or root.findall(".//entry")
+        rows_raw = []
+        for entry in entries:
+            props = entry.find(".//{http://schemas.microsoft.com/ado/2007/08/dataservices/metadata}properties")
+            if props is None:
+                continue
+            def gv(tag):
+                el = props.find(f"{{http://schemas.microsoft.com/ado/2007/08/dataservices}}{tag}")
+                return el.text if el is not None and el.text else None
+            dt   = gv("NEW_DATE") or gv("Id")
+            y2   = gv("BC_2YEAR")
+            y10  = gv("BC_10YEAR")
+            y30  = gv("BC_30YEAR")
+            if dt and y10:
+                rows_raw.append({"date": dt[:10], "2Y": y2, "10Y": y10, "30Y": y30})
+        rows_raw.sort(key=lambda x: x["date"])
+        rows_raw = [r for r in rows_raw if r["10Y"]]
+        if len(rows_raw) >= 2:
+            for tenor, key in [("10Y","10Y"), ("2Y","2Y"), ("30Y","30Y")]:
+                vals = [r for r in rows_raw if r.get(key)]
+                if len(vals) >= 2:
+                    curr = float(vals[-1][key])
+                    prev = float(vals[-2][key])
+                    chg  = round((curr - prev) * 100, 1)
+                    rates[tenor] = {"rate": curr, "chg_bps": chg, "date": vals[-1]["date"]}
+                    print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Treasury]")
+            if rates:
+                return rates
+    except Exception as e:
+        print(f"  Treasury XML 오류: {e}")
+
+    # ── 2순위: FRED ───────────────────────────────────────────────────
+    try:
+        fred_map = [("10Y", "DGS10"), ("2Y", "DGS2"), ("30Y", "DGS30")]
         for tenor, series in fred_map:
             url  = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
-            resp = requests.get(url, timeout=15,
-                                headers={"User-Agent": "Mozilla/5.0"})
+            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
             rows = [r for r in csv.DictReader(io.StringIO(resp.text))
                     if r.get(series, "").strip() not in ("", ".")]
             if len(rows) >= 2:
                 curr = float(rows[-1][series])
                 prev = float(rows[-2][series])
                 chg  = round((curr - prev) * 100, 1)
-                rates[tenor] = {"rate": curr, "chg_bps": chg,
-                                "date": rows[-1].get("DATE", "")}
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rows[-1].get("DATE", "")}
                 print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [FRED]")
         if rates:
             return rates
     except Exception as e:
         print(f"  FRED 오류: {e}")
 
-    # ── Stooq 폴백 ───────────────────────────────────────────────────
-    print("  FRED 실패 → Stooq 시도")
+    # ── 3순위: Stooq ─────────────────────────────────────────────────
     for tenor, symbol in [("2Y", "2us.b"), ("10Y", "10us.b"), ("30Y", "30us.b")]:
         url = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
         try:
-            resp = requests.get(url, timeout=15,
-                                headers={"User-Agent": "Mozilla/5.0"})
+            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
             rows = [r for r in csv.DictReader(io.StringIO(resp.text))
                     if r.get("Close") and r["Close"] != "null"]
             if len(rows) >= 2:
                 curr = float(rows[-1]["Close"])
                 prev = float(rows[-2]["Close"])
                 chg  = round((curr - prev) * 100, 1)
-                rates[tenor] = {"rate": curr, "chg_bps": chg,
-                                "date": rows[-1].get("Date", "")}
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rows[-1].get("Date", "")}
                 print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Stooq]")
         except Exception as e:
             print(f"  {tenor} Stooq 오류: {e}")
@@ -270,9 +308,13 @@ def fetch_bond_news_all():
     print("[ 금융시장 뉴스 수집 ]")
     now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
     items = []
+    # 월요일(weekday=0)은 금요일 미국장 커버 위해 60시간, 평일은 15시간
+    _news_hours = 60 if datetime.utcnow().weekday() == 0 else 15
 
-    def _is_fresh(pub_str, max_hours=15):
+    def _is_fresh(pub_str, max_hours=None):
         """pubDate 문자열이 max_hours 이내면 True (한국 장 마감~익일 개장 창)"""
+        if max_hours is None:
+            max_hours = _news_hours
         if not pub_str:
             return True  # 날짜 없으면 일단 포함
         try:
@@ -333,7 +375,7 @@ def fetch_bond_news_all():
         except Exception as e:
             print(f"  국내 뉴스 오류: {e}")
 
-    print(f"  → 총 {len(items)}개 헤드라인 수집 (15시간 이내)")
+    print(f"  → 총 {len(items)}개 헤드라인 수집 ({_news_hours}시간 이내)")
     for t, s, lang in items[:6]:
         print(f"    [{lang}] {t[:65]} ({s})")
     return items
