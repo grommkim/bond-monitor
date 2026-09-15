@@ -377,37 +377,31 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             top_events.append(detected[cat])
 
     # ── 1) 이벤트 문장 ────────────────────────────────────────────────
-    # 제목 나열 대신 이벤트 label + 실제 내용 서술
-    if top_events:
+    # 한국어 기사 제목을 그대로 사용 (15시간 필터 통과한 실제 뉴스만)
+    # 영어 전용 매칭(title=None)은 제외 — 실제 내용 없는 템플릿 방지
+    ko_events = [ev for ev in top_events if ev.get("title")]
+    if ko_events:
         event_sents = []
-        for ev in top_events[:3]:
-            cat   = ev["cat"]
-            label = ev["label"]
-            imp   = _EVENT_IMPACT.get(cat, "")
-            if imp:
-                first_sent = imp.split(". ")[0]
-                event_sents.append(f"{label}: {first_sent}.")
-            else:
-                event_sents.append(f"{label} 관련 동향.")
-        line_event = " ".join(event_sents)
+        for ev in ko_events[:3]:
+            title = ev["title"]
+            event_sents.append(title)
+        line_event = " / ".join(event_sents)
 
-        # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10
-        first_imp = _EVENT_IMPACT.get(top_events[0]["cat"], "")
-        exp_down  = ("금리 하락↓ 요인" in first_imp or "금리 하락↓ 기대" in first_imp
-                     or "금리 하락↓" in first_imp.split(". ")[0])
-        exp_up    = ("금리 상승↑ 압력" in first_imp or "금리 상승↑ 요인" in first_imp
-                     or "금리 상승↑" in first_imp.split(". ")[0])
-        first_cat = top_events[0]["cat"]
+        # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10 (키워드로 판단)
+        first_cat = ko_events[0]["cat"]
+        first_title = ko_events[0]["title"].lower()
+        exp_down = any(k in first_title for k in ["바이백","매입","하락","인하","완화","wgbi","편입"])
+        exp_up   = any(k in first_title for k in ["매파","상승","인상","긴축","워시","트럼프","관세"])
         if exp_down and not exp_up and chg_10 >= 3:
             contra = _EVENT_CONTRADICT_DOWN_UP.get(
                 first_cat,
-                f"하지만 실제 미국 국채금리는 +{chg_10:.1f}bp 상승 — 시장이 기대와 달리 반응.")
-            line_event += " " + contra
+                f"그러나 실제 미국 국채금리는 +{chg_10:.1f}bp 상승 — 시장이 기대와 달리 반응.")
+            line_event += ". " + contra
         elif exp_up and not exp_down and chg_10 <= -3:
             contra = _EVENT_CONTRADICT_UP_DOWN.get(
                 first_cat,
-                f"하지만 실제 미국 국채금리는 {chg_10:.1f}bp 하락 — 시장이 기대와 달리 반응.")
-            line_event += " " + contra
+                f"그러나 실제 미국 국채금리는 {chg_10:.1f}bp 하락 — 시장이 기대와 달리 반응.")
+            line_event += ". " + contra
     else:
         line_event = ""
 
