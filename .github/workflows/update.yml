@@ -25,7 +25,7 @@ jobs:
           python-version: '3.11'
 
       - name: 패키지 설치
-        run: pip install requests openpyxl
+        run: pip install requests openpyxl yfinance
 
       - name: 대시보드 업데이트
         run: python update.py

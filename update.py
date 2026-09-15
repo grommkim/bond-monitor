@@ -13,42 +13,34 @@ except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
 def fetch_us_rates():
-    """미국 국채 금리 수집 — Yahoo Finance JSON → FRED → Stooq 순 폴백"""
-    import csv, io, json as _json
+    """미국 국채 금리 수집 — yfinance → FRED → Stooq 순 폴백"""
+    import csv, io
     print("[ 미국 국채 금리 수집 ]")
     rates = {}
-    _hdrs = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124",
-        "Accept": "application/json,*/*",
-    }
 
-    # ── 1순위: Yahoo Finance v8 JSON (^TNX=10Y, ^FVX=5Y, ^TYX=30Y, ^IRX=13w) ──
-    yf_map = [("10Y", "%5ETNX"), ("2Y", "%5EIRX"), ("30Y", "%5ETYX")]
+    # ── 1순위: yfinance (^TNX=10Y, ^TYX=30Y, ^FVX=5Y proxy 2Y) ─────
     try:
-        for tenor, sym in yf_map:
-            url  = (f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}"
-                    f"?interval=1d&range=5d")
-            resp = requests.get(url, timeout=15, headers=_hdrs)
-            data = resp.json()
-            closes = (data.get("chart", {}).get("result") or [{}])[0] \
-                         .get("indicators", {}).get("quote", [{}])[0] \
-                         .get("close", [])
-            closes = [c for c in closes if c is not None]
+        import yfinance as yf
+        # ^IRX = 13-week T-bill (closest free proxy for 2Y)
+        tickers = {"10Y": "^TNX", "30Y": "^TYX", "2Y": "^IRX"}
+        for tenor, sym in tickers.items():
+            hist = yf.Ticker(sym).history(period="5d", interval="1d", auto_adjust=False)
+            closes = hist["Close"].dropna().tolist()
             if len(closes) >= 2:
                 curr = round(closes[-1], 3)
                 prev = round(closes[-2], 3)
                 chg  = round((curr - prev) * 100, 1)
-                # 2Y proxied by 13-week T-bill (IRX) — scale ÷10 if needed
-                if tenor == "2Y" and curr < 1:
-                    curr = round(curr * 10, 3)
-                    prev = round(prev * 10, 3)
+                # IRX는 x10 스케일로 저장됨 (4.5% → 45 표시)
+                if tenor == "2Y" and curr > 20:
+                    curr = round(curr / 10, 3)
+                    prev = round(prev / 10, 3)
                     chg  = round((curr - prev) * 100, 1)
                 rates[tenor] = {"rate": curr, "chg_bps": chg, "date": ""}
-                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Yahoo]")
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [yfinance]")
         if rates.get("10Y"):
             return rates
     except Exception as e:
-        print(f"  Yahoo Finance 오류: {e}")
+        print(f"  yfinance 오류: {e}")
 
     # ── 2순위: FRED ───────────────────────────────────────────────────
     try:
