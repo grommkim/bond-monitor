@@ -1622,7 +1622,7 @@ def _stb_row(summary, prev_s, R, 조, diff_td, flow_td, ytd_r):
         f'<td style="padding-left:18px;color:#475569">단기사채</td>'
         f'<td style="background:#1a3a5c10;color:#94a3b8;text-align:right">–</td>'
         f'<td {R} style="background:#1a3a5c10;font-size:.84rem;white-space:nowrap">{stb_net_str}</td>'
-        f'{flow_td(ytd_r.get("단기사채"))}'
+        f'<td style="text-align:right;color:#94a3b8">–</td>'
         f'<td {R}>{조(stb_curr)}</td>'
         f'{diff_td("단기사채", True)}'
         f'</tr>'
