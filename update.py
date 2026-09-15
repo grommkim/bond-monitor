@@ -13,53 +13,42 @@ except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
 def fetch_us_rates():
-    """미국 국채 금리 수집 — US Treasury XML → FRED → Stooq 순 폴백"""
-    import csv, io, xml.etree.ElementTree as ET
+    """미국 국채 금리 수집 — Yahoo Finance JSON → FRED → Stooq 순 폴백"""
+    import csv, io, json as _json
     print("[ 미국 국채 금리 수집 ]")
     rates = {}
+    _hdrs = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124",
+        "Accept": "application/json,*/*",
+    }
 
-    # ── 1순위: US Treasury 공식 XML ──────────────────────────────────
-    # https://home.treasury.gov 공개 XML (인증 불필요)
+    # ── 1순위: Yahoo Finance v8 JSON (^TNX=10Y, ^FVX=5Y, ^TYX=30Y, ^IRX=13w) ──
+    yf_map = [("10Y", "%5ETNX"), ("2Y", "%5EIRX"), ("30Y", "%5ETYX")]
     try:
-        ym = datetime.utcnow().strftime("%Y%m")
-        url = (f"https://home.treasury.gov/resource-center/data-chart-center/"
-               f"interest-rates/pages/xml?data=daily_treasury_yield_curve"
-               f"&field_tdr_date_value={ym}")
-        resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-        ns   = {"m": "http://www.w3.org/2005/Atom",
-                "d": "http://schemas.microsoft.com/ado/2007/08/dataservices",
-                "p": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"}
-        root = ET.fromstring(resp.content)
-        entries = root.findall(".//m:entry", ns) or root.findall(".//entry")
-        rows_raw = []
-        for entry in entries:
-            props = entry.find(".//{http://schemas.microsoft.com/ado/2007/08/dataservices/metadata}properties")
-            if props is None:
-                continue
-            def gv(tag):
-                el = props.find(f"{{http://schemas.microsoft.com/ado/2007/08/dataservices}}{tag}")
-                return el.text if el is not None and el.text else None
-            dt   = gv("NEW_DATE") or gv("Id")
-            y2   = gv("BC_2YEAR")
-            y10  = gv("BC_10YEAR")
-            y30  = gv("BC_30YEAR")
-            if dt and y10:
-                rows_raw.append({"date": dt[:10], "2Y": y2, "10Y": y10, "30Y": y30})
-        rows_raw.sort(key=lambda x: x["date"])
-        rows_raw = [r for r in rows_raw if r["10Y"]]
-        if len(rows_raw) >= 2:
-            for tenor, key in [("10Y","10Y"), ("2Y","2Y"), ("30Y","30Y")]:
-                vals = [r for r in rows_raw if r.get(key)]
-                if len(vals) >= 2:
-                    curr = float(vals[-1][key])
-                    prev = float(vals[-2][key])
+        for tenor, sym in yf_map:
+            url  = (f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}"
+                    f"?interval=1d&range=5d")
+            resp = requests.get(url, timeout=15, headers=_hdrs)
+            data = resp.json()
+            closes = (data.get("chart", {}).get("result") or [{}])[0] \
+                         .get("indicators", {}).get("quote", [{}])[0] \
+                         .get("close", [])
+            closes = [c for c in closes if c is not None]
+            if len(closes) >= 2:
+                curr = round(closes[-1], 3)
+                prev = round(closes[-2], 3)
+                chg  = round((curr - prev) * 100, 1)
+                # 2Y proxied by 13-week T-bill (IRX) — scale ÷10 if needed
+                if tenor == "2Y" and curr < 1:
+                    curr = round(curr * 10, 3)
+                    prev = round(prev * 10, 3)
                     chg  = round((curr - prev) * 100, 1)
-                    rates[tenor] = {"rate": curr, "chg_bps": chg, "date": vals[-1]["date"]}
-                    print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Treasury]")
-            if rates:
-                return rates
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": ""}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Yahoo]")
+        if rates.get("10Y"):
+            return rates
     except Exception as e:
-        print(f"  Treasury XML 오류: {e}")
+        print(f"  Yahoo Finance 오류: {e}")
 
     # ── 2순위: FRED ───────────────────────────────────────────────────
     try:
