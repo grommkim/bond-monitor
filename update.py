@@ -116,6 +116,16 @@ _EVENT_KW = [
     ("gdp",       ["gdp","recession","경기침체","성장률"],                    "경제성장"),
 ]
 
+# 후속/평가 기사 감지 키워드 — 과거 이벤트의 사후 평가 보도임을 판별
+_FOLLOWUP_KW_EN = ["success", "successful", "hails", "praised", "praises",
+                   "fails to", "disappoints", "failed", "reaction to", "aftermath"]
+_FOLLOWUP_KW_KO = ["성공", "평가", "결과", "반응", "효과"]
+
+def _is_followup(title: str, lang: str) -> bool:
+    t = title.lower()
+    kws = _FOLLOWUP_KW_KO if lang == "ko" else _FOLLOWUP_KW_EN
+    return any(k in t for k in kws)
+
 # 이벤트별 시장 영향 설명
 _EVENT_IMPACT = {
     "buyback":  "재무부가 시장에서 국채를 직접 매입 → 단기적으로 공급 축소 효과, 금리 하락↓ 요인. "
@@ -422,10 +432,15 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         for cat in active_cats[:3]:
             ev    = detected[cat]
             title = ev.get("title") or ""
+            lang  = ev.get("lang", "en")
             ctx   = _EVENT_CONTEXT.get(cat, "")
+            label = ev.get("label", cat)
             if title:
-                # 실제 기사 제목 표시 — 시점 단언 없이
-                sent = f"「{title}」 {ctx}" if ctx else f"「{title}」"
+                if _is_followup(title, lang):
+                    # 과거 이벤트에 대한 사후 평가 기사임을 명시
+                    sent = f"[{label} 후속 평가] 「{title}」"
+                else:
+                    sent = f"「{title}」 {ctx}".strip() if ctx else f"「{title}」"
             elif ctx:
                 sent = ctx
             else:
