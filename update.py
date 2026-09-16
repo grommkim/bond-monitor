@@ -399,32 +399,48 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         if cat in detected and len(top_events) < 3:
             top_events.append(detected[cat])
 
-    # ── 1) 이벤트 문장 ────────────────────────────────────────────────
-    # 한국어 기사 제목을 그대로 사용 (15시간 필터 통과한 실제 뉴스만)
-    # 영어 전용 매칭(title=None)은 제외 — 실제 내용 없는 템플릿 방지
-    ko_events = [ev for ev in top_events if ev.get("title")]
-    if ko_events:
-        event_sents = []
-        for ev in ko_events[:3]:
-            title = ev["title"]
-            event_sents.append(title)
-        line_event = " / ".join(event_sents)
+    # ── 1) 이벤트 문장 — 주요 인사 발언·이슈 2~3줄 서술 요약 ──────────
+    # 매칭된 이벤트 카테고리를 기반으로 서술 합성 (기사 제목 나열 아님)
+    # 영어 전용 매칭(title=None) 포함해 이벤트 카테고리 활용
+    _EVENT_NARRATIVE = {
+        "buyback":  "재무부가 국채 바이백(매입)을 실시, 장기물 공급 축소를 통해 금리 하락 압력을 조성했다.",
+        "warsh":    "케빈 워시가 금리 인하에 신중한 매파적 입장을 재확인하며 고금리 장기화 우려가 이어졌다.",
+        "bessent":  "베센트 재무장관이 국채 발행 및 만기 구조에 대한 입장을 밝혀 시장의 주목을 받았다.",
+        "trump":    "트럼프 행정부의 재정·관세 정책 관련 발언이 국채 공급 증가 및 인플레 우려로 연결됐다.",
+        "tariff":   "관세 정책 관련 동향이 수입물가 상승 기대를 자극하며 금리 상방 압력으로 작용했다.",
+        "powell":   "파월 Fed 의장의 발언이 통화정책 방향의 핵심 신호로 부각됐다.",
+        "fed":      "연준의 통화정책 스탠스 관련 발언 및 지표가 단기금리 방향에 영향을 미쳤다.",
+        "auction":  "미 국채 입찰 결과가 시장 수급의 주요 변수로 작용했다.",
+        "cpi":      "물가(CPI) 지표가 금리 인하 기대에 직접 영향을 미쳤다.",
+        "jobs":     "고용지표가 경기·인플레 경로를 가늠하는 핵심 변수로 부각됐다.",
+        "gdp":      "GDP 등 경기 지표가 안전자산 수요 및 금리 방향에 영향을 미쳤다.",
+        "wgbi":     "한국의 WGBI 편입 효과로 글로벌 패시브 자금의 국채 매수 유입 기대가 지속되고 있다.",
+        "kr_close": "전일 국내 채권시장에서 주요 발행 계획·정책 변수에 반응해 금리가 움직였다.",
+    }
+    active_cats = [ev["cat"] for ev in top_events]  # 한국어 + 영어 모두 포함
+    if active_cats:
+        narr_sents = []
+        for cat in active_cats[:3]:
+            sent = _EVENT_NARRATIVE.get(cat, "")
+            if sent:
+                narr_sents.append(sent)
+        line_event = " ".join(narr_sents) if narr_sents else ""
 
-        # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10 (키워드로 판단)
-        first_cat = ko_events[0]["cat"]
-        first_title = ko_events[0]["title"].lower()
-        exp_down = any(k in first_title for k in ["바이백","매입","하락","인하","완화","wgbi","편입"])
-        exp_up   = any(k in first_title for k in ["매파","상승","인상","긴축","워시","트럼프","관세"])
+        # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10
+        first_cat   = active_cats[0]
+        first_narr  = _EVENT_NARRATIVE.get(first_cat, "")
+        exp_down = any(k in first_narr for k in ["하락 압력","하락 기대","매수","편입"])
+        exp_up   = any(k in first_narr for k in ["상방 압력","매파","고금리","공급 증가","상승"])
         if exp_down and not exp_up and chg_10 >= 3:
             contra = _EVENT_CONTRADICT_DOWN_UP.get(
                 first_cat,
-                f"그러나 실제 미국 국채금리는 +{chg_10:.1f}bp 상승 — 시장이 기대와 달리 반응.")
-            line_event += ". " + contra
+                f"다만 실제 미국 국채금리는 +{chg_10:.1f}bp 상승, 시장이 기대와 달리 반응했다.")
+            line_event += " " + contra
         elif exp_up and not exp_down and chg_10 <= -3:
             contra = _EVENT_CONTRADICT_UP_DOWN.get(
                 first_cat,
-                f"그러나 실제 미국 국채금리는 {chg_10:.1f}bp 하락 — 시장이 기대와 달리 반응.")
-            line_event += ". " + contra
+                f"다만 실제 미국 국채금리는 {chg_10:.1f}bp 하락, 시장이 기대와 달리 반응했다.")
+            line_event += " " + contra
     else:
         line_event = ""
 
@@ -1796,41 +1812,29 @@ def market_news_section_html(us_rates, analysis):
         f'{_html.escape(nf_headline)}</div>'
     ) if nf_headline else ""
 
+    # 순서: 미국 → 야간선물 → 이슈 → 전망
+    def _row(tag, bg, text_color, content, border=True, extra=""):
+        bdr = "border-bottom:1px solid #f1f5f9;" if border else ""
+        return (
+            f'<div style="display:flex;gap:8px;padding:9px 0;{bdr}align-items:flex-start">'
+            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:{bg};'
+            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">{tag}</span>'
+            f'<div style="font-size:.84rem;color:{text_color};line-height:1.6">{content}{extra}</div>'
+            f'</div>'
+        )
+
     body_rows = ""
-    if line_event:
-        body_rows += (
-            f'<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start">'
-            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;'
-            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">이슈</span>'
-            f'<div style="font-size:.84rem;color:#1e293b;line-height:1.6">{_html.escape(line_event)}</div>'
-            f'</div>'
-        )
     if line_us:
-        body_rows += (
-            f'<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start">'
-            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:#0369a1;'
-            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">미국</span>'
-            f'<div style="font-size:.84rem;color:#0c4a6e;line-height:1.6">{_html.escape(line_us)}</div>'
-            f'</div>'
-        )
+        body_rows += _row("미국", "#0369a1", "#0c4a6e", _html.escape(line_us))
     if line_night:
-        body_rows += (
-            f'<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start">'
-            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:#92400e;'
-            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">야간</span>'
-            f'<div style="font-size:.84rem;color:#78350f;line-height:1.6">'
-            f'{_html.escape(line_night)}{nf_sub}</div>'
-            f'</div>'
-        )
+        body_rows += _row("야간선물", "#92400e", "#78350f",
+                          _html.escape(line_night), extra=nf_sub)
+    if line_event:
+        body_rows += _row("이슈", "#475569", "#1e293b", _html.escape(line_event))
     if line_outlook:
-        body_rows += (
-            f'<div style="display:flex;gap:8px;padding:9px 0;align-items:flex-start">'
-            f'<span style="font-size:.7rem;font-weight:700;color:#fff;background:{out_color};'
-            f'border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">전망</span>'
-            f'<div style="font-size:.84rem;color:#1e293b;font-weight:600;line-height:1.6">'
-            f'{_html.escape(line_outlook)}</div>'
-            f'</div>'
-        )
+        body_rows += _row("전망", out_color, "#1e293b",
+                          _html.escape(line_outlook), border=False,
+                          extra=f'<span style="font-weight:600"></span>')
 
     main_block = (
         f'<div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;'
