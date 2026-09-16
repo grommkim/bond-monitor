@@ -289,8 +289,8 @@ def fetch_bond_news_all():
     print("[ 금융시장 뉴스 수집 ]")
     now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
     items = []
-    # 월요일(weekday=0)은 금요일 미국장 커버 위해 60시간, 평일은 15시간
-    _news_hours = 60 if datetime.utcnow().weekday() == 0 else 15
+    # 월요일(weekday=0)은 금요일 미국장 커버 위해 60시간, 평일은 24시간
+    _news_hours = 60 if datetime.utcnow().weekday() == 0 else 24
 
     def _is_fresh(pub_str, max_hours=None):
         """pubDate 문자열이 max_hours 이내면 True (한국 장 마감~익일 개장 창)"""
@@ -356,7 +356,7 @@ def fetch_bond_news_all():
         except Exception as e:
             print(f"  국내 뉴스 오류: {e}")
 
-    print(f"  → 총 {len(items)}개 헤드라인 수집 ({_news_hours}시간 이내)")
+    print(f"  → 총 {len(items)}개 헤드라인 수집 ({_news_hours}시간 이내)", flush=True)
     for t, s, lang in items[:6]:
         print(f"    [{lang}] {t[:65]} ({s})")
     return items
