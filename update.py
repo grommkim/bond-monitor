@@ -391,7 +391,7 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             for title, source, lang in all_headlines:
                 if lang == "en" and any(kw.lower() in title.lower() for kw in kws):
                     detected[cat] = {"cat": cat, "label": label,
-                                     "title": None, "source": source, "lang": "en"}
+                                     "title": title, "source": source, "lang": "en"}
                     break
 
     top_events = []
@@ -399,36 +399,43 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         if cat in detected and len(top_events) < 3:
             top_events.append(detected[cat])
 
-    # ── 1) 이벤트 문장 — 주요 인사 발언·이슈 2~3줄 서술 요약 ──────────
-    # 매칭된 이벤트 카테고리를 기반으로 서술 합성 (기사 제목 나열 아님)
-    # 영어 전용 매칭(title=None) 포함해 이벤트 카테고리 활용
-    _EVENT_NARRATIVE = {
-        "buyback":  "재무부가 국채 바이백(매입)을 실시, 장기물 공급 축소를 통해 금리 하락 압력을 조성했다.",
-        "warsh":    "케빈 워시가 금리 인하에 신중한 매파적 입장을 재확인하며 고금리 장기화 우려가 이어졌다.",
-        "bessent":  "베센트 재무장관이 국채 발행 및 만기 구조에 대한 입장을 밝혀 시장의 주목을 받았다.",
-        "trump":    "트럼프 행정부의 재정·관세 정책 관련 발언이 국채 공급 증가 및 인플레 우려로 연결됐다.",
-        "tariff":   "관세 정책 관련 동향이 수입물가 상승 기대를 자극하며 금리 상방 압력으로 작용했다.",
-        "powell":   "파월 Fed 의장의 발언이 통화정책 방향의 핵심 신호로 부각됐다.",
-        "fed":      "연준의 통화정책 스탠스 관련 발언 및 지표가 단기금리 방향에 영향을 미쳤다.",
-        "auction":  "미 국채 입찰 결과가 시장 수급의 주요 변수로 작용했다.",
-        "cpi":      "물가(CPI) 지표가 금리 인하 기대에 직접 영향을 미쳤다.",
-        "jobs":     "고용지표가 경기·인플레 경로를 가늠하는 핵심 변수로 부각됐다.",
-        "gdp":      "GDP 등 경기 지표가 안전자산 수요 및 금리 방향에 영향을 미쳤다.",
-        "wgbi":     "한국의 WGBI 편입 효과로 글로벌 패시브 자금의 국채 매수 유입 기대가 지속되고 있다.",
-        "kr_close": "전일 국내 채권시장에서 주요 발행 계획·정책 변수에 반응해 금리가 움직였다.",
+    # ── 1) 이벤트 문장 — 실제 기사 제목 + 중립적 시장 의미 요약 ──────────
+    # 이벤트별 시장 의미 요약 (현재형 — 언제 발생했는지 단언 안 함)
+    _EVENT_CONTEXT = {
+        "buyback":  "재무부 바이백(국채 매입) 관련 동향 — 장기물 공급 축소 기대로 금리 하락 압력 요인.",
+        "warsh":    "케빈 워시 매파 발언 관련 보도 — 고금리 장기화 우려 부각.",
+        "bessent":  "베센트 재무장관 국채 발행·만기 구조 발언 관련 보도 — 시장 주목.",
+        "trump":    "트럼프 재정·관세 정책 관련 보도 — 국채 공급 증가·인플레 우려 요인.",
+        "tariff":   "관세 정책 관련 보도 — 수입물가 상승 기대·금리 상방 압력 요인.",
+        "powell":   "파월 Fed 의장 발언 관련 보도 — 통화정책 방향 핵심 신호.",
+        "fed":      "연준 통화정책 스탠스 관련 보도 — 단기금리 방향 영향.",
+        "auction":  "미 국채 입찰 결과 관련 보도 — 시장 수급 변수.",
+        "cpi":      "물가(CPI) 지표 관련 보도 — 금리 인하 기대 직접 영향.",
+        "jobs":     "고용지표 관련 보도 — 경기·인플레 경로 핵심 변수.",
+        "gdp":      "GDP 등 경기 지표 관련 보도 — 안전자산 수요·금리 방향 영향.",
+        "wgbi":     "한국 WGBI 편입 관련 보도 — 글로벌 패시브 자금 국채 매수 유입 기대.",
+        "kr_close": "국내 채권시장 관련 보도 — 발행 계획·정책 변수 반응.",
     }
     active_cats = [ev["cat"] for ev in top_events]  # 한국어 + 영어 모두 포함
     if active_cats:
         narr_sents = []
         for cat in active_cats[:3]:
-            sent = _EVENT_NARRATIVE.get(cat, "")
-            if sent:
-                narr_sents.append(sent)
+            ev    = detected[cat]
+            title = ev.get("title") or ""
+            ctx   = _EVENT_CONTEXT.get(cat, "")
+            if title:
+                # 실제 기사 제목 표시 — 시점 단언 없이
+                sent = f"「{title}」 {ctx}" if ctx else f"「{title}」"
+            elif ctx:
+                sent = ctx
+            else:
+                continue
+            narr_sents.append(sent)
         line_event = " ".join(narr_sents) if narr_sents else ""
 
         # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10
         first_cat   = active_cats[0]
-        first_narr  = _EVENT_NARRATIVE.get(first_cat, "")
+        first_narr  = _EVENT_CONTEXT.get(first_cat, "")
         exp_down = any(k in first_narr for k in ["하락 압력","하락 기대","매수","편입"])
         exp_up   = any(k in first_narr for k in ["상방 압력","매파","고금리","공급 증가","상승"])
         if exp_down and not exp_up and chg_10 >= 3:
