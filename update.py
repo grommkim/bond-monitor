@@ -252,7 +252,7 @@ def fetch_night_futures():
             pub    = it.findtext("pubDate", "")
             if "국채선물" not in title:
                 continue
-            if not ("einfomax" in source.lower() or "kb" in source.lower()):
+            if not ("einfomax" in source.lower() or "인포맥스" in source or "kb" in source.lower()):
                 continue
             try:
                 dt = parsedate_to_datetime(pub) if pub else None
