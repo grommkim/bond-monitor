@@ -6856,5 +6856,14 @@
     "maturity_date": "2031-09-22",
     "rate": null,
     "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-09-22|2029-09-20|120000000000|kofia",
+    "category": "전력채",
+    "amount": 120000000000,
+    "issuance_date": "2026-09-22",
+    "maturity_date": "2029-09-20",
+    "rate": 4.46,
+    "source": "kofia"
   }
 ]
