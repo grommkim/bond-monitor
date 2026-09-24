@@ -9,33 +9,6 @@
     "source": "excel"
   },
   {
-    "id": "외화채권|2021-09-24|2026-09-24|118170000000|r773",
-    "category": "외화채권",
-    "amount": 118170000000,
-    "issuance_date": "2021-09-24",
-    "maturity_date": "2026-09-24",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "외화채권|2021-09-24|2026-09-24|118170000000|r774",
-    "category": "외화채권",
-    "amount": 118170000000,
-    "issuance_date": "2021-09-24",
-    "maturity_date": "2026-09-24",
-    "rate": null,
-    "source": "excel"
-  },
-  {
-    "id": "외화채권|2021-09-24|2026-09-24|118170000000|r775",
-    "category": "외화채권",
-    "amount": 118170000000,
-    "issuance_date": "2021-09-24",
-    "maturity_date": "2026-09-24",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "전력채|2021-10-01|2026-10-01|200000000000|r776",
     "category": "전력채",
     "amount": 200000000000,
