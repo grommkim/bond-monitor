@@ -35,8 +35,9 @@ def fetch_us_rates():
                     curr = round(curr / 10, 3)
                     prev = round(prev / 10, 3)
                     chg  = round((curr - prev) * 100, 1)
-                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": ""}
-                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [yfinance]")
+                rate_date = str(hist.index[-1].date())
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rate_date}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [{rate_date}] [yfinance]")
         if rates.get("10Y"):
             return rates
     except Exception as e:
@@ -109,7 +110,10 @@ _EVENT_KW = [
     ("trump",     ["trump","트럼프"],                                         "트럼프"),
     ("tariff",    ["tariff","관세","trade war","무역전쟁"],                   "관세/무역"),
     ("powell",    ["powell","파월"],                                          "파월 발언"),
-    ("fed",       ["federal reserve","fomc","연준","금통위"],                 "Fed/연준"),
+    ("fed",       ["federal reserve","fomc","연준","금통위",
+                   "rate hike","rate cut","rate decision","interest rate",
+                   "fed rate","fed votes","fed raises","fed cuts","fed holds",
+                   "rate unchanged","fed decision"],                          "Fed/연준"),
     ("auction",   ["auction","입찰","국채 발행"],                             "국채 입찰"),
     ("cpi",       ["cpi","consumer price","inflation","인플레","물가"],       "물가/CPI"),
     ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
@@ -125,6 +129,97 @@ def _is_followup(title: str, lang: str) -> bool:
     t = title.lower()
     kws = _FOLLOWUP_KW_KO if lang == "ko" else _FOLLOWUP_KW_EN
     return any(k in t for k in kws)
+
+def _title_to_market_ctx(title: str, cat: str) -> str:
+    """기사 제목을 분석해 방향성·숫자 기반 시장 영향 설명 생성"""
+    import re as _re
+    t = title.lower()
+
+    ease  = any(w in t for w in ["cut","lower","reduc","ease","pause","halt","truce",
+                                  "agree","deal","resolv","calm","stabiliz","인하","완화","합의"])
+    tight = any(w in t for w in ["rais","hike","increas","impos","expand","surge","spike",
+                                  "threat","war","인상","부과","강화","확대"])
+
+    # $XB 금액 추출
+    dm = _re.search(r'\$\s*(\d+(?:\.\d+)?)\s*(trillion|billion|million)', t)
+    dollar_str = ""
+    if dm:
+        v = float(dm.group(1))
+        u = {"trillion": "조", "billion": "억", "million": "백만"}[dm.group(2)]
+        dollar_str = f" {v:.0f}{u} 달러"
+
+    # bp 추출
+    bpm = _re.search(r'(\d+)\s*(?:basis points?|bps?)', t)
+    bp_str = f" {bpm.group(1)}bp" if bpm else ""
+
+    if cat in ("tariff", "trump"):
+        if ease and not tight:
+            return f"무역·관세 긴장 완화{dollar_str} — 인플레 기대 하향, 금리 하락↓ 요인."
+        elif tight and not ease:
+            return f"관세 강화·무역 갈등{dollar_str} — 수입물가 상승, 금리 상방↑ 압력."
+        elif "summit" in t or "meeting" in t or "analysis" in t:
+            return f"미·중 정상급 협상{dollar_str} — 합의 범위에 따라 인플레·금리 방향 결정."
+        else:
+            return f"트럼프 무역·재정 정책{dollar_str} — 국채 공급·인플레 영향 주목."
+
+    elif cat == "fed":
+        if any(w in t for w in ["hike","raise","rais","increase","increas"]):
+            return f"연준 금리 인상{bp_str} 결정 — 단기금리 상승↑, 추가 인상 경로 주목."
+        elif any(w in t for w in ["cut","lower","reduc","decreas"]):
+            return f"연준 금리 인하{bp_str} 결정 — 단기금리 하락↓, 완화 사이클 기대."
+        elif any(w in t for w in ["pause","hold","unchanged","maintain"]):
+            return "연준 금리 동결 — 추가 인상 신중론, 데이터 의존 기조 지속."
+        else:
+            return "연준 통화정책 결정 — 단기금리 방향에 직접 영향."
+
+    elif cat == "warsh":
+        if any(w in t for w in ["hike","hawkish","매파","more hike","추가 인상","aggressive"]):
+            return "워시 의장 매파 발언 — 추가 금리 인상 시사, 고금리 장기화 우려."
+        elif any(w in t for w in ["cut","dovish","비둘기","인하","slow"]):
+            return "워시 의장 완화 신호 — 금리 인하 기대 일부 강화."
+        else:
+            return "워시 Fed 의장 발언·정책 동향 — 향후 금리 경로 핵심 신호."
+
+    elif cat == "cpi":
+        if any(w in t for w in ["rise","up","high","exceed","hot","above","surge","jump","above"]):
+            return "물가 예상 상회 — 금리 인하 기대 후퇴, 금리 상승↑ 압력."
+        elif any(w in t for w in ["fall","drop","cool","ease","below","slow","low","declin"]):
+            return "물가 둔화 신호 — 금리 인하 기대 강화, 금리 하락↓ 요인."
+        else:
+            return "물가(CPI) 지표 발표 — 금리 인하 기대에 직접 영향."
+
+    elif cat == "auction":
+        if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
+            return f"미 국채 입찰{dollar_str} 부진 — bid-to-cover 저조, 금리 상승↑."
+        elif any(w in t for w in ["strong","solid","robust","demand","well"]):
+            return f"미 국채 입찰{dollar_str} 호조 — 강한 수요, 금리 하락↓ 요인."
+        else:
+            return f"미 국채 입찰{dollar_str} 결과 — 시장 수급 주요 변수."
+
+    elif cat == "jobs":
+        if any(w in t for w in ["strong","beat","surge","rise","robust","add","jump"]):
+            return "고용 강세 — 경기 과열·인하 명분 약화, 금리 상승↑."
+        elif any(w in t for w in ["weak","fall","miss","slow","decline","lose","soft"]):
+            return "고용 부진 — 경기 둔화·인하 기대 강화, 금리 하락↓."
+        else:
+            return "고용지표 발표 — 경기·인플레 경로 핵심 변수."
+
+    elif cat == "gdp":
+        if any(w in t for w in ["recession","contraction","negative","shrink","weak"]):
+            return "경기 침체 우려 — 안전자산 수요↑, 금리 하락↓ 압력."
+        elif any(w in t for w in ["growth","beat","strong","expand","robust"]):
+            return "경기 호조 — 채권 수요 약화, 금리 상방↑ 가능."
+        else:
+            return "경기지표 — 안전자산 수요·금리 방향 영향."
+
+    _fallback = {
+        "buyback":  "재무부 바이백 — 장기물 공급 축소, 금리 하락↓ 요인.",
+        "bessent":  "베센트 재무장관 발언 — 국채 발행·만기 구조 영향.",
+        "wgbi":     "한국 WGBI 편입 — 글로벌 패시브 자금 국채 매수 유입 기대.",
+        "kr_close": "국내 채권시장 마감 — 발행 계획·정책 변수 반응.",
+        "powell":   "파월 전 의장 발언 — 통화정책 방향 참고 신호.",
+    }
+    return _fallback.get(cat, "")
 
 # 이벤트별 시장 영향 설명
 _EVENT_IMPACT = {
@@ -409,38 +504,21 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         if cat in detected and len(top_events) < 3:
             top_events.append(detected[cat])
 
-    # ── 1) 이벤트 문장 — 실제 기사 제목 + 중립적 시장 의미 요약 ──────────
-    # 이벤트별 시장 의미 요약 (현재형 — 언제 발생했는지 단언 안 함)
-    _EVENT_CONTEXT = {
-        "buyback":  "재무부 바이백(국채 매입) 관련 동향 — 장기물 공급 축소 기대로 금리 하락 압력 요인.",
-        "warsh":    "케빈 워시 매파 발언 관련 보도 — 고금리 장기화 우려 부각.",
-        "bessent":  "베센트 재무장관 국채 발행·만기 구조 발언 관련 보도 — 시장 주목.",
-        "trump":    "트럼프 재정·관세 정책 관련 보도 — 국채 공급 증가·인플레 우려 요인.",
-        "tariff":   "관세 정책 관련 보도 — 수입물가 상승 기대·금리 상방 압력 요인.",
-        "powell":   "파월 Fed 의장 발언 관련 보도 — 통화정책 방향 핵심 신호.",
-        "fed":      "연준 통화정책 스탠스 관련 보도 — 단기금리 방향 영향.",
-        "auction":  "미 국채 입찰 결과 관련 보도 — 시장 수급 변수.",
-        "cpi":      "물가(CPI) 지표 관련 보도 — 금리 인하 기대 직접 영향.",
-        "jobs":     "고용지표 관련 보도 — 경기·인플레 경로 핵심 변수.",
-        "gdp":      "GDP 등 경기 지표 관련 보도 — 안전자산 수요·금리 방향 영향.",
-        "wgbi":     "한국 WGBI 편입 관련 보도 — 글로벌 패시브 자금 국채 매수 유입 기대.",
-        "kr_close": "국내 채권시장 관련 보도 — 발행 계획·정책 변수 반응.",
-    }
-    active_cats = [ev["cat"] for ev in top_events]  # 한국어 + 영어 모두 포함
+    # ── 1) 이벤트 문장 — 제목 분석 기반 구체적 시장 설명 ──────────────────
+    active_cats = [ev["cat"] for ev in top_events]
     if active_cats:
         narr_sents = []
         for cat in active_cats[:3]:
             ev    = detected[cat]
             title = ev.get("title") or ""
             lang  = ev.get("lang", "en")
-            ctx   = _EVENT_CONTEXT.get(cat, "")
             label = ev.get("label", cat)
+            ctx   = _title_to_market_ctx(title, cat) if title else ""
             if title:
                 if _is_followup(title, lang):
-                    # 과거 이벤트에 대한 사후 평가 기사임을 명시
-                    sent = f"[{label} 후속 평가] 「{title}」"
+                    sent = f"[{label} 후속] {ctx}" if ctx else f"[{label} 후속] 「{title}」"
                 else:
-                    sent = f"「{title}」 {ctx}".strip() if ctx else f"「{title}」"
+                    sent = f"{ctx}" if ctx else f"[{label}] 관련 동향 주목."
             elif ctx:
                 sent = ctx
             else:
@@ -449,10 +527,11 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         line_event = " ".join(narr_sents) if narr_sents else ""
 
         # 모순 감지: 첫 이벤트 예상 방향 vs 실제 chg_10
-        first_cat   = active_cats[0]
-        first_narr  = _EVENT_CONTEXT.get(first_cat, "")
-        exp_down = any(k in first_narr for k in ["하락 압력","하락 기대","매수","편입"])
-        exp_up   = any(k in first_narr for k in ["상방 압력","매파","고금리","공급 증가","상승"])
+        first_ctx = _title_to_market_ctx(detected[active_cats[0]].get("title",""), active_cats[0])
+        first_cat = active_cats[0]
+        first_narr = first_ctx
+        exp_down = any(k in first_narr for k in ["하락↓","하락 기대","매수","편입","인하"])
+        exp_up   = any(k in first_narr for k in ["상방↑","상승↑","매파","고금리","공급 증가","인상"])
         if exp_down and not exp_up and chg_10 >= 3:
             contra = _EVENT_CONTRADICT_DOWN_UP.get(
                 first_cat,
@@ -483,7 +562,9 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         us_move = f"급락 {chg_10:.1f}bp"
         us_feel = "금리 하락↓ 압력 강함"
 
-    line_us = (f"미국 국채금리 10Y {rate_10:.3f}% ({us_move}), {us_feel}.")
+    rate_date = us_rates.get("10Y", {}).get("date", "")
+    date_suffix = f" ({rate_date[5:].replace('-','/')} 기준)" if rate_date else ""
+    line_us = (f"미국 국채금리 10Y {rate_10:.3f}% ({us_move}), {us_feel}.{date_suffix}")
     if rate_2:
         line_us += f" 2Y {rate_2:.3f}%"
         if rate_30:
@@ -1949,6 +2030,10 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 body{{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}}
 a{{color:#2563eb;text-decoration:none}}a:hover{{text-decoration:underline}}
 header{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}}
+.tab-bar{{background:#0a1f3a;display:flex;gap:0;padding:0 32px;border-bottom:1px solid #1e3a5f}}
+.tab-btn{{background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.55);padding:13px 22px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap}}
+.tab-btn:hover{{color:#fff}}
+.tab-active{{color:#fff!important;border-bottom-color:#60a5fa!important}}
 header h1{{font-size:1.55rem;font-weight:700;letter-spacing:-.5px}}
 .sub{{font-size:.83rem;opacity:.75}}
 main{{max-width:1400px;margin:0 auto;padding:28px 20px}}
@@ -2015,6 +2100,11 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
   <div class="sub">국고채 · 한전채 민평금리 · 공사채 발행현황</div></div>
   <div class="sub">기준일 <strong style="color:#fff">{today_str}</strong></div>
 </header>
+<div class="tab-bar">
+  <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">채권시장모니터링</button>
+  <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">재무처 주요통계</button>
+</div>
+<div id="tab-panel-1">
 <main>
 
 <section>
@@ -2063,6 +2153,17 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 </section>
 
 </main>
+</div>
+<div id="tab-panel-2" style="display:none">
+<main style="max-width:1400px;margin:0 auto;padding:28px 20px">
+  <section>
+    <h2>재무처 주요통계</h2>
+    <div style="padding:60px 20px;text-align:center;color:#94a3b8;font-size:.95rem">
+      준비 중입니다. 표시할 통계 항목을 알려주시면 구현하겠습니다.
+    </div>
+  </section>
+</main>
+</div>
 <footer>
   데이터: <a href="https://www.kofiabond.or.kr" target="_blank">금융투자협회 KOFIA</a> ·
   평일 오전 9시·오후 3시 자동 업데이트 · 마지막 생성: {today_str}
@@ -2075,6 +2176,13 @@ const RATE_MIN={rate_min}, RATE_MAX={rate_max};
 const SPRD_MIN={sprd_min}, SPRD_MAX={sprd_max};
 const kepcoAmt = {kepco_amt_json};
 const ktbAmt   = {ktb_amt_json};
+function switchTab(n) {{
+  document.getElementById('tab-panel-1').style.display = n===1 ? '' : 'none';
+  document.getElementById('tab-panel-2').style.display = n===2 ? '' : 'none';
+  document.getElementById('tab-btn-1').className = 'tab-btn' + (n===1 ? ' tab-active' : '');
+  document.getElementById('tab-btn-2').className = 'tab-btn' + (n===2 ? ' tab-active' : '');
+}}
+
 let activeRange = 0;
 
 function calcAxes(datasets) {{
