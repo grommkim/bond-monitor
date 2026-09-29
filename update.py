@@ -2270,12 +2270,14 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}}
 a{{color:#2563eb;text-decoration:none}}a:hover{{text-decoration:underline}}
-header{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}}
-.tab-bar{{background:#0a1f3a;display:flex;gap:0;padding:0 32px;border-bottom:1px solid #1e3a5f}}
-.tab-btn{{background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.55);padding:13px 22px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap}}
+.top-nav{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;padding:0 32px;border-bottom:2px solid #1e3a5f}}
+.top-nav-brand{{display:flex;flex-direction:column;justify-content:center;padding:14px 0;gap:3px}}
+.top-nav-brand h1{{font-size:1.25rem;font-weight:700;letter-spacing:-.4px;line-height:1}}
+.top-nav-brand .sub{{font-size:.75rem;opacity:.7}}
+.tab-bar{{display:flex;gap:0;align-items:stretch}}
+.tab-btn{{background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.55);padding:0 24px;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;height:100%}}
 .tab-btn:hover{{color:#fff}}
 .tab-active{{color:#fff!important;border-bottom-color:#60a5fa!important}}
-header h1{{font-size:1.55rem;font-weight:700;letter-spacing:-.5px}}
 .sub{{font-size:.83rem;opacity:.75}}
 main{{max-width:1400px;margin:0 auto;padding:28px 20px}}
 section{{margin-bottom:40px}}
@@ -2336,14 +2338,15 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 }})();
 </script>
 
-<header>
-  <div><h1>📊 채권 시장 모니터</h1>
-  <div class="sub">국고채 · 한전채 민평금리 · 공사채 발행현황</div></div>
-  <div class="sub">기준일 <strong style="color:#fff">{today_str}</strong></div>
-</header>
-<div class="tab-bar">
-  <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">채권시장모니터링</button>
-  <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">재무처 주요통계</button>
+<div class="top-nav">
+  <div class="top-nav-brand">
+    <h1>📊 채권 시장 모니터</h1>
+    <div class="sub">기준일 <strong style="color:#fff">{today_str}</strong> · 국고채 · 한전채 민평금리 · 공사채 발행현황</div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">채권시장모니터링</button>
+    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">재무처 주요통계</button>
+  </div>
 </div>
 <div id="tab-panel-1">
 <main>
