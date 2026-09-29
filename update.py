@@ -1976,28 +1976,28 @@ def market_news_section_html(us_rates, analysis):
 
 
 def kepco_stats_tab_html() -> str:
-    """재무처 주요통계 탭 HTML — '26 상반기 주요 통계"""
+    """재무처 주요통계 탭 HTML — '26 상반기 주요 통계 (연결/별도)"""
     # ── 수치 업데이트 영역 (여기만 수정) ────────────────────────────────
     BASE_DATE = "2026.6.30."
-    UNIT      = "조원 · %"
 
-    # 손익지표 (조원, 전년동기비 %p)
-    매출액       = (0.0,  0.0)   # (값, 전년동기비)
-    영업이익      = (0.0,  0.0)
-    순이익        = (0.0,  0.0)
-    영업이익률    = (0.0,  0.0)   # % (값, 전년동기비)
-    이자비용      = (0.0,  0.0)
-    순이익률      = (0.0,  0.0)   # %
+    # 형식: (연결값, 연결_전년동기비%, 별도값, 별도_전년동기비%)
+    # 손익지표 (단위: 조원)
+    매출액        = (0.0, 0.0,  0.0, 0.0)
+    영업이익       = (0.0, 0.0,  0.0, 0.0)
+    순이익         = (0.0, 0.0,  0.0, 0.0)
+    영업이익률     = (0.0, 0.0,  0.0, 0.0)   # 단위: %
+    이자비용       = (0.0, 0.0,  0.0, 0.0)
+    순이익률       = (0.0, 0.0,  0.0, 0.0)   # 단위: %
 
-    # 재무지표 (조원)
-    총자산   = (0.0, 0.0)
-    총부채   = (0.0, 0.0)
-    자기자본 = (0.0, 0.0)
-    부채비율 = (0.0, 0.0)   # %
-    이자보상배율 = (0.0, 0.0)  # 배
-    순차입금 = (0.0, 0.0)   # 조원
+    # 재무지표 (단위: 조원)
+    총자산         = (0.0, 0.0,  0.0, 0.0)
+    총부채         = (0.0, 0.0,  0.0, 0.0)
+    자기자본       = (0.0, 0.0,  0.0, 0.0)
+    부채비율       = (0.0, 0.0,  0.0, 0.0)   # 단위: %
+    이자보상배율   = (0.0, 0.0,  0.0, 0.0)   # 단위: 배
+    순차입금       = (0.0, 0.0,  0.0, 0.0)
 
-    # 차입금 현황
+    # 차입금 현황 (별도 기준, 연결/별도 구분 없음)
     사채발행수 = 0       # 개
     사채잔액   = 0.0     # 조원
     차입금잔액 = 0.0     # 조원
@@ -2005,108 +2005,104 @@ def kepco_stats_tab_html() -> str:
     상환액     = 0.0     # 조원
     조달금리   = 0.000   # %
 
-    # 연도별 추이 차트 데이터 (2022~2025 연간 + '26상)
+    # 연도별 추이 차트 데이터 (2022~2025 연간 + '26상, 연결 기준)
     CHART_YEARS = ["2022", "2023", "2024", "2025", "'26상"]
-    CH_매출액     = [76.8,  89.2, 86.4, 82.1, 0.0]   # 조원
+    CH_매출액     = [76.8,  89.2, 86.4, 82.1, 0.0]
     CH_영업이익   = [-14.3, -32.6,  2.4,  1.7, 0.0]
     CH_순이익     = [-24.3, -14.7,  4.1,  2.2, 0.0]
-    CH_이자비용   = [  2.4,   3.1,  3.5,  3.2, 0.0]   # 조원
-    CH_사채차입금 = [ 95.2, 102.4,105.7,103.1, 0.0]   # 조원
-    CH_조달금리   = [  3.92,  4.78, 4.82, 4.55, 0.0]   # %
+    CH_이자비용   = [  2.4,   3.1,  3.5,  3.2, 0.0]
+    CH_사채차입금 = [ 95.2, 102.4,105.7,103.1, 0.0]
+    CH_조달금리   = [  3.92,  4.78, 4.82, 4.55, 0.0]
     # ── 수치 업데이트 영역 끝 ────────────────────────────────────────────
 
-    def kpi(label, val, yoy, unit="조", fmt=".3f"):
-        color = "#dc2626" if yoy > 0 else ("#2563eb" if yoy < 0 else "#94a3b8")
-        sign  = "+" if yoy > 0 else ""
+    def yoy_html(yoy, reverse=False):
+        """전년동기비 표시 — reverse=True이면 증가=긍정(초록), 감소=부정(빨강)"""
+        if yoy == 0.0:
+            return '<span style="color:#94a3b8;font-size:.7rem">— %</span>'
+        pos_color = "#16a34a" if reverse else "#dc2626"
+        neg_color = "#dc2626" if reverse else "#2563eb"
+        color = pos_color if yoy > 0 else neg_color
+        arrow = "▲" if yoy > 0 else "▼"
+        return f'<span style="color:{color};font-size:.7rem">{arrow} {abs(yoy):.1f}%</span>'
+
+    def kpi_dual(label, c_val, c_yoy, b_val, b_yoy, unit="조", fmt=".1f", pct=False, reverse=False):
+        u = "%" if pct else unit
         return f"""
-<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-  <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:500">{label}</div>
-  <div style="font-size:1.35rem;font-weight:700;color:#0f2a4a">{val:{fmt}} <span style="font-size:.8rem;font-weight:400;color:#94a3b8">{unit}</span></div>
-  <div style="font-size:.72rem;color:{color};margin-top:3px">전년 동기 대비 {sign}{yoy:.2f}%</div>
+<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
+  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">{label}</div>
+  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
+    <div style="padding:10px 12px">
+      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
+      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">{c_val:{fmt}}<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">{u}</span></div>
+      <div style="margin-top:3px">{yoy_html(c_yoy, reverse)}</div>
+    </div>
+    <div style="background:#e2e8f0"></div>
+    <div style="padding:10px 12px">
+      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
+      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">{b_val:{fmt}}<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">{u}</span></div>
+      <div style="margin-top:3px">{yoy_html(b_yoy, reverse)}</div>
+    </div>
+  </div>
 </div>"""
 
-    def kpi2(label, val, yoy, unit="조", fmt=".3f"):
-        color = "#dc2626" if yoy > 0 else ("#2563eb" if yoy < 0 else "#94a3b8")
-        sign  = "+" if yoy > 0 else ""
+    def flow_kpi(label, val, unit="조", fmt=".1f", highlight=False):
+        color = "#1d4ed8" if highlight else "#0f2a4a"
         return f"""
-<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-  <div style="font-size:.72rem;color:#64748b;margin-bottom:4px;font-weight:500">{label}</div>
-  <div style="font-size:1.15rem;font-weight:700;color:#0f2a4a">{val:{fmt}} <span style="font-size:.75rem;color:#94a3b8">{unit}</span></div>
-  <div style="font-size:.68rem;color:{color};margin-top:2px">{sign}{yoy:.2f}%</div>
-</div>"""
-
-    def flow_kpi(label, val, unit="조", fmt=".3f"):
-        return f"""
-<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center">
-  <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:500">{label}</div>
-  <div style="font-size:1.3rem;font-weight:700;color:#0f2a4a">{val:{fmt}} <span style="font-size:.8rem;color:#94a3b8">{unit}</span></div>
+<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center">
+  <div style="font-size:.72rem;color:#64748b;margin-bottom:6px;font-weight:500">{label}</div>
+  <div style="font-size:1.2rem;font-weight:700;color:{color}">{val:{fmt}}<span style="font-size:.78rem;color:#94a3b8;margin-left:3px">{unit}</span></div>
 </div>"""
 
     return f"""
-<section style="background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);padding:20px 32px 16px;color:#fff">
-  <div style="font-size:1.45rem;font-weight:700;letter-spacing:-.3px">'26. 상반기 주요 통계</div>
-  <div style="font-size:.82rem;opacity:.75;margin-top:3px">한눈에 보는 우리의 재무 현황</div>
-  <div style="font-size:.78rem;opacity:.65;margin-top:8px">기준일 {BASE_DATE} &nbsp;|&nbsp; 단위: {UNIT}</div>
+<section style="background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);padding:18px 32px 14px;color:#fff">
+  <div style="font-size:1.3rem;font-weight:700;letter-spacing:-.3px">'26 상반기 주요 재무통계</div>
+  <div style="font-size:.78rem;opacity:.65;margin-top:6px">기준일: {BASE_DATE} &nbsp;|&nbsp; 단위: 조원 · % &nbsp;|&nbsp; 연결·별도 기준</div>
 </section>
 
-<section style="margin:0;padding:24px 28px 0">
-  <h2 style="font-size:.95rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:16px">
-    1. '26년 상반기 주요 통계
-  </h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-    <!-- 손익지표 -->
-    <div style="background:#f8fafc;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0">
-      <div style="font-size:.8rem;font-weight:700;color:#0f2a4a;margin-bottom:12px;display:flex;align-items:center;gap:6px">
-        <span style="font-size:.75rem">▣</span> 손익지표
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        {kpi("매출액",   매출액[0],   매출액[1])}
-        {kpi("영업이익", 영업이익[0], 영업이익[1])}
-        {kpi("순이익",   순이익[0],   순이익[1])}
-        {kpi("영업이익률", 영업이익률[0], 영업이익률[1], unit="%", fmt=".2f")}
-        {kpi("이자비용", 이자비용[0], 이자비용[1])}
-        {kpi("순이익률", 순이익률[0], 순이익률[1], unit="%", fmt=".3f")}
-      </div>
+<section style="padding:22px 28px 0">
+  <!-- 손익지표 -->
+  <div style="margin-bottom:20px">
+    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:12px">손익지표</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      {kpi_dual("매출액",      매출액[0],      매출액[1],      매출액[2],      매출액[3],      reverse=True)}
+      {kpi_dual("영업이익",    영업이익[0],    영업이익[1],    영업이익[2],    영업이익[3],    reverse=True)}
+      {kpi_dual("순이익",      순이익[0],      순이익[1],      순이익[2],      순이익[3],      reverse=True)}
+      {kpi_dual("영업이익률",  영업이익률[0],  영업이익률[1],  영업이익률[2],  영업이익률[3],  pct=True, fmt=".2f", reverse=True)}
+      {kpi_dual("이자비용",    이자비용[0],    이자비용[1],    이자비용[2],    이자비용[3])}
+      {kpi_dual("순이익률",    순이익률[0],    순이익률[1],    순이익률[2],    순이익률[3],    pct=True, fmt=".2f", reverse=True)}
     </div>
-    <!-- 재무지표 -->
-    <div style="background:#f8fafc;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0">
-      <div style="font-size:.8rem;font-weight:700;color:#0f2a4a;margin-bottom:12px;display:flex;align-items:center;gap:6px">
-        <span style="font-size:.75rem">▣</span> 재무지표
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        {kpi2("총자산",   총자산[0],   총자산[1])}
-        {kpi2("총부채",   총부채[0],   총부채[1])}
-        {kpi2("자기자본", 자기자본[0], 자기자본[1])}
-        {kpi2("부채비율", 부채비율[0], 부채비율[1], unit="%", fmt=".1f")}
-        {kpi2("이자보상배율", 이자보상배율[0], 이자보상배율[1], unit="배", fmt=".2f")}
-        {kpi2("순차입금", 순차입금[0], 순차입금[1])}
-      </div>
+  </div>
+
+  <!-- 재무지표 -->
+  <div style="margin-bottom:20px">
+    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #0d9488;padding-left:10px;margin-bottom:12px">재무지표</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      {kpi_dual("총자산",      총자산[0],      총자산[1],      총자산[2],      총자산[3])}
+      {kpi_dual("총부채",      총부채[0],      총부채[1],      총부채[2],      총부채[3])}
+      {kpi_dual("자기자본",    자기자본[0],    자기자본[1],    자기자본[2],    자기자본[3],    reverse=True)}
+      {kpi_dual("부채비율",    부채비율[0],    부채비율[1],    부채비율[2],    부채비율[3],    pct=True, fmt=".1f")}
+      {kpi_dual("이자보상배율",이자보상배율[0],이자보상배율[1],이자보상배율[2],이자보상배율[3],unit="배", fmt=".2f", reverse=True)}
+      {kpi_dual("순차입금",    순차입금[0],    순차입금[1],    순차입금[2],    순차입금[3])}
     </div>
   </div>
 
   <!-- 차입금 현황 -->
-  <div style="background:#f0f6ff;border-radius:12px;padding:16px 20px;border:1px solid #bfdbfe;margin-bottom:28px">
-    <div style="font-size:.8rem;font-weight:700;color:#0f2a4a;margin-bottom:12px;display:flex;align-items:center;gap:6px">
-      <span style="font-size:.75rem">▣</span> 차입금 현황
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+  <div style="margin-bottom:28px">
+    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:12px">차입금 현황 <span style="font-size:.72rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
       {flow_kpi("사채발행수", 사채발행수, unit="개", fmt="d")}
-      {flow_kpi("사채/차입금", 사채잔액, unit=f"/ {차입금잔액:.1f} 조")}
+      {flow_kpi("사채잔액", 사채잔액)}
+      {flow_kpi("차입금잔액", 차입금잔액)}
       {flow_kpi("조달액", 조달액)}
       {flow_kpi("상환액", 상환액)}
-      <div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center">
-        <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:500">조달금리</div>
-        <div style="font-size:1.3rem;font-weight:700;color:#1d4ed8">{조달금리:.3f}<span style="font-size:.9rem"> %</span></div>
-      </div>
+      {flow_kpi("조달금리", 조달금리, unit="%", fmt=".3f", highlight=True)}
     </div>
   </div>
 </section>
 
 <!-- 연도별 주요 통계 -->
 <section style="padding:0 28px 28px">
-  <h2 style="font-size:.95rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:16px">
-    2. 연도별 주요 통계
-  </h2>
+  <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #f59e0b;padding-left:10px;margin-bottom:14px">연도별 주요 통계 <span style="font-size:.72rem;font-weight:400;color:#94a3b8">(연결 기준)</span></div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
     <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">매출액 <span style="font-weight:400">(조원)</span></div><canvas id="sc1" style="max-height:180px"></canvas></div>
     <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">영업이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc2" style="max-height:180px"></canvas></div>
@@ -2117,102 +2113,53 @@ def kepco_stats_tab_html() -> str:
   </div>
 </section>
 
-<!-- 통계 검색 -->
-<section style="padding:0 28px 32px">
-  <h2 style="font-size:.95rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:14px">3. 통계 검색</h2>
-  <div style="background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-    <div style="font-size:.8rem;color:#64748b;margin-bottom:10px">원하는 통계를 입력해 빠르게 찾아요</div>
-    <div style="display:flex;gap:8px">
-      <input id="stats-search" type="text" placeholder="예: 매출액, 부채비율, 이자비용..."
-        style="flex:1;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none;font-family:inherit"
-        oninput="statsSearch(this.value)">
-      <button onclick="statsSearch(document.getElementById('stats-search').value)"
-        style="padding:10px 22px;background:#1d4ed8;color:#fff;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;font-weight:600">검색</button>
-    </div>
-    <div id="stats-result" style="margin-top:12px;font-size:.85rem;color:#475569;min-height:24px"></div>
-  </div>
-</section>
-
 <script>
-// ── 재무처 통계 차트 초기화 ──────────────────────────────────────────
 (function() {{
-  var yrs   = {json.dumps(CHART_YEARS)};
-  var barClr = function(data) {{
-    return data.map(function(v,i) {{
-      return i === data.length-1 ? 'rgba(251,146,60,0.85)' : 'rgba(37,99,235,0.8)';
-    }});
-  }};
+  var yrs = {json.dumps(CHART_YEARS)};
   var negBarClr = function(data) {{
     return data.map(function(v,i) {{
       if(i === data.length-1) return 'rgba(251,146,60,0.85)';
       return v >= 0 ? 'rgba(37,99,235,0.8)' : 'rgba(220,38,38,0.75)';
     }});
   }};
-  var miniOpts = function(isLine) {{
-    return {{
-      responsive:true, maintainAspectRatio:true,
-      plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:function(c){{return c.parsed.y.toFixed(2);}}}}}}}},
-      scales:{{
-        x:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{display:false}}}},
-        y:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{color:'#f1f5f9'}}}}
-      }}
-    }};
+  var miniOpts = {{
+    responsive:true, maintainAspectRatio:true,
+    plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:function(c){{return c.parsed.y.toFixed(2);}}}}}}}},
+    scales:{{
+      x:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{display:false}}}},
+      y:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{color:'#f1f5f9'}}}}
+    }}
   }};
   function mkBar(id, data) {{
     new Chart(document.getElementById(id), {{
       type:'bar', data:{{labels:yrs, datasets:[{{data:data, backgroundColor:negBarClr(data), borderRadius:3}}]}},
-      options:miniOpts(false)
+      options:miniOpts
     }});
   }}
-  function mkLine(id, data) {{
+  function mkLine(id, data, color) {{
+    color = color || '#1d4ed8';
     new Chart(document.getElementById(id), {{
-      type:'line', data:{{labels:yrs, datasets:[{{data:data, borderColor:'#1d4ed8', backgroundColor:'rgba(37,99,235,.1)', fill:true, tension:.3, pointRadius:3, pointBackgroundColor:'#1d4ed8'}}]}},
-      options:miniOpts(true)
+      type:'line', data:{{labels:yrs, datasets:[{{data:data, borderColor:color,
+        backgroundColor:color.replace(')',',0.1)').replace('rgb','rgba'), fill:true, tension:.3, pointRadius:3, pointBackgroundColor:color}}]}},
+      options:miniOpts
     }});
   }}
   function mkBarGreen(id, data) {{
     new Chart(document.getElementById(id), {{
-      type:'bar', data:{{labels:yrs, datasets:[{{data:data, backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)';}}), borderRadius:3}}]}},
-      options:miniOpts(false)
+      type:'bar', data:{{labels:yrs, datasets:[{{data:data,
+        backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}), borderRadius:3}}]}},
+      options:miniOpts
     }});
   }}
   if(document.getElementById('sc1')) {{
     mkBar('sc1', {json.dumps(CH_매출액)});
     mkBar('sc2', {json.dumps(CH_영업이익)});
     mkBar('sc3', {json.dumps(CH_순이익)});
-    mkLine('sc4', {json.dumps(CH_이자비용)});
+    mkLine('sc4', {json.dumps(CH_이자비용)}, '#dc2626');
     mkBarGreen('sc5', {json.dumps(CH_사채차입금)});
     mkLine('sc6', {json.dumps(CH_조달금리)});
   }}
 }})();
-
-// 통계 검색
-var statsDb = [
-  {{key:'매출액', val:'{매출액[0]:.3f} 조원', yoy:'{매출액[1]:+.2f}%'}},
-  {{key:'영업이익', val:'{영업이익[0]:.3f} 조원', yoy:'{영업이익[1]:+.2f}%'}},
-  {{key:'순이익', val:'{순이익[0]:.3f} 조원', yoy:'{순이익[1]:+.2f}%'}},
-  {{key:'영업이익률', val:'{영업이익률[0]:.2f} %', yoy:'{영업이익률[1]:+.2f}%p'}},
-  {{key:'이자비용', val:'{이자비용[0]:.3f} 조원', yoy:'{이자비용[1]:+.2f}%'}},
-  {{key:'총자산', val:'{총자산[0]:.3f} 조원', yoy:'{총자산[1]:+.2f}%'}},
-  {{key:'총부채', val:'{총부채[0]:.3f} 조원', yoy:'{총부채[1]:+.2f}%'}},
-  {{key:'자기자본', val:'{자기자본[0]:.3f} 조원', yoy:'{자기자본[1]:+.2f}%'}},
-  {{key:'부채비율', val:'{부채비율[0]:.1f} %', yoy:'{부채비율[1]:+.2f}%p'}},
-  {{key:'이자보상배율', val:'{이자보상배율[0]:.2f} 배', yoy:'{이자보상배율[1]:+.2f}%'}},
-  {{key:'순차입금', val:'{순차입금[0]:.3f} 조원', yoy:'{순차입금[1]:+.2f}%'}},
-  {{key:'조달액', val:'{조달액:.3f} 조원', yoy:''}},
-  {{key:'상환액', val:'{상환액:.3f} 조원', yoy:''}},
-  {{key:'조달금리', val:'{조달금리:.3f} %', yoy:''}},
-  {{key:'사채발행수', val:'{사채발행수} 개', yoy:''}},
-];
-function statsSearch(q) {{
-  var r = document.getElementById('stats-result');
-  if(!q.trim()) {{ r.innerHTML=''; return; }}
-  var hits = statsDb.filter(function(d){{ return d.key.includes(q); }});
-  if(!hits.length) {{ r.innerHTML='<span style="color:#94a3b8">검색 결과 없음</span>'; return; }}
-  r.innerHTML = hits.map(function(d){{
-    return '<span style="font-weight:600;color:#0f2a4a">'+d.key+'</span>: '+d.val+(d.yoy?' <span style="color:#64748b;font-size:.8rem">(전년비 '+d.yoy+')</span>':'');
-  }}).join(' &nbsp;·&nbsp; ');
-}}
 </script>"""
 
 
