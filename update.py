@@ -1975,6 +1975,247 @@ def market_news_section_html(us_rates, analysis):
 </section>"""
 
 
+def kepco_stats_tab_html() -> str:
+    """재무처 주요통계 탭 HTML — '26 상반기 주요 통계"""
+    # ── 수치 업데이트 영역 (여기만 수정) ────────────────────────────────
+    BASE_DATE = "2026.6.30."
+    UNIT      = "조원 · %"
+
+    # 손익지표 (조원, 전년동기비 %p)
+    매출액       = (0.0,  0.0)   # (값, 전년동기비)
+    영업이익      = (0.0,  0.0)
+    순이익        = (0.0,  0.0)
+    영업이익률    = (0.0,  0.0)   # % (값, 전년동기비)
+    이자비용      = (0.0,  0.0)
+    순이익률      = (0.0,  0.0)   # %
+
+    # 재무지표 (조원)
+    총자산   = (0.0, 0.0)
+    총부채   = (0.0, 0.0)
+    자기자본 = (0.0, 0.0)
+    부채비율 = (0.0, 0.0)   # %
+    이자보상배율 = (0.0, 0.0)  # 배
+    순차입금 = (0.0, 0.0)   # 조원
+
+    # 차입금 현황
+    사채발행수 = 0       # 개
+    사채잔액   = 0.0     # 조원
+    차입금잔액 = 0.0     # 조원
+    조달액     = 0.0     # 조원
+    상환액     = 0.0     # 조원
+    조달금리   = 0.000   # %
+
+    # 연도별 추이 차트 데이터 (2022~2025 연간 + '26상)
+    CHART_YEARS = ["2022", "2023", "2024", "2025", "'26상"]
+    CH_매출액     = [76.8,  89.2, 86.4, 82.1, 0.0]   # 조원
+    CH_영업이익   = [-14.3, -32.6,  2.4,  1.7, 0.0]
+    CH_순이익     = [-24.3, -14.7,  4.1,  2.2, 0.0]
+    CH_이자비용   = [  2.4,   3.1,  3.5,  3.2, 0.0]   # 조원
+    CH_사채차입금 = [ 95.2, 102.4,105.7,103.1, 0.0]   # 조원
+    CH_조달금리   = [  3.92,  4.78, 4.82, 4.55, 0.0]   # %
+    # ── 수치 업데이트 영역 끝 ────────────────────────────────────────────
+
+    def kpi(label, val, yoy, unit="조", fmt=".3f"):
+        color = "#dc2626" if yoy > 0 else ("#2563eb" if yoy < 0 else "#94a3b8")
+        sign  = "+" if yoy > 0 else ""
+        return f"""
+<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+  <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:500">{label}</div>
+  <div style="font-size:1.35rem;font-weight:700;color:#0f2a4a">{val:{fmt}} <span style="font-size:.8rem;font-weight:400;color:#94a3b8">{unit}</span></div>
+  <div style="font-size:.72rem;color:{color};margin-top:3px">전년 동기 대비 {sign}{yoy:.2f}%</div>
+</div>"""
+
+    def kpi2(label, val, yoy, unit="조", fmt=".3f"):
+        color = "#dc2626" if yoy > 0 else ("#2563eb" if yoy < 0 else "#94a3b8")
+        sign  = "+" if yoy > 0 else ""
+        return f"""
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;color:#64748b;margin-bottom:4px;font-weight:500">{label}</div>
+  <div style="font-size:1.15rem;font-weight:700;color:#0f2a4a">{val:{fmt}} <span style="font-size:.75rem;color:#94a3b8">{unit}</span></div>
+  <div style="font-size:.68rem;color:{color};margin-top:2px">{sign}{yoy:.2f}%</div>
+</div>"""
+
+    def flow_kpi(label, val, unit="조", fmt=".3f"):
+        return f"""
+<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center">
+  <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:500">{label}</div>
+  <div style="font-size:1.3rem;font-weight:700;color:#0f2a4a">{val:{fmt}} <span style="font-size:.8rem;color:#94a3b8">{unit}</span></div>
+</div>"""
+
+    return f"""
+<section style="background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);padding:20px 32px 16px;color:#fff">
+  <div style="font-size:1.45rem;font-weight:700;letter-spacing:-.3px">'26. 상반기 주요 통계</div>
+  <div style="font-size:.82rem;opacity:.75;margin-top:3px">한눈에 보는 우리의 재무 현황</div>
+  <div style="font-size:.78rem;opacity:.65;margin-top:8px">기준일 {BASE_DATE} &nbsp;|&nbsp; 단위: {UNIT}</div>
+</section>
+
+<section style="margin:0;padding:24px 28px 0">
+  <h2 style="font-size:.95rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:16px">
+    1. '26년 상반기 주요 통계
+  </h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <!-- 손익지표 -->
+    <div style="background:#f8fafc;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0">
+      <div style="font-size:.8rem;font-weight:700;color:#0f2a4a;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        <span style="font-size:.75rem">▣</span> 손익지표
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        {kpi("매출액",   매출액[0],   매출액[1])}
+        {kpi("영업이익", 영업이익[0], 영업이익[1])}
+        {kpi("순이익",   순이익[0],   순이익[1])}
+        {kpi("영업이익률", 영업이익률[0], 영업이익률[1], unit="%", fmt=".2f")}
+        {kpi("이자비용", 이자비용[0], 이자비용[1])}
+        {kpi("순이익률", 순이익률[0], 순이익률[1], unit="%", fmt=".3f")}
+      </div>
+    </div>
+    <!-- 재무지표 -->
+    <div style="background:#f8fafc;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0">
+      <div style="font-size:.8rem;font-weight:700;color:#0f2a4a;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        <span style="font-size:.75rem">▣</span> 재무지표
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        {kpi2("총자산",   총자산[0],   총자산[1])}
+        {kpi2("총부채",   총부채[0],   총부채[1])}
+        {kpi2("자기자본", 자기자본[0], 자기자본[1])}
+        {kpi2("부채비율", 부채비율[0], 부채비율[1], unit="%", fmt=".1f")}
+        {kpi2("이자보상배율", 이자보상배율[0], 이자보상배율[1], unit="배", fmt=".2f")}
+        {kpi2("순차입금", 순차입금[0], 순차입금[1])}
+      </div>
+    </div>
+  </div>
+
+  <!-- 차입금 현황 -->
+  <div style="background:#f0f6ff;border-radius:12px;padding:16px 20px;border:1px solid #bfdbfe;margin-bottom:28px">
+    <div style="font-size:.8rem;font-weight:700;color:#0f2a4a;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+      <span style="font-size:.75rem">▣</span> 차입금 현황
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+      {flow_kpi("사채발행수", 사채발행수, unit="개", fmt="d")}
+      {flow_kpi("사채/차입금", 사채잔액, unit=f"/ {차입금잔액:.1f} 조")}
+      {flow_kpi("조달액", 조달액)}
+      {flow_kpi("상환액", 상환액)}
+      <div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center">
+        <div style="font-size:.75rem;color:#64748b;margin-bottom:6px;font-weight:500">조달금리</div>
+        <div style="font-size:1.3rem;font-weight:700;color:#1d4ed8">{조달금리:.3f}<span style="font-size:.9rem"> %</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 연도별 주요 통계 -->
+<section style="padding:0 28px 28px">
+  <h2 style="font-size:.95rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:16px">
+    2. 연도별 주요 통계
+  </h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">매출액 <span style="font-weight:400">(조원)</span></div><canvas id="sc1" style="max-height:180px"></canvas></div>
+    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">영업이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc2" style="max-height:180px"></canvas></div>
+    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">순이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc3" style="max-height:180px"></canvas></div>
+    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">이자비용 <span style="font-weight:400">(조원)</span></div><canvas id="sc4" style="max-height:180px"></canvas></div>
+    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">사채/차입금 <span style="font-weight:400">(조원)</span></div><canvas id="sc5" style="max-height:180px"></canvas></div>
+    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">조달금리 <span style="font-weight:400">(%)</span></div><canvas id="sc6" style="max-height:180px"></canvas></div>
+  </div>
+</section>
+
+<!-- 통계 검색 -->
+<section style="padding:0 28px 32px">
+  <h2 style="font-size:.95rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:14px">3. 통계 검색</h2>
+  <div style="background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+    <div style="font-size:.8rem;color:#64748b;margin-bottom:10px">원하는 통계를 입력해 빠르게 찾아요</div>
+    <div style="display:flex;gap:8px">
+      <input id="stats-search" type="text" placeholder="예: 매출액, 부채비율, 이자비용..."
+        style="flex:1;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:.88rem;outline:none;font-family:inherit"
+        oninput="statsSearch(this.value)">
+      <button onclick="statsSearch(document.getElementById('stats-search').value)"
+        style="padding:10px 22px;background:#1d4ed8;color:#fff;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;font-weight:600">검색</button>
+    </div>
+    <div id="stats-result" style="margin-top:12px;font-size:.85rem;color:#475569;min-height:24px"></div>
+  </div>
+</section>
+
+<script>
+// ── 재무처 통계 차트 초기화 ──────────────────────────────────────────
+(function() {{
+  var yrs   = {json.dumps(CHART_YEARS)};
+  var barClr = function(data) {{
+    return data.map(function(v,i) {{
+      return i === data.length-1 ? 'rgba(251,146,60,0.85)' : 'rgba(37,99,235,0.8)';
+    }});
+  }};
+  var negBarClr = function(data) {{
+    return data.map(function(v,i) {{
+      if(i === data.length-1) return 'rgba(251,146,60,0.85)';
+      return v >= 0 ? 'rgba(37,99,235,0.8)' : 'rgba(220,38,38,0.75)';
+    }});
+  }};
+  var miniOpts = function(isLine) {{
+    return {{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:function(c){{return c.parsed.y.toFixed(2);}}}}}}}},
+      scales:{{
+        x:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{display:false}}}},
+        y:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{color:'#f1f5f9'}}}}
+      }}
+    }};
+  }};
+  function mkBar(id, data) {{
+    new Chart(document.getElementById(id), {{
+      type:'bar', data:{{labels:yrs, datasets:[{{data:data, backgroundColor:negBarClr(data), borderRadius:3}}]}},
+      options:miniOpts(false)
+    }});
+  }}
+  function mkLine(id, data) {{
+    new Chart(document.getElementById(id), {{
+      type:'line', data:{{labels:yrs, datasets:[{{data:data, borderColor:'#1d4ed8', backgroundColor:'rgba(37,99,235,.1)', fill:true, tension:.3, pointRadius:3, pointBackgroundColor:'#1d4ed8'}}]}},
+      options:miniOpts(true)
+    }});
+  }}
+  function mkBarGreen(id, data) {{
+    new Chart(document.getElementById(id), {{
+      type:'bar', data:{{labels:yrs, datasets:[{{data:data, backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)';}}), borderRadius:3}}]}},
+      options:miniOpts(false)
+    }});
+  }}
+  if(document.getElementById('sc1')) {{
+    mkBar('sc1', {json.dumps(CH_매출액)});
+    mkBar('sc2', {json.dumps(CH_영업이익)});
+    mkBar('sc3', {json.dumps(CH_순이익)});
+    mkLine('sc4', {json.dumps(CH_이자비용)});
+    mkBarGreen('sc5', {json.dumps(CH_사채차입금)});
+    mkLine('sc6', {json.dumps(CH_조달금리)});
+  }}
+}})();
+
+// 통계 검색
+var statsDb = [
+  {{key:'매출액', val:'{매출액[0]:.3f} 조원', yoy:'{매출액[1]:+.2f}%'}},
+  {{key:'영업이익', val:'{영업이익[0]:.3f} 조원', yoy:'{영업이익[1]:+.2f}%'}},
+  {{key:'순이익', val:'{순이익[0]:.3f} 조원', yoy:'{순이익[1]:+.2f}%'}},
+  {{key:'영업이익률', val:'{영업이익률[0]:.2f} %', yoy:'{영업이익률[1]:+.2f}%p'}},
+  {{key:'이자비용', val:'{이자비용[0]:.3f} 조원', yoy:'{이자비용[1]:+.2f}%'}},
+  {{key:'총자산', val:'{총자산[0]:.3f} 조원', yoy:'{총자산[1]:+.2f}%'}},
+  {{key:'총부채', val:'{총부채[0]:.3f} 조원', yoy:'{총부채[1]:+.2f}%'}},
+  {{key:'자기자본', val:'{자기자본[0]:.3f} 조원', yoy:'{자기자본[1]:+.2f}%'}},
+  {{key:'부채비율', val:'{부채비율[0]:.1f} %', yoy:'{부채비율[1]:+.2f}%p'}},
+  {{key:'이자보상배율', val:'{이자보상배율[0]:.2f} 배', yoy:'{이자보상배율[1]:+.2f}%'}},
+  {{key:'순차입금', val:'{순차입금[0]:.3f} 조원', yoy:'{순차입금[1]:+.2f}%'}},
+  {{key:'조달액', val:'{조달액:.3f} 조원', yoy:''}},
+  {{key:'상환액', val:'{상환액:.3f} 조원', yoy:''}},
+  {{key:'조달금리', val:'{조달금리:.3f} %', yoy:''}},
+  {{key:'사채발행수', val:'{사채발행수} 개', yoy:''}},
+];
+function statsSearch(q) {{
+  var r = document.getElementById('stats-result');
+  if(!q.trim()) {{ r.innerHTML=''; return; }}
+  var hits = statsDb.filter(function(d){{ return d.key.includes(q); }});
+  if(!hits.length) {{ r.innerHTML='<span style="color:#94a3b8">검색 결과 없음</span>'; return; }}
+  r.innerHTML = hits.map(function(d){{
+    return '<span style="font-weight:600;color:#0f2a4a">'+d.key+'</span>: '+d.val+(d.yoy?' <span style="color:#64748b;font-size:.8rem">(전년비 '+d.yoy+')</span>':'');
+  }}).join(' &nbsp;·&nbsp; ');
+}}
+</script>"""
+
+
 def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, debt_as_of=None, debt_is_pm=False, issu_stats=None, kepco_rate_by_date=None, kepco_amt_by_date=None, ktb_rate_by_date=None, ktb_amt_by_date=None, ytd_borrow=None, ytd_repay=None, us_rates=None, market_news=None):
     today_str = date.today().strftime("%Y년 %m월 %d일")
     latest_dt = latest.get("날짜","–")
@@ -2155,14 +2396,7 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 </main>
 </div>
 <div id="tab-panel-2" style="display:none">
-<main style="max-width:1400px;margin:0 auto;padding:28px 20px">
-  <section>
-    <h2>재무처 주요통계</h2>
-    <div style="padding:60px 20px;text-align:center;color:#94a3b8;font-size:.95rem">
-      준비 중입니다. 표시할 통계 항목을 알려주시면 구현하겠습니다.
-    </div>
-  </section>
-</main>
+{kepco_stats_tab_html()}
 </div>
 <footer>
   데이터: <a href="https://www.kofiabond.or.kr" target="_blank">금융투자협회 KOFIA</a> ·
