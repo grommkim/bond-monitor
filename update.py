@@ -2016,51 +2016,42 @@ def kepco_stats_tab_html() -> str:
     # ── 수치 업데이트 영역 끝 ────────────────────────────────────────────
 
     def yoy_html(yoy, reverse=False):
-        """전년동기비 표시 — reverse=True이면 증가=긍정(초록), 감소=부정(빨강)"""
         if yoy == 0.0:
-            return '<span style="color:#94a3b8;font-size:.7rem">— %</span>'
-        pos_color = "#16a34a" if reverse else "#dc2626"
-        neg_color = "#dc2626" if reverse else "#2563eb"
-        color = pos_color if yoy > 0 else neg_color
+            return '<span class="fs-yoy fs-yoy-flat">— %</span>'
+        pos_color = "green" if reverse else "red"
+        neg_color = "red" if reverse else "blue"
+        cls = f"fs-yoy fs-yoy-{pos_color if yoy > 0 else neg_color}"
         arrow = "▲" if yoy > 0 else "▼"
-        return f'<span style="color:{color};font-size:.7rem">{arrow} {abs(yoy):.1f}%</span>'
+        return f'<span class="{cls}">{arrow} {abs(yoy):.1f}%</span>'
 
     def kpi_card(label, val, yoy, unit="조", fmt=".1f", pct=False, reverse=False):
         u = "%" if pct else unit
-        return f"""
-<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
-  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">{label}</div>
-  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">{val:{fmt}}<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">{u}</span></div>
-  <div style="margin-top:4px">{yoy_html(yoy, reverse)}</div>
+        return f"""<div class="fs-card">
+  <div class="fs-card-label">{label}</div>
+  <div class="fs-card-val">{val:{fmt}}<span class="fs-card-unit">{u}</span></div>
+  <div class="fs-card-yoy">{yoy_html(yoy, reverse)}</div>
 </div>"""
 
     def flow_kpi(label, val, unit="조", fmt=".1f", highlight=False):
-        color = "#1d4ed8" if highlight else "#0f2a4a"
-        return f"""
-<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center">
-  <div style="font-size:.72rem;color:#64748b;margin-bottom:6px;font-weight:500">{label}</div>
-  <div style="font-size:1.2rem;font-weight:700;color:{color}">{val:{fmt}}<span style="font-size:.78rem;color:#94a3b8;margin-left:3px">{unit}</span></div>
+        cls = "fs-flow-card fs-flow-card-hl" if highlight else "fs-flow-card"
+        return f"""<div class="{cls}">
+  <div class="fs-flow-label">{label}</div>
+  <div class="fs-flow-val">{val:{fmt}}<span class="fs-flow-unit">{unit}</span></div>
 </div>"""
 
-    def col_header(label, color):
-        return f"""
-<div style="font-size:.82rem;font-weight:700;color:{color};padding:8px 14px;background:{'#eff6ff' if color=='#1d4ed8' else '#f8fafc'};border-radius:8px;margin-bottom:10px;letter-spacing:.3px;border-left:3px solid {color}">{label}</div>"""
-
-    def kpi_section(title, accent, items):
-        """items: list of (label, c_val, c_yoy, b_val, b_yoy, kwargs)"""
+    def kpi_section(title, icon, items):
         c_cards = "".join(kpi_card(lbl, cv, cy, **kw) for lbl,cv,cy,bv,by,kw in items)
         b_cards = "".join(kpi_card(lbl, bv, by, **kw) for lbl,cv,cy,bv,by,kw in items)
-        return f"""
-<div style="margin-bottom:22px">
-  <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid {accent};padding-left:10px;margin-bottom:12px">{title}</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div>
-      {col_header("연결", "#1d4ed8")}
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">{c_cards}</div>
+        return f"""<div class="fs-section-block">
+  <div class="fs-section-title">{icon} {title}</div>
+  <div class="fs-lr">
+    <div class="fs-col fs-col-c">
+      <div class="fs-col-hd fs-col-hd-c">연결</div>
+      <div class="fs-kpi-grid">{c_cards}</div>
     </div>
-    <div>
-      {col_header("별도", "#475569")}
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">{b_cards}</div>
+    <div class="fs-col fs-col-b">
+      <div class="fs-col-hd fs-col-hd-b">별도</div>
+      <div class="fs-kpi-grid">{b_cards}</div>
     </div>
   </div>
 </div>"""
@@ -2083,19 +2074,79 @@ def kepco_stats_tab_html() -> str:
     ]
 
     return f"""
-<section style="background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);padding:18px 32px 14px;color:#fff">
-  <div style="font-size:1.3rem;font-weight:700;letter-spacing:-.3px">'26 상반기 주요 재무통계</div>
-  <div style="font-size:.78rem;opacity:.65;margin-top:6px">기준일: {BASE_DATE} &nbsp;|&nbsp; 단위: 조원 · %</div>
-</section>
+<style>
+/* ── 재무처 탭 전용 스타일 ───────────────────────────── */
+.fs-hero{{background:linear-gradient(135deg,#0f2a4a 0%,#1e40af 60%,#1d4ed8 100%);padding:28px 32px 22px;color:#fff;position:relative;overflow:hidden}}
+.fs-hero::after{{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%}}
+.fs-hero-title{{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;line-height:1.2}}
+.fs-hero-sub{{font-size:.8rem;opacity:.6;margin-top:6px}}
+.fs-hero-badges{{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}}
+.fs-hero-badge{{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:600;backdrop-filter:blur(4px)}}
+.fs-wrap{{padding:20px 24px}}
+.fs-section-block{{margin-bottom:28px}}
+.fs-section-title{{font-size:.9rem;font-weight:800;color:#0f2a4a;padding:0 0 12px 14px;border-left:5px solid #2563eb;margin-bottom:14px;letter-spacing:-.2px}}
+.fs-lr{{display:grid;grid-template-columns:1fr 1fr;gap:14px}}
+.fs-col{{border-radius:14px;padding:16px;overflow:hidden}}
+.fs-col-c{{background:linear-gradient(145deg,#eff6ff,#dbeafe)}}
+.fs-col-b{{background:linear-gradient(145deg,#f8fafc,#f1f5f9)}}
+.fs-col-hd{{font-size:.78rem;font-weight:800;letter-spacing:.8px;padding:7px 14px;border-radius:8px;margin-bottom:12px;display:inline-block}}
+.fs-col-hd-c{{background:linear-gradient(90deg,#1d4ed8,#3b82f6);color:#fff}}
+.fs-col-hd-b{{background:linear-gradient(90deg,#334155,#64748b);color:#fff}}
+.fs-kpi-grid{{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}}
+.fs-card{{background:#fff;border-radius:10px;padding:13px 12px;box-shadow:0 2px 8px rgba(15,42,74,.1);border-top:3px solid #2563eb;transition:transform .12s,box-shadow .12s}}
+.fs-col-b .fs-card{{border-top-color:#64748b}}
+.fs-card:hover{{transform:translateY(-2px);box-shadow:0 6px 16px rgba(15,42,74,.14)}}
+.fs-card-label{{font-size:.68rem;font-weight:600;color:#64748b;margin-bottom:5px;letter-spacing:.2px}}
+.fs-card-val{{font-size:1.35rem;font-weight:800;color:#0f2a4a;line-height:1.1}}
+.fs-card-unit{{font-size:.68rem;color:#94a3b8;font-weight:400;margin-left:3px}}
+.fs-card-yoy{{margin-top:5px;min-height:16px}}
+.fs-yoy{{font-size:.72rem;font-weight:700;padding:2px 6px;border-radius:4px}}
+.fs-yoy-green{{color:#15803d;background:#dcfce7}}
+.fs-yoy-red{{color:#dc2626;background:#fee2e2}}
+.fs-yoy-blue{{color:#1d4ed8;background:#dbeafe}}
+.fs-yoy-flat{{color:#94a3b8;background:transparent}}
+.fs-flow-grid{{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}}
+.fs-flow-card{{background:#fff;border-radius:12px;padding:16px 12px;box-shadow:0 2px 8px rgba(15,42,74,.08);text-align:center;border-bottom:3px solid #e2e8f0}}
+.fs-flow-card-hl{{border-bottom-color:#1d4ed8;background:linear-gradient(145deg,#eff6ff,#fff)}}
+.fs-flow-label{{font-size:.7rem;color:#64748b;font-weight:600;margin-bottom:8px;letter-spacing:.2px}}
+.fs-flow-val{{font-size:1.25rem;font-weight:800;color:#0f2a4a}}
+.fs-flow-card-hl .fs-flow-val{{color:#1d4ed8}}
+.fs-flow-unit{{font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:3px}}
+.fs-chart-grid{{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}}
+/* 모바일 */
+@media(max-width:900px){{
+  .fs-lr{{grid-template-columns:1fr}}
+  .fs-hero{{padding:20px 20px 16px}}
+  .fs-wrap{{padding:16px}}
+}}
+@media(max-width:600px){{
+  .fs-kpi-grid{{grid-template-columns:repeat(2,1fr)}}
+  .fs-flow-grid{{grid-template-columns:repeat(3,1fr)}}
+  .fs-chart-grid{{grid-template-columns:1fr}}
+  .fs-hero-title{{font-size:1.2rem}}
+  .fs-card-val{{font-size:1.15rem}}
+  .fs-wrap{{padding:12px}}
+  .fs-col{{padding:12px}}
+}}
+</style>
 
-<section style="padding:22px 28px 0">
-  {kpi_section("손익지표", "#2563eb", 손익_items)}
-  {kpi_section("재무지표", "#0d9488", 재무_items)}
+<div class="fs-hero">
+  <div class="fs-hero-title">'26 상반기 주요 재무통계</div>
+  <div class="fs-hero-sub">기준일 {BASE_DATE} · 단위 조원 · %</div>
+  <div class="fs-hero-badges">
+    <span class="fs-hero-badge">연결 기준</span>
+    <span class="fs-hero-badge">별도 기준</span>
+    <span class="fs-hero-badge">한국전력공사</span>
+  </div>
+</div>
 
-  <!-- 차입금 현황 -->
-  <div style="margin-bottom:28px">
-    <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:12px">차입금 현황 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+<div class="fs-wrap">
+  {kpi_section("손익지표", "📈", 손익_items)}
+  {kpi_section("재무지표", "🏦", 재무_items)}
+
+  <div class="fs-section-block">
+    <div class="fs-section-title" style="border-left-color:#7c3aed">💳 차입금 현황 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
+    <div class="fs-flow-grid">
       {flow_kpi("사채발행수", 사채발행수, unit="개", fmt="d")}
       {flow_kpi("사채잔액", 사채잔액)}
       {flow_kpi("차입금잔액", 차입금잔액)}
@@ -2104,28 +2155,27 @@ def kepco_stats_tab_html() -> str:
       {flow_kpi("조달금리", 조달금리, unit="%", fmt=".3f", highlight=True)}
     </div>
   </div>
-</section>
 
-<!-- 연도별 주요 통계 -->
-<section style="padding:0 28px 28px">
-  <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #f59e0b;padding-left:10px;margin-bottom:14px">연도별 주요 통계 <span style="font-size:.72rem;font-weight:400;color:#94a3b8">(연결 기준)</span></div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
-    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">매출액 <span style="font-weight:400">(조원)</span></div><canvas id="sc1" style="max-height:180px"></canvas></div>
-    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">영업이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc2" style="max-height:180px"></canvas></div>
-    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">순이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc3" style="max-height:180px"></canvas></div>
-    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">이자비용 <span style="font-weight:400">(조원)</span></div><canvas id="sc4" style="max-height:180px"></canvas></div>
-    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">사채/차입금 <span style="font-weight:400">(조원)</span></div><canvas id="sc5" style="max-height:180px"></canvas></div>
-    <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">조달금리 <span style="font-weight:400">(%)</span></div><canvas id="sc6" style="max-height:180px"></canvas></div>
+  <div class="fs-section-block">
+    <div class="fs-section-title" style="border-left-color:#f59e0b">📊 연도별 주요 통계 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(연결 기준)</span></div>
+    <div class="fs-chart-grid">
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">매출액 <span style="font-weight:400">(조원)</span></div><canvas id="sc1" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">영업이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc2" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">순이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc3" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">이자비용 <span style="font-weight:400">(조원)</span></div><canvas id="sc4" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">사채/차입금 <span style="font-weight:400">(조원)</span></div><canvas id="sc5" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">조달금리 <span style="font-weight:400">(%)</span></div><canvas id="sc6" style="max-height:180px"></canvas></div>
+    </div>
   </div>
-</section>
+</div>
 
 <script>
 (function() {{
   var yrs = {json.dumps(CHART_YEARS)};
   var negBarClr = function(data) {{
     return data.map(function(v,i) {{
-      if(i === data.length-1) return 'rgba(251,146,60,0.85)';
-      return v >= 0 ? 'rgba(37,99,235,0.8)' : 'rgba(220,38,38,0.75)';
+      if(i===data.length-1) return 'rgba(251,146,60,0.85)';
+      return v>=0 ? 'rgba(37,99,235,0.8)' : 'rgba(220,38,38,0.75)';
     }});
   }};
   var miniOpts = {{
@@ -2136,34 +2186,16 @@ def kepco_stats_tab_html() -> str:
       y:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{color:'#f1f5f9'}}}}
     }}
   }};
-  function mkBar(id, data) {{
-    new Chart(document.getElementById(id), {{
-      type:'bar', data:{{labels:yrs, datasets:[{{data:data, backgroundColor:negBarClr(data), borderRadius:3}}]}},
-      options:miniOpts
-    }});
-  }}
-  function mkLine(id, data, color) {{
-    color = color || '#1d4ed8';
-    new Chart(document.getElementById(id), {{
-      type:'line', data:{{labels:yrs, datasets:[{{data:data, borderColor:color,
-        backgroundColor:color.replace(')',',0.1)').replace('rgb','rgba'), fill:true, tension:.3, pointRadius:3, pointBackgroundColor:color}}]}},
-      options:miniOpts
-    }});
-  }}
-  function mkBarGreen(id, data) {{
-    new Chart(document.getElementById(id), {{
-      type:'bar', data:{{labels:yrs, datasets:[{{data:data,
-        backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}), borderRadius:3}}]}},
-      options:miniOpts
-    }});
-  }}
-  if(document.getElementById('sc1')) {{
-    mkBar('sc1', {json.dumps(CH_매출액)});
-    mkBar('sc2', {json.dumps(CH_영업이익)});
-    mkBar('sc3', {json.dumps(CH_순이익)});
-    mkLine('sc4', {json.dumps(CH_이자비용)}, '#dc2626');
-    mkBarGreen('sc5', {json.dumps(CH_사채차입금)});
-    mkLine('sc6', {json.dumps(CH_조달금리)});
+  function mkBar(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:negBarClr(data),borderRadius:4}}]}},options:miniOpts}});}}
+  function mkLine(id,data,color){{color=color||'#1d4ed8';new Chart(document.getElementById(id),{{type:'line',data:{{labels:yrs,datasets:[{{data:data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:color,borderWidth:2}}]}},options:miniOpts}});}}
+  function mkBarGreen(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}),borderRadius:4}}]}},options:miniOpts}});}}
+  if(document.getElementById('sc1')){{
+    mkBar('sc1',{json.dumps(CH_매출액)});
+    mkBar('sc2',{json.dumps(CH_영업이익)});
+    mkBar('sc3',{json.dumps(CH_순이익)});
+    mkLine('sc4',{json.dumps(CH_이자비용)},'#dc2626');
+    mkBarGreen('sc5',{json.dumps(CH_사채차입금)});
+    mkLine('sc6',{json.dumps(CH_조달금리)});
   }}
 }})();
 </script>"""
