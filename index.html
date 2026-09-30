@@ -11,14 +11,12 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
 a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}
-.top-nav{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;padding:0 32px;border-bottom:2px solid #1e3a5f}
-.top-nav-brand{display:flex;flex-direction:column;justify-content:center;padding:14px 0;gap:3px}
-.top-nav-brand h1{font-size:1.25rem;font-weight:700;letter-spacing:-.4px;line-height:1}
-.top-nav-brand .sub{font-size:.75rem;opacity:.7}
+.top-nav{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;border-bottom:2px solid rgba(255,255,255,.12)}
 .tab-bar{display:flex;gap:0;align-items:stretch}
-.tab-btn{background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.55);padding:0 24px;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;height:100%}
-.tab-btn:hover{color:#fff}
-.tab-active{color:#fff!important;border-bottom-color:#60a5fa!important}
+.tab-btn{background:transparent;border:none;border-bottom:4px solid transparent;color:rgba(255,255,255,.5);padding:18px 32px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;letter-spacing:-.2px}
+.tab-btn:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
+.tab-active{color:#fff!important;border-bottom-color:#60a5fa!important;background:rgba(255,255,255,.08)!important}
+.top-nav-meta{display:flex;align-items:center;padding:0 28px;font-size:.78rem;opacity:.6}
 .sub{font-size:.83rem;opacity:.75}
 main{max-width:1400px;margin:0 auto;padding:28px 20px}
 section{margin-bottom:40px}
@@ -54,14 +52,11 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 
 
 <div class="top-nav">
-  <div class="top-nav-brand">
-    <h1>📊 채권 시장 모니터</h1>
-    <div class="sub">기준일 <strong style="color:#fff">2026년 09월 30일</strong> · 국고채 · 한전채 민평금리 · 공사채 발행현황</div>
-  </div>
   <div class="tab-bar">
-    <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">채권시장모니터링</button>
-    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">재무처 주요통계</button>
+    <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">📊 채권시장모니터링</button>
+    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">📋 재무처 주요통계</button>
   </div>
+  <div class="top-nav-meta">2026년 09월 30일</div>
 </div>
 <div id="tab-panel-1">
 <main>
@@ -409,231 +404,166 @@ showStat('2026');
 
 <section style="background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);padding:18px 32px 14px;color:#fff">
   <div style="font-size:1.3rem;font-weight:700;letter-spacing:-.3px">'26 상반기 주요 재무통계</div>
-  <div style="font-size:.78rem;opacity:.65;margin-top:6px">기준일: 2026.6.30. &nbsp;|&nbsp; 단위: 조원 · % &nbsp;|&nbsp; 연결·별도 기준</div>
+  <div style="font-size:.78rem;opacity:.65;margin-top:6px">기준일: 2026.6.30. &nbsp;|&nbsp; 단위: 조원 · %</div>
 </section>
 
 <section style="padding:22px 28px 0">
-  <!-- 손익지표 -->
-  <div style="margin-bottom:20px">
-    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:12px">손익지표</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+  
+<div style="margin-bottom:22px">
+  <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:12px">손익지표</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div>
       
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">매출액</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+<div style="font-size:.82rem;font-weight:700;color:#1d4ed8;padding:8px 14px;background:#eff6ff;border-radius:8px;margin-bottom:10px;letter-spacing:.3px;border-left:3px solid #1d4ed8">연결</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">매출액</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">영업이익</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">순이익</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">영업이익률</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">이자비용</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">순이익률</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div></div>
     </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+    <div>
+      
+<div style="font-size:.82rem;font-weight:700;color:#475569;padding:8px 14px;background:#f8fafc;border-radius:8px;margin-bottom:10px;letter-spacing:.3px;border-left:3px solid #475569">별도</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">매출액</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">영업이익</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">순이익</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">영업이익률</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">이자비용</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">순이익률</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div></div>
     </div>
   </div>
 </div>
+  
+<div style="margin-bottom:22px">
+  <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid #0d9488;padding-left:10px;margin-bottom:12px">재무지표</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div>
       
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">영업이익</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+<div style="font-size:.82rem;font-weight:700;color:#1d4ed8;padding:8px 14px;background:#eff6ff;border-radius:8px;margin-bottom:10px;letter-spacing:.3px;border-left:3px solid #1d4ed8">연결</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">총자산</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">총부채</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">자기자본</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">부채비율</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">이자보상배율</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">배</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">순차입금</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div></div>
     </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+    <div>
+      
+<div style="font-size:.82rem;font-weight:700;color:#475569;padding:8px 14px;background:#f8fafc;border-radius:8px;margin-bottom:10px;letter-spacing:.3px;border-left:3px solid #475569">별도</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">총자산</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">총부채</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">자기자본</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">부채비율</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">이자보상배율</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">배</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">순차입금</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
+  <div style="margin-top:4px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
+</div></div>
     </div>
   </div>
 </div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">순이익</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">영업이익률</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">이자비용</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">순이익률</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-    </div>
-  </div>
-
-  <!-- 재무지표 -->
-  <div style="margin-bottom:20px">
-    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #0d9488;padding-left:10px;margin-bottom:12px">재무지표</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">총자산</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">총부채</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">자기자본</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">부채비율</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">%</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">이자보상배율</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">배</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.00<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">배</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-      
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">순차입금</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">0.0<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">조</span></div>
-      <div style="margin-top:3px"><span style="color:#94a3b8;font-size:.7rem">— %</span></div>
-    </div>
-  </div>
-</div>
-    </div>
-  </div>
 
   <!-- 차입금 현황 -->
   <div style="margin-bottom:28px">
-    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:12px">차입금 현황 <span style="font-size:.72rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
+    <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:12px">차입금 현황 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
       
 <div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center">
