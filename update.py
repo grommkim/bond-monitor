@@ -2025,24 +2025,13 @@ def kepco_stats_tab_html() -> str:
         arrow = "▲" if yoy > 0 else "▼"
         return f'<span style="color:{color};font-size:.7rem">{arrow} {abs(yoy):.1f}%</span>'
 
-    def kpi_dual(label, c_val, c_yoy, b_val, b_yoy, unit="조", fmt=".1f", pct=False, reverse=False):
+    def kpi_card(label, val, yoy, unit="조", fmt=".1f", pct=False, reverse=False):
         u = "%" if pct else unit
         return f"""
-<div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden">
-  <div style="font-size:.72rem;font-weight:600;color:#475569;padding:8px 12px 6px;background:#f8fafc;border-bottom:1px solid #e2e8f0">{label}</div>
-  <div style="display:grid;grid-template-columns:1fr 1px 1fr">
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;letter-spacing:.3px">연결</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">{c_val:{fmt}}<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">{u}</span></div>
-      <div style="margin-top:3px">{yoy_html(c_yoy, reverse)}</div>
-    </div>
-    <div style="background:#e2e8f0"></div>
-    <div style="padding:10px 12px">
-      <div style="font-size:.65rem;font-weight:700;color:#64748b;margin-bottom:4px;letter-spacing:.3px">별도</div>
-      <div style="font-size:1.05rem;font-weight:700;color:#0f2a4a;line-height:1.2">{b_val:{fmt}}<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">{u}</span></div>
-      <div style="margin-top:3px">{yoy_html(b_yoy, reverse)}</div>
-    </div>
-  </div>
+<div style="background:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)">
+  <div style="font-size:.72rem;font-weight:500;color:#64748b;margin-bottom:5px">{label}</div>
+  <div style="font-size:1.12rem;font-weight:700;color:#0f2a4a">{val:{fmt}}<span style="font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:2px">{u}</span></div>
+  <div style="margin-top:4px">{yoy_html(yoy, reverse)}</div>
 </div>"""
 
     def flow_kpi(label, val, unit="조", fmt=".1f", highlight=False):
@@ -2053,42 +2042,59 @@ def kepco_stats_tab_html() -> str:
   <div style="font-size:1.2rem;font-weight:700;color:{color}">{val:{fmt}}<span style="font-size:.78rem;color:#94a3b8;margin-left:3px">{unit}</span></div>
 </div>"""
 
+    def col_header(label, color):
+        return f"""
+<div style="font-size:.82rem;font-weight:700;color:{color};padding:8px 14px;background:{'#eff6ff' if color=='#1d4ed8' else '#f8fafc'};border-radius:8px;margin-bottom:10px;letter-spacing:.3px;border-left:3px solid {color}">{label}</div>"""
+
+    def kpi_section(title, accent, items):
+        """items: list of (label, c_val, c_yoy, b_val, b_yoy, kwargs)"""
+        c_cards = "".join(kpi_card(lbl, cv, cy, **kw) for lbl,cv,cy,bv,by,kw in items)
+        b_cards = "".join(kpi_card(lbl, bv, by, **kw) for lbl,cv,cy,bv,by,kw in items)
+        return f"""
+<div style="margin-bottom:22px">
+  <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid {accent};padding-left:10px;margin-bottom:12px">{title}</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div>
+      {col_header("연결", "#1d4ed8")}
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">{c_cards}</div>
+    </div>
+    <div>
+      {col_header("별도", "#475569")}
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">{b_cards}</div>
+    </div>
+  </div>
+</div>"""
+
+    손익_items = [
+        ("매출액",      매출액[0],      매출액[1],      매출액[2],      매출액[3],      dict(reverse=True)),
+        ("영업이익",    영업이익[0],    영업이익[1],    영업이익[2],    영업이익[3],    dict(reverse=True)),
+        ("순이익",      순이익[0],      순이익[1],      순이익[2],      순이익[3],      dict(reverse=True)),
+        ("영업이익률",  영업이익률[0],  영업이익률[1],  영업이익률[2],  영업이익률[3],  dict(pct=True, fmt=".2f", reverse=True)),
+        ("이자비용",    이자비용[0],    이자비용[1],    이자비용[2],    이자비용[3],    dict()),
+        ("순이익률",    순이익률[0],    순이익률[1],    순이익률[2],    순이익률[3],    dict(pct=True, fmt=".2f", reverse=True)),
+    ]
+    재무_items = [
+        ("총자산",       총자산[0],       총자산[1],       총자산[2],       총자산[3],       dict()),
+        ("총부채",       총부채[0],       총부채[1],       총부채[2],       총부채[3],       dict()),
+        ("자기자본",     자기자본[0],     자기자본[1],     자기자본[2],     자기자본[3],     dict(reverse=True)),
+        ("부채비율",     부채비율[0],     부채비율[1],     부채비율[2],     부채비율[3],     dict(pct=True, fmt=".1f")),
+        ("이자보상배율", 이자보상배율[0], 이자보상배율[1], 이자보상배율[2], 이자보상배율[3], dict(unit="배", fmt=".2f", reverse=True)),
+        ("순차입금",     순차입금[0],     순차입금[1],     순차입금[2],     순차입금[3],     dict()),
+    ]
+
     return f"""
 <section style="background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);padding:18px 32px 14px;color:#fff">
   <div style="font-size:1.3rem;font-weight:700;letter-spacing:-.3px">'26 상반기 주요 재무통계</div>
-  <div style="font-size:.78rem;opacity:.65;margin-top:6px">기준일: {BASE_DATE} &nbsp;|&nbsp; 단위: 조원 · % &nbsp;|&nbsp; 연결·별도 기준</div>
+  <div style="font-size:.78rem;opacity:.65;margin-top:6px">기준일: {BASE_DATE} &nbsp;|&nbsp; 단위: 조원 · %</div>
 </section>
 
 <section style="padding:22px 28px 0">
-  <!-- 손익지표 -->
-  <div style="margin-bottom:20px">
-    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:12px">손익지표</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      {kpi_dual("매출액",      매출액[0],      매출액[1],      매출액[2],      매출액[3],      reverse=True)}
-      {kpi_dual("영업이익",    영업이익[0],    영업이익[1],    영업이익[2],    영업이익[3],    reverse=True)}
-      {kpi_dual("순이익",      순이익[0],      순이익[1],      순이익[2],      순이익[3],      reverse=True)}
-      {kpi_dual("영업이익률",  영업이익률[0],  영업이익률[1],  영업이익률[2],  영업이익률[3],  pct=True, fmt=".2f", reverse=True)}
-      {kpi_dual("이자비용",    이자비용[0],    이자비용[1],    이자비용[2],    이자비용[3])}
-      {kpi_dual("순이익률",    순이익률[0],    순이익률[1],    순이익률[2],    순이익률[3],    pct=True, fmt=".2f", reverse=True)}
-    </div>
-  </div>
-
-  <!-- 재무지표 -->
-  <div style="margin-bottom:20px">
-    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #0d9488;padding-left:10px;margin-bottom:12px">재무지표</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      {kpi_dual("총자산",      총자산[0],      총자산[1],      총자산[2],      총자산[3])}
-      {kpi_dual("총부채",      총부채[0],      총부채[1],      총부채[2],      총부채[3])}
-      {kpi_dual("자기자본",    자기자본[0],    자기자본[1],    자기자본[2],    자기자본[3],    reverse=True)}
-      {kpi_dual("부채비율",    부채비율[0],    부채비율[1],    부채비율[2],    부채비율[3],    pct=True, fmt=".1f")}
-      {kpi_dual("이자보상배율",이자보상배율[0],이자보상배율[1],이자보상배율[2],이자보상배율[3],unit="배", fmt=".2f", reverse=True)}
-      {kpi_dual("순차입금",    순차입금[0],    순차입금[1],    순차입금[2],    순차입금[3])}
-    </div>
-  </div>
+  {kpi_section("손익지표", "#2563eb", 손익_items)}
+  {kpi_section("재무지표", "#0d9488", 재무_items)}
 
   <!-- 차입금 현황 -->
   <div style="margin-bottom:28px">
-    <div style="font-size:.82rem;font-weight:700;color:#0f2a4a;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:12px">차입금 현황 <span style="font-size:.72rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
+    <div style="font-size:.85rem;font-weight:700;color:#0f2a4a;border-left:4px solid #7c3aed;padding-left:10px;margin-bottom:12px">차입금 현황 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
       {flow_kpi("사채발행수", 사채발행수, unit="개", fmt="d")}
       {flow_kpi("사채잔액", 사채잔액)}
@@ -2217,14 +2223,12 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}}
 a{{color:#2563eb;text-decoration:none}}a:hover{{text-decoration:underline}}
-.top-nav{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;padding:0 32px;border-bottom:2px solid #1e3a5f}}
-.top-nav-brand{{display:flex;flex-direction:column;justify-content:center;padding:14px 0;gap:3px}}
-.top-nav-brand h1{{font-size:1.25rem;font-weight:700;letter-spacing:-.4px;line-height:1}}
-.top-nav-brand .sub{{font-size:.75rem;opacity:.7}}
+.top-nav{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;border-bottom:2px solid rgba(255,255,255,.12)}}
 .tab-bar{{display:flex;gap:0;align-items:stretch}}
-.tab-btn{{background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.55);padding:0 24px;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;height:100%}}
-.tab-btn:hover{{color:#fff}}
-.tab-active{{color:#fff!important;border-bottom-color:#60a5fa!important}}
+.tab-btn{{background:transparent;border:none;border-bottom:4px solid transparent;color:rgba(255,255,255,.5);padding:18px 32px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;letter-spacing:-.2px}}
+.tab-btn:hover{{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}}
+.tab-active{{color:#fff!important;border-bottom-color:#60a5fa!important;background:rgba(255,255,255,.08)!important}}
+.top-nav-meta{{display:flex;align-items:center;padding:0 28px;font-size:.78rem;opacity:.6}}
 .sub{{font-size:.83rem;opacity:.75}}
 main{{max-width:1400px;margin:0 auto;padding:28px 20px}}
 section{{margin-bottom:40px}}
@@ -2260,14 +2264,11 @@ footer{{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-heigh
 
 
 <div class="top-nav">
-  <div class="top-nav-brand">
-    <h1>📊 채권 시장 모니터</h1>
-    <div class="sub">기준일 <strong style="color:#fff">{today_str}</strong> · 국고채 · 한전채 민평금리 · 공사채 발행현황</div>
-  </div>
   <div class="tab-bar">
-    <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">채권시장모니터링</button>
-    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">재무처 주요통계</button>
+    <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">📊 채권시장모니터링</button>
+    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">📋 재무처 주요통계</button>
   </div>
+  <div class="top-nav-meta">{today_str}</div>
 </div>
 <div id="tab-panel-1">
 <main>
