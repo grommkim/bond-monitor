@@ -9,15 +9,6 @@
     "source": "excel"
   },
   {
-    "id": "전력채|2021-10-01|2026-10-01|200000000000|r776",
-    "category": "전력채",
-    "amount": 200000000000,
-    "issuance_date": "2021-10-01",
-    "maturity_date": "2026-10-01",
-    "rate": null,
-    "source": "excel"
-  },
-  {
     "id": "전력채|2024-10-02|2026-10-02|400000000000|r777",
     "category": "전력채",
     "amount": 400000000000,
@@ -6919,5 +6910,32 @@
     "maturity_date": "2026-11-16",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "전력채|2026-10-01|2028-09-29|100000000000|kofia",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-10-01",
+    "maturity_date": "2028-09-29",
+    "rate": 4.35,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-01|2029-10-01|190000000000|kofia",
+    "category": "전력채",
+    "amount": 190000000000,
+    "issuance_date": "2026-10-01",
+    "maturity_date": "2029-10-01",
+    "rate": 4.44,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-01|2031-09-29|100000000000|kofia",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2026-10-01",
+    "maturity_date": "2031-09-29",
+    "rate": 4.59,
+    "source": "kofia"
   }
 ]
