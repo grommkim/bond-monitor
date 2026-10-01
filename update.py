@@ -181,12 +181,21 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return "워시 Fed 의장 발언·정책 동향 — 향후 금리 경로 핵심 신호."
 
     elif cat == "cpi":
-        if any(w in t for w in ["rise","up","high","exceed","hot","above","surge","jump","above"]):
+        # 복합 표현 우선 — "rises... below expectations" 같은 제목에서 방향 오판 방지
+        miss = any(p in t for p in ["below expect","below forecast","below est","miss",
+                                     "soften","softer","cool","예상 하회","예상보다 낮","하회"])
+        beat = any(p in t for p in ["above expect","above forecast","above est","beat",
+                                     "hotter","exceed","예상 상회","예상보다 높","상회"])
+        if miss and not beat:
+            return "물가 예상 하회 — 금리 인하 기대 강화, 금리 하락↓ 요인."
+        elif beat and not miss:
             return "물가 예상 상회 — 금리 인하 기대 후퇴, 금리 상승↑ 압력."
-        elif any(w in t for w in ["fall","drop","cool","ease","below","slow","low","declin"]):
+        elif any(w in t for w in ["fall","drop","cool","ease","slow","low","declin","soften"]):
             return "물가 둔화 신호 — 금리 인하 기대 강화, 금리 하락↓ 요인."
+        elif any(w in t for w in ["rise","up","high","hot","surge","jump"]):
+            return "물가 상승 신호 — 금리 인하 기대 후퇴, 금리 상승↑ 압력."
         else:
-            return "물가(CPI) 지표 발표 — 금리 인하 기대에 직접 영향."
+            return "물가(CPI/PCE) 지표 발표 — 예상 대비 결과에 따라 금리 방향 결정."
 
     elif cat == "auction":
         if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
@@ -321,6 +330,21 @@ def _ticks_to_bp(ticks_str):
     else:
         bp_per_tick = 0.36
     return f"약 {round(ticks * bp_per_tick, 1)}bp"
+
+
+def fetch_oil_price() -> dict:
+    """WTI 현물 유가 (CL=F) 직전 종가·등락 반환"""
+    try:
+        import yfinance as yf
+        hist = yf.Ticker("CL=F").history(period="5d")
+        if len(hist) < 2:
+            return {}
+        curr = round(float(hist["Close"].iloc[-1]), 2)
+        prev = round(float(hist["Close"].iloc[-2]), 2)
+        chg  = round(curr - prev, 2)
+        return {"price": curr, "chg": chg}
+    except Exception:
+        return {}
 
 
 def fetch_night_futures():
@@ -467,7 +491,7 @@ def fetch_bond_news_all():
     return items
 
 
-def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None):
+def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None, oil=None):
     """
     미국 국채 금리 + 이벤트 + 야간선물 → 4단 서술 분석 반환
     흐름: 이벤트 → 미국 반응 → 야간선물 → 오늘 전망
@@ -569,6 +593,13 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         line_us += f" 2Y {rate_2:.3f}%"
         if rate_30:
             line_us += f" / 30Y {rate_30:.3f}%."
+
+    # 유가 — 데이터 있을 때만 한 줄 추가
+    oil_data = oil or {}
+    if oil_data.get("price"):
+        oil_chg  = oil_data["chg"]
+        oil_dir  = "상승↑" if oil_chg > 0 else ("하락↓" if oil_chg < 0 else "보합")
+        line_us += f"  WTI 유가 ${oil_data['price']:.1f} ({oil_chg:+.1f}달러, {oil_dir})."
 
     # ── 3) 야간선물 문장 — 실제 인포맥스 데이터 있을 때만 표시 ──────
     nf_direction = None  # 야간선물 실제 방향 (전망에 활용)
@@ -2554,7 +2585,8 @@ if __name__ == "__main__":
         print(f"  국고채 전일비 계산 실패: {_e}")
     all_headlines  = fetch_bond_news_all()
     night_futures  = fetch_night_futures()
-    market_news    = build_market_analysis(us_rates, all_headlines, kr_bond, night_futures)
+    oil_price      = fetch_oil_price()
+    market_news    = build_market_analysis(us_rates, all_headlines, kr_bond, night_futures, oil=oil_price)
     issu_stats    = collect_issu_stats()
     kepco_rates, kepco_amts = collect_kepco_rates_ytd()
     ktb_rates,   ktb_amts   = collect_ktb3y_rates_ytd()
