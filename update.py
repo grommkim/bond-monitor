@@ -131,7 +131,7 @@ def _is_followup(title: str, lang: str) -> bool:
     return any(k in t for k in kws)
 
 def _title_to_market_ctx(title: str, cat: str) -> str:
-    """기사 제목을 분석해 방향성·숫자 기반 시장 영향 설명 생성"""
+    """기사 제목을 분석해 구체적·명확한 시장 영향 설명 생성"""
     import re as _re
     t = title.lower()
 
@@ -140,7 +140,6 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
     tight = any(w in t for w in ["rais","hike","increas","impos","expand","surge","spike",
                                   "threat","war","인상","부과","강화","확대"])
 
-    # $XB 금액 추출
     dm = _re.search(r'\$\s*(\d+(?:\.\d+)?)\s*(trillion|billion|million)', t)
     dollar_str = ""
     if dm:
@@ -148,85 +147,90 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         u = {"trillion": "조", "billion": "억", "million": "백만"}[dm.group(2)]
         dollar_str = f" {v:.0f}{u} 달러"
 
-    # bp 추출
     bpm = _re.search(r'(\d+)\s*(?:basis points?|bps?)', t)
     bp_str = f" {bpm.group(1)}bp" if bpm else ""
 
+    # % 수치 추출 (예: "3.4%", "2.6%")
+    pct_m = _re.search(r'(\d+\.?\d*)\s*%', t)
+    pct_str = f" {pct_m.group(1)}%" if pct_m else ""
+
     if cat in ("tariff", "trump"):
         if ease and not tight:
-            return f"무역·관세 긴장 완화{dollar_str} — 인플레 기대 하향, 금리 하락↓ 요인."
+            return f"미·중 관세 협상 완화{dollar_str} — 수입물가 상승 우려 감소, 미국 국채 시장금리 하락↓ 요인."
         elif tight and not ease:
-            return f"관세 강화·무역 갈등{dollar_str} — 수입물가 상승, 금리 상방↑ 압력."
-        elif "summit" in t or "meeting" in t or "analysis" in t:
-            return f"미·중 정상급 협상{dollar_str} — 합의 범위에 따라 인플레·금리 방향 결정."
+            return f"미국 관세 강화·무역 갈등{dollar_str} — 수입물가 상승으로 인플레이션 기대 자극, 미국 국채 시장금리 상승↑ 압력."
+        elif "summit" in t or "meeting" in t:
+            return f"미·중 정상회담{dollar_str} — 협상 결과에 따라 관세·인플레이션 기대 및 미국 국채 시장금리 방향 결정."
         else:
-            return f"트럼프 무역·재정 정책{dollar_str} — 국채 공급·인플레 영향 주목."
+            return f"트럼프 무역·재정 정책{dollar_str} — 재정적자 확대 시 미 국채 공급 증가, 장기 시장금리 상승↑ 압력."
 
     elif cat == "fed":
         if any(w in t for w in ["hike","raise","rais","increase","increas"]):
-            return f"연준 금리 인상{bp_str} 결정 — 단기금리 상승↑, 추가 인상 경로 주목."
+            return f"연준(Fed) 기준금리 인상{bp_str} 결정 — 미국 국채 단기물(2년) 시장금리 상승↑, 추가 인상 경로 주목."
         elif any(w in t for w in ["cut","lower","reduc","decreas"]):
-            return f"연준 금리 인하{bp_str} 결정 — 단기금리 하락↓, 완화 사이클 기대."
+            return f"연준(Fed) 기준금리 인하{bp_str} 결정 — 미국 국채 단기물(2년) 시장금리 하락↓, 완화 사이클 본격화."
         elif any(w in t for w in ["pause","hold","unchanged","maintain"]):
-            return "연준 금리 동결 — 추가 인상 신중론, 데이터 의존 기조 지속."
+            return "연준(Fed) 기준금리 동결 — 추가 인하 신중론 유지, 향후 경제 지표 의존 기조."
         else:
-            return "연준 통화정책 결정 — 단기금리 방향에 직접 영향."
+            return "연준(Fed) 통화정책 결정 — 기준금리 방향이 미국 국채 단기물 시장금리에 직접 영향."
 
     elif cat == "warsh":
         if any(w in t for w in ["hike","hawkish","매파","more hike","추가 인상","aggressive"]):
-            return "워시 의장 매파 발언 — 추가 금리 인상 시사, 고금리 장기화 우려."
+            return "워시 Fed 의장 매파 발언 — 기준금리 추가 인상 시사, 고금리 장기화 우려로 미국 국채 시장금리 상승↑."
         elif any(w in t for w in ["cut","dovish","비둘기","인하","slow"]):
-            return "워시 의장 완화 신호 — 금리 인하 기대 일부 강화."
+            return "워시 Fed 의장 완화 신호 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         else:
-            return "워시 Fed 의장 발언·정책 동향 — 향후 금리 경로 핵심 신호."
+            return "워시 Fed 의장 발언 — 기준금리 경로의 핵심 신호, 시장금리 변동성 주의."
 
     elif cat == "cpi":
-        # 복합 표현 우선 — "rises... below expectations" 같은 제목에서 방향 오판 방지
+        # "rises...below expectations" 오판 방지: 복합구 먼저 체크
         miss = any(p in t for p in ["below expect","below forecast","below est","miss",
                                      "soften","softer","cool","예상 하회","예상보다 낮","하회"])
         beat = any(p in t for p in ["above expect","above forecast","above est","beat",
                                      "hotter","exceed","예상 상회","예상보다 높","상회"])
+        # 어떤 물가 지표인지 특정
+        idx = "PCE(개인소비지출)" if "pce" in t else ("CPI(소비자물가)" if "cpi" in t else "미국 물가")
         if miss and not beat:
-            return "물가 예상 하회 — 금리 인하 기대 강화, 금리 하락↓ 요인."
+            return f"미국 {idx}{pct_str} 예상 하회 — 연준 기준금리 추가 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         elif beat and not miss:
-            return "물가 예상 상회 — 금리 인하 기대 후퇴, 금리 상승↑ 압력."
+            return f"미국 {idx}{pct_str} 예상 상회 — 연준 기준금리 인하 기대 후퇴, 미국 국채 시장금리 상승↑ 압력."
         elif any(w in t for w in ["fall","drop","cool","ease","slow","low","declin","soften"]):
-            return "물가 둔화 신호 — 금리 인하 기대 강화, 금리 하락↓ 요인."
+            return f"미국 {idx}{pct_str} 둔화 — 연준 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         elif any(w in t for w in ["rise","up","high","hot","surge","jump"]):
-            return "물가 상승 신호 — 금리 인하 기대 후퇴, 금리 상승↑ 압력."
+            return f"미국 {idx}{pct_str} 상승 — 연준 기준금리 인하 기대 후퇴, 미국 국채 시장금리 상승↑ 압력."
         else:
-            return "물가(CPI/PCE) 지표 발표 — 예상 대비 결과에 따라 금리 방향 결정."
+            return f"미국 {idx} 지표 발표 — 예상치 대비 결과에 따라 연준 기준금리 기대·시장금리 방향 결정."
 
     elif cat == "auction":
         if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
-            return f"미 국채 입찰{dollar_str} 부진 — bid-to-cover 저조, 금리 상승↑."
+            return f"미국 국채{dollar_str} 입찰 부진 — 낙찰금리 상승(테일 발생), 미국 국채 시장금리 상승↑."
         elif any(w in t for w in ["strong","solid","robust","demand","well"]):
-            return f"미 국채 입찰{dollar_str} 호조 — 강한 수요, 금리 하락↓ 요인."
+            return f"미국 국채{dollar_str} 입찰 호조 — 강한 수요(높은 bid-to-cover), 미국 국채 시장금리 하락↓ 요인."
         else:
-            return f"미 국채 입찰{dollar_str} 결과 — 시장 수급 주요 변수."
+            return f"미국 국채{dollar_str} 입찰 결과 — 낙찰금리·수요 강도가 시장금리 방향 가름."
 
     elif cat == "jobs":
         if any(w in t for w in ["strong","beat","surge","rise","robust","add","jump"]):
-            return "고용 강세 — 경기 과열·인하 명분 약화, 금리 상승↑."
+            return "미국 고용지표 강세 — 경기 과열 우려로 연준 기준금리 인하 명분 약화, 미국 국채 시장금리 상승↑."
         elif any(w in t for w in ["weak","fall","miss","slow","decline","lose","soft"]):
-            return "고용 부진 — 경기 둔화·인하 기대 강화, 금리 하락↓."
+            return "미국 고용지표 부진 — 경기 둔화 우려로 연준 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓."
         else:
-            return "고용지표 발표 — 경기·인플레 경로 핵심 변수."
+            return "미국 고용지표 발표 — 경기 강도가 연준 기준금리 경로·시장금리 방향 결정."
 
     elif cat == "gdp":
         if any(w in t for w in ["recession","contraction","negative","shrink","weak"]):
-            return "경기 침체 우려 — 안전자산 수요↑, 금리 하락↓ 압력."
+            return "미국 경기 침체 우려 — 안전자산 선호로 미국 국채 매수 증가, 시장금리 하락↓."
         elif any(w in t for w in ["growth","beat","strong","expand","robust"]):
-            return "경기 호조 — 채권 수요 약화, 금리 상방↑ 가능."
+            return "미국 경제 성장 호조 — 채권 수요 약화, 미국 국채 시장금리 상승↑ 가능."
         else:
-            return "경기지표 — 안전자산 수요·금리 방향 영향."
+            return "미국 GDP 지표 — 성장세 확인 시 시장금리 상승↑, 둔화 확인 시 하락↓."
 
     _fallback = {
-        "buyback":  "재무부 바이백 — 장기물 공급 축소, 금리 하락↓ 요인.",
-        "bessent":  "베센트 재무장관 발언 — 국채 발행·만기 구조 영향.",
-        "wgbi":     "한국 WGBI 편입 — 글로벌 패시브 자금 국채 매수 유입 기대.",
-        "kr_close": "국내 채권시장 마감 — 발행 계획·정책 변수 반응.",
-        "powell":   "파월 전 의장 발언 — 통화정책 방향 참고 신호.",
+        "buyback":  "미국 재무부 국채 바이백 — 장기물 공급 축소 효과, 미국 국채 장기 시장금리 하락↓ 요인.",
+        "bessent":  "베센트 미국 재무장관 발언 — 국채 발행·만기 구조 결정권자, 장기물 방향 주목.",
+        "wgbi":     "한국 WGBI(세계국채지수) 편입 — 글로벌 패시브 자금의 한국 국채 매수 유입 기대, 국내 시장금리 하락↓.",
+        "kr_close": "전일 국내 채권시장 마감 — 한국 국고채 시장금리 실제 변동 반영.",
+        "powell":   "파월 연준 전 의장 발언 — 통화정책 방향 참고 신호.",
     }
     return _fallback.get(cat, "")
 
@@ -260,21 +264,21 @@ _EVENT_IMPACT = {
                 "발행 계획·WGBI·환율 등 복합 요인이 맞물려 금리 방향성 결정.",
 }
 
-# 이벤트별 모순 설명 — 예상 하락 요인인데 실제 금리 상승한 경우
+# 이벤트별 모순 설명 — 예상 하락 요인인데 실제 미국 국채 시장금리 상승한 경우
 _EVENT_CONTRADICT_DOWN_UP = {
-    "buyback":  "하지만 예상보다 바이백 물량이 적거나 만기 구성이 단기물 중심이어서 시장 기대에 못 미쳐 오히려 금리 상승.",
-    "gdp":      "하지만 인플레이션 우려가 동반되어 스태그플레이션 공포로 금리 상승 전환.",
-    "jobs":     "하지만 임금 상승·노동 참가율 등 세부 지표가 인플레 불안을 자극해 오히려 금리 상승.",
-    "cpi":      "하지만 세부 항목 또는 기대 인플레이션이 예상보다 강해 오히려 금리 상승.",
+    "buyback":  "다만 실제 미국 국채 시장금리는 오히려 상승 — 바이백 물량이 시장 기대에 못 미쳤거나 단기물 중심 구성으로 장기물 수급 개선 효과 제한.",
+    "gdp":      "다만 실제 미국 국채 시장금리는 오히려 상승 — 경기 둔화보다 인플레이션 우려가 더 강하게 반영된 것으로 해석.",
+    "jobs":     "다만 실제 미국 국채 시장금리는 오히려 상승 — 헤드라인 부진에도 임금 상승률·노동 참가율 등이 인플레이션 우려를 자극.",
+    "cpi":      "다만 실제 미국 국채 시장금리는 오히려 상승 — 헤드라인 하회에도 서비스 물가 등 근원 항목이 예상보다 강하게 나온 것으로 해석.",
 }
 
-# 이벤트별 모순 설명 — 예상 상승 요인인데 실제 금리 하락한 경우
+# 이벤트별 모순 설명 — 예상 상승 요인인데 실제 미국 국채 시장금리 하락한 경우
 _EVENT_CONTRADICT_UP_DOWN = {
-    "warsh":    "하지만 매파 발언이 기존 기대 범위 내라 시장은 오히려 안도하며 금리 하락.",
-    "trump":    "하지만 실제 집행 가능성 의구심으로 경기 둔화 우려가 앞서 금리 하락.",
-    "tariff":   "하지만 경기 침체 우려가 인플레 공포를 압도해 안전자산 선호로 금리 하락.",
-    "powell":   "하지만 비둘기파 신호가 더 강하게 전달되어 예상보다 큰 금리 하락.",
-    "auction":  "하지만 입찰 수요가 예상 이상으로 강해 오히려 금리 하락.",
+    "warsh":    "다만 실제 미국 국채 시장금리는 오히려 하락 — 매파 발언이 기존 시장 기대 범위 안이라 안도 매수 유입.",
+    "trump":    "다만 실제 미국 국채 시장금리는 오히려 하락 — 정책 실제 집행 불확실성 속 경기 둔화 우려가 앞서 안전자산 수요 증가.",
+    "tariff":   "다만 실제 미국 국채 시장금리는 오히려 하락 — 관세 충격으로 인한 경기 침체 우려가 인플레이션 공포를 압도, 안전자산인 국채 매수 우위.",
+    "powell":   "다만 실제 미국 국채 시장금리는 오히려 하락 — 비둘기파적 신호가 예상보다 강하게 전달되며 기준금리 인하 기대 강화.",
+    "auction":  "다만 실제 미국 국채 시장금리는 오히려 하락 — 입찰 수요가 예상을 상회하며 낙찰금리 하락.",
 }
 
 # 이벤트별 비판적 시각 / 반대 해석
