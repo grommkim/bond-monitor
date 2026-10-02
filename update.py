@@ -60,7 +60,7 @@ def fetch_us_rates():
             if rates.get("10Y"):
                 return rates
         else:
-            print(f"  미재무부 XML 파싱 실패 — 응답 앞부분: {resp.text[:200] if resp else 'N/A'}")
+            print(f"  미재무부 XML 파싱 실패 — 응답: {resp.text[:600] if resp else 'N/A'}")
     except Exception as e:
         print(f"  미재무부 XML 오류: {e}")
 
