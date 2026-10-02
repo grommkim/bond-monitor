@@ -13,12 +13,35 @@ except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
 def fetch_us_rates():
-    """미국 국채 금리 수집 — yfinance → FRED → Stooq 순 폴백"""
+    """미국 국채 금리 수집 — FRED(연준 공식) → yfinance → Stooq 순 폴백"""
     import csv, io
+    from datetime import date as _date
     print("[ 미국 국채 금리 수집 ]")
     rates = {}
 
-    # ── 1순위: yfinance (^TNX=10Y, ^TYX=30Y, ^FVX=5Y proxy 2Y) ─────
+    # ── 1순위: FRED (연준 공식 데이터, 당일 장 마감 후 업데이트) ──────
+    # yfinance ^TNX 는 야후파이낸스 파생 지수로 종가 방향이 틀릴 수 있음
+    # FRED DGS10/DGS2/DGS30 는 미국 재무부 → 연준이 직접 집계·발행하는 공식값
+    try:
+        fred_map = [("10Y", "DGS10"), ("2Y", "DGS2"), ("30Y", "DGS30")]
+        for tenor, series in fred_map:
+            url  = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
+            resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
+                    if r.get(series, "").strip() not in ("", ".")]
+            if len(rows) >= 2:
+                curr = float(rows[-1][series])
+                prev = float(rows[-2][series])
+                chg  = round((curr - prev) * 100, 1)
+                rate_date = rows[-1].get("DATE", "")
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rate_date}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [{rate_date}] [FRED]")
+        if rates.get("10Y"):
+            return rates
+    except Exception as e:
+        print(f"  FRED 오류: {e}")
+
+    # ── 2순위: yfinance ───────────────────────────────────────────────
     try:
         import yfinance as yf
         # ^IRX = 13-week T-bill (closest free proxy for 2Y)
@@ -42,25 +65,6 @@ def fetch_us_rates():
             return rates
     except Exception as e:
         print(f"  yfinance 오류: {e}")
-
-    # ── 2순위: FRED ───────────────────────────────────────────────────
-    try:
-        fred_map = [("10Y", "DGS10"), ("2Y", "DGS2"), ("30Y", "DGS30")]
-        for tenor, series in fred_map:
-            url  = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
-            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
-            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
-                    if r.get(series, "").strip() not in ("", ".")]
-            if len(rows) >= 2:
-                curr = float(rows[-1][series])
-                prev = float(rows[-2][series])
-                chg  = round((curr - prev) * 100, 1)
-                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rows[-1].get("DATE", "")}
-                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [FRED]")
-        if rates:
-            return rates
-    except Exception as e:
-        print(f"  FRED 오류: {e}")
 
     # ── 3순위: Stooq ─────────────────────────────────────────────────
     for tenor, symbol in [("2Y", "2us.b"), ("10Y", "10us.b"), ("30Y", "30us.b")]:
