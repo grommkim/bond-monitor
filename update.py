@@ -13,38 +13,78 @@ except ImportError:
     sys.exit("pip3 install requests 를 먼저 실행하세요.")
 
 def fetch_us_rates():
-    """미국 국채 금리 수집 — FRED(연준 공식) → yfinance → Stooq 순 폴백"""
-    import csv, io
-    from datetime import date as _date
+    """미국 국채 금리 수집 — 미재무부XML → Stooq → yfinance 순 폴백"""
+    import csv, io, xml.etree.ElementTree as ET
+    from datetime import date as _date, timedelta
     print("[ 미국 국채 금리 수집 ]")
     rates = {}
 
-    # ── 1순위: FRED (연준 공식 데이터, 당일 장 마감 후 업데이트) ──────
-    # yfinance ^TNX 는 야후파이낸스 파생 지수로 종가 방향이 틀릴 수 있음
-    # FRED DGS10/DGS2/DGS30 는 미국 재무부 → 연준이 직접 집계·발행하는 공식값
+    # ── 1순위: 미국 재무부 직접 XML API ─────────────────────────────
+    # FRED/yfinance 보다 원천 데이터 — 미 재무부가 직접 제공하는 공식 수익률 곡선
     try:
-        fred_map = [("10Y", "DGS10"), ("2Y", "DGS2"), ("30Y", "DGS30")]
-        for tenor, series in fred_map:
-            url  = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
+        today = _date.today()
+        # 당월 + 전월 모두 가져와서 최근 2일 데이터 확보
+        months = sorted({today.strftime("%Y%m"), (today - timedelta(days=35)).strftime("%Y%m")})
+        entries = []
+        for ym in months:
+            url = (f"https://home.treasury.gov/resource-center/data-chart-center/"
+                   f"interest-rates/pages/xml?data=daily_treasury_yield_curve"
+                   f"&field_tdr_date_value={ym}")
             resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
-                    if r.get(series, "").strip() not in ("", ".")]
-            if len(rows) >= 2:
-                curr = float(rows[-1][series])
-                prev = float(rows[-2][series])
-                chg  = round((curr - prev) * 100, 1)
-                rate_date = rows[-1].get("DATE", "")
-                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rate_date}
-                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [{rate_date}] [FRED]")
-        if rates.get("10Y"):
-            return rates
+            ns = {"d": "http://schemas.microsoft.com/ado/2007/08/dataservices",
+                  "m": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"}
+            root = ET.fromstring(resp.text)
+            for props in root.iter("{http://schemas.microsoft.com/ado/2007/08/dataservices/metadata}properties"):
+                raw_date = (props.find("d:NEW_DATE", ns) or props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}NEW_DATE"))
+                y2  = props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}BC_2YEAR")
+                y10 = props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}BC_10YEAR")
+                y30 = props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}BC_30YEAR")
+                if raw_date is not None and y10 is not None and y10.text:
+                    date_str = raw_date.text[:10]  # "2026-10-01T00:00:00" → "2026-10-01"
+                    entries.append({
+                        "date": date_str,
+                        "2Y":  float(y2.text)  if y2  and y2.text  else None,
+                        "10Y": float(y10.text) if y10 and y10.text else None,
+                        "30Y": float(y30.text) if y30 and y30.text else None,
+                    })
+        entries.sort(key=lambda x: x["date"])
+        if len(entries) >= 2:
+            last, prev_e = entries[-1], entries[-2]
+            for tenor in ("10Y", "2Y", "30Y"):
+                c, p = last.get(tenor), prev_e.get(tenor)
+                if c and p:
+                    chg = round((c - p) * 100, 1)
+                    rates[tenor] = {"rate": c, "chg_bps": chg, "date": last["date"]}
+                    print(f"  {tenor}: {c:.3f}% ({chg:+.1f}bps) [{last['date']}] [미재무부]")
+            if rates.get("10Y"):
+                return rates
     except Exception as e:
-        print(f"  FRED 오류: {e}")
+        print(f"  미재무부 XML 오류: {e}")
 
-    # ── 2순위: yfinance ───────────────────────────────────────────────
+    # ── 2순위: Stooq ─────────────────────────────────────────────────
+    stooq_ok = 0
+    for tenor, symbol in [("10Y", "10us.b"), ("2Y", "2us.b"), ("30Y", "30us.b")]:
+        url = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
+        try:
+            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
+                    if r.get("Close") and r["Close"] != "null"]
+            if len(rows) >= 2:
+                curr = float(rows[-1]["Close"])
+                prev = float(rows[-2]["Close"])
+                chg  = round((curr - prev) * 100, 1)
+                rate_date = rows[-1].get("Date", "")
+                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rate_date}
+                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [{rate_date}] [Stooq]")
+                stooq_ok += 1
+        except Exception as e:
+            print(f"  {tenor} Stooq 오류: {e}")
+    if stooq_ok > 0 and rates.get("10Y"):
+        return rates
+
+    # ── 3순위: yfinance ───────────────────────────────────────────────
     try:
         import yfinance as yf
-        # ^IRX = 13-week T-bill (closest free proxy for 2Y)
         tickers = {"10Y": "^TNX", "30Y": "^TYX", "2Y": "^IRX"}
         for tenor, sym in tickers.items():
             hist = yf.Ticker(sym).history(period="5d", interval="1d", auto_adjust=False)
@@ -53,7 +93,6 @@ def fetch_us_rates():
                 curr = round(closes[-1], 3)
                 prev = round(closes[-2], 3)
                 chg  = round((curr - prev) * 100, 1)
-                # IRX는 x10 스케일로 저장됨 (4.5% → 45 표시)
                 if tenor == "2Y" and curr > 20:
                     curr = round(curr / 10, 3)
                     prev = round(prev / 10, 3)
@@ -66,21 +105,6 @@ def fetch_us_rates():
     except Exception as e:
         print(f"  yfinance 오류: {e}")
 
-    # ── 3순위: Stooq ─────────────────────────────────────────────────
-    for tenor, symbol in [("2Y", "2us.b"), ("10Y", "10us.b"), ("30Y", "30us.b")]:
-        url = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
-        try:
-            resp = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
-            rows = [r for r in csv.DictReader(io.StringIO(resp.text))
-                    if r.get("Close") and r["Close"] != "null"]
-            if len(rows) >= 2:
-                curr = float(rows[-1]["Close"])
-                prev = float(rows[-2]["Close"])
-                chg  = round((curr - prev) * 100, 1)
-                rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rows[-1].get("Date", "")}
-                print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [Stooq]")
-        except Exception as e:
-            print(f"  {tenor} Stooq 오류: {e}")
     return rates
 
 
