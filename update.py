@@ -106,14 +106,17 @@ _EVENT_KW = [
     ("warsh",     ["warsh","워시","kevin warsh","매파 본색"],                 "워시 발언"),
     ("wgbi",      ["WGBI","wgbi","세계국채지수","채권지수 편입","wgbi 편입"], "WGBI 편입"),
     ("bessent",   ["bessent","베센트","베선트"],                              "베센트 재무장관"),
-    ("kr_close",  ["채권-마감","채권 마감","금리 급락","금리 급등"],          "채권 마감"),
     ("trump",     ["trump","트럼프"],                                         "트럼프"),
     ("tariff",    ["tariff","관세","trade war","무역전쟁"],                   "관세/무역"),
     ("powell",    ["powell","파월"],                                          "파월 발언"),
     ("fed",       ["federal reserve","fomc","연준","금통위",
                    "rate hike","rate cut","rate decision","interest rate",
                    "fed rate","fed votes","fed raises","fed cuts","fed holds",
-                   "rate unchanged","fed decision"],                          "Fed/연준"),
+                   "rate unchanged","fed decision",
+                   "kashkari","daly","waller","barkin","bostic","cook","kugler",
+                   "jefferson","williams","mester","logan","collins",
+                   "fed chair","fed governor","fed president","fed official",
+                   "monetary policy","통화정책","금리 인하 신중","금리 동결"],  "Fed/연준"),
     ("auction",   ["auction","입찰","국채 발행"],                             "국채 입찰"),
     ("cpi",       ["cpi","consumer price","inflation","인플레","물가"],       "물가/CPI"),
     ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
@@ -171,8 +174,15 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return f"연준(Fed) 기준금리 인하{bp_str} 결정 — 미국 국채 단기물(2년) 시장금리 하락↓, 완화 사이클 본격화."
         elif any(w in t for w in ["pause","hold","unchanged","maintain"]):
             return "연준(Fed) 기준금리 동결 — 추가 인하 신중론 유지, 향후 경제 지표 의존 기조."
+        elif any(w in t for w in ["cautious","patient","gradual","no rush","not yet",
+                                   "still high","too high","no hurry","신중","점진적","서두르지"]):
+            return "연준(Fed) 위원 금리 인하 신중 발언 — 물가가 여전히 높다는 판단으로 기준금리 인하 속도 조절 시사. 미국 국채 시장금리 상방↑ 압력."
+        elif any(w in t for w in ["hawkish","매파","aggressive","더 오래","higher for longer"]):
+            return "연준(Fed) 위원 매파 발언 — 고금리 장기화 시사, 미국 국채 시장금리 상승↑ 압력."
+        elif any(w in t for w in ["dovish","비둘기","soon","near","임박","인하 기대"]):
+            return "연준(Fed) 위원 완화적 발언 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         else:
-            return "연준(Fed) 통화정책 결정 — 기준금리 방향이 미국 국채 단기물 시장금리에 직접 영향."
+            return "연준(Fed) 위원 발언·통화정책 동향 — 기준금리 방향이 미국 국채 단기물 시장금리에 직접 영향."
 
     elif cat == "warsh":
         if any(w in t for w in ["hike","hawkish","매파","more hike","추가 인상","aggressive"]):
@@ -185,7 +195,8 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
     elif cat == "cpi":
         # "rises...below expectations" 오판 방지: 복합구 먼저 체크
         miss = any(p in t for p in ["below expect","below forecast","below est","miss",
-                                     "soften","softer","cool","예상 하회","예상보다 낮","하회"])
+                                     "soften","softer","soft","cool","eases","slows",
+                                     "예상 하회","예상보다 낮","하회"])
         beat = any(p in t for p in ["above expect","above forecast","above est","beat",
                                      "hotter","exceed","예상 상회","예상보다 높","상회"])
         # 어떤 물가 지표인지 특정
@@ -422,8 +433,8 @@ def fetch_bond_news_all():
     print("[ 금융시장 뉴스 수집 ]")
     now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
     items = []
-    # 월요일(weekday=0)은 금요일 미국장 커버 위해 60시간, 평일은 24시간
-    _news_hours = 60 if datetime.utcnow().weekday() == 0 else 24
+    # 월요일은 금요일 미국장 커버 위해 72시간, 나머지는 48시간 (전일 기사 포함)
+    _news_hours = 72 if datetime.utcnow().weekday() == 0 else 48
 
     def _is_fresh(pub_str, max_hours=None):
         """pubDate 문자열이 max_hours 이내면 True (한국 장 마감~익일 개장 창)"""
@@ -442,8 +453,11 @@ def fetch_bond_news_all():
         "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
         "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines",
         "https://news.google.com/rss/search?q=US+Treasury+yield+Fed+bond+buyback&hl=en&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=Federal+Reserve+interest+rate+cautious+FOMC&hl=en&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=Fed+rate+hike+cut+hold+2026&hl=en&gl=US&ceid=US:en",
     ]
-    en_kw = ["treasury","yield","bond","fed","rate","powell","warsh","inflation","buyback","auction","tariff","trump"]
+    en_kw = ["treasury","yield","bond","fed","federal reserve","fomc","rate","powell","warsh",
+             "inflation","pce","cpi","buyback","auction","tariff","trump","cautious","gradual","patient"]
     for url in en_sources:
         try:
             resp = requests.get(url, timeout=12, headers={"User-Agent": UA})
@@ -591,12 +605,13 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         us_feel = "금리 하락↓ 압력 강함"
 
     rate_date = us_rates.get("10Y", {}).get("date", "")
-    date_suffix = f" ({rate_date[5:].replace('-','/')} 기준)" if rate_date else ""
-    line_us = (f"미국 국채금리 10Y {rate_10:.3f}% ({us_move}), {us_feel}.{date_suffix}")
+    date_suffix = f" ({rate_date[5:].replace('-','/')} 전일 종가 기준)" if rate_date else ""
+    line_us = (f"미국 국채 시장금리: 10년물 {rate_10:.3f}% ({us_move}){date_suffix}.")
     if rate_2:
-        line_us += f" 2Y {rate_2:.3f}%"
+        line_us += f"  단기(2년물) {rate_2:.3f}%"
         if rate_30:
-            line_us += f" / 30Y {rate_30:.3f}%."
+            chg_30 = us_rates.get("30Y", {}).get("chg_bps", 0)
+            line_us += f",  장기(30년물) {rate_30:.3f}% ({chg_30:+.1f}bp)."
 
     # 유가 — 데이터 있을 때만 한 줄 추가
     oil_data = oil or {}
