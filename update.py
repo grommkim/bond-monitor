@@ -48,6 +48,7 @@ def fetch_us_rates():
                         "30Y": float(y30.text) if y30 and y30.text else None,
                     })
         entries.sort(key=lambda x: x["date"])
+        print(f"  미재무부 entries 수집: {len(entries)}건 (최신={entries[-1]['date'] if entries else '없음'})")
         if len(entries) >= 2:
             last, prev_e = entries[-1], entries[-2]
             for tenor in ("10Y", "2Y", "30Y"):
@@ -58,6 +59,8 @@ def fetch_us_rates():
                     print(f"  {tenor}: {c:.3f}% ({chg:+.1f}bps) [{last['date']}] [미재무부]")
             if rates.get("10Y"):
                 return rates
+        else:
+            print(f"  미재무부 XML 파싱 실패 — 응답 앞부분: {resp.text[:200] if resp else 'N/A'}")
     except Exception as e:
         print(f"  미재무부 XML 오류: {e}")
 
