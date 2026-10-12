@@ -7036,5 +7036,32 @@
     "maturity_date": "2026-11-20",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "전력채|2026-10-12|2028-10-12|60000000000|kofia",
+    "category": "전력채",
+    "amount": 60000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2028-10-12",
+    "rate": 4.29,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-12|2029-10-12|170000000000|kofia",
+    "category": "전력채",
+    "amount": 170000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2029-10-12",
+    "rate": 4.42,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-12|2031-10-10|80000000000|kofia",
+    "category": "전력채",
+    "amount": 80000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2031-10-10",
+    "rate": 4.55,
+    "source": "kofia"
   }
 ]
