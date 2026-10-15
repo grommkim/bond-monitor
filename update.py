@@ -25,30 +25,37 @@ def fetch_us_rates():
         today = _date.today()
         # 당월 + 전월 모두 가져와서 최근 2일 데이터 확보
         months = sorted({today.strftime("%Y%m"), (today - timedelta(days=35)).strftime("%Y%m")})
+        d_ns = "http://schemas.microsoft.com/ado/2007/08/dataservices"
+        m_ns = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+        atom_ns = "http://www.w3.org/2005/Atom"
         entries = []
         for ym in months:
             url = (f"https://home.treasury.gov/resource-center/data-chart-center/"
                    f"interest-rates/pages/xml?data=daily_treasury_yield_curve"
                    f"&field_tdr_date_value={ym}")
             resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-            ns = {"d": "http://schemas.microsoft.com/ado/2007/08/dataservices",
-                  "m": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"}
             root = ET.fromstring(resp.text)
-            for props in root.iter("{http://schemas.microsoft.com/ado/2007/08/dataservices/metadata}properties"):
-                raw_date = (props.find("d:NEW_DATE", ns) or props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}NEW_DATE"))
-                y2  = props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}BC_2YEAR")
-                y10 = props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}BC_10YEAR")
-                y30 = props.find("{http://schemas.microsoft.com/ado/2007/08/dataservices}BC_30YEAR")
-                if raw_date is not None and y10 is not None and y10.text:
-                    date_str = raw_date.text[:10]  # "2026-10-01T00:00:00" → "2026-10-01"
+            # Atom feed: <entry><content><m:properties><d:BC_10YEAR>...
+            for entry in root.findall(f"{{{atom_ns}}}entry"):
+                content = entry.find(f"{{{atom_ns}}}content")
+                if content is None: continue
+                props = content.find(f"{{{m_ns}}}properties")
+                if props is None: continue
+                raw_date = props.find(f"{{{d_ns}}}NEW_DATE")
+                y2  = props.find(f"{{{d_ns}}}BC_2YEAR")
+                y10 = props.find(f"{{{d_ns}}}BC_10YEAR")
+                y30 = props.find(f"{{{d_ns}}}BC_30YEAR")
+                if raw_date is not None and y10 is not None and y10.text and y10.text.strip():
+                    date_str = raw_date.text[:10]
                     entries.append({
                         "date": date_str,
-                        "2Y":  float(y2.text)  if y2  and y2.text  else None,
-                        "10Y": float(y10.text) if y10 and y10.text else None,
-                        "30Y": float(y30.text) if y30 and y30.text else None,
+                        "2Y":  float(y2.text)  if y2  and y2.text  and y2.text.strip()  else None,
+                        "10Y": float(y10.text),
+                        "30Y": float(y30.text) if y30 and y30.text and y30.text.strip() else None,
                     })
         entries.sort(key=lambda x: x["date"])
-        print(f"  미재무부 entries 수집: {len(entries)}건 (최신={entries[-1]['date'] if entries else '없음'})")
+        entries.sort(key=lambda x: x["date"])
+        print(f"  미재무부 entries: {len(entries)}건")
         if len(entries) >= 2:
             last, prev_e = entries[-1], entries[-2]
             for tenor in ("10Y", "2Y", "30Y"):
@@ -59,8 +66,6 @@ def fetch_us_rates():
                     print(f"  {tenor}: {c:.3f}% ({chg:+.1f}bps) [{last['date']}] [미재무부]")
             if rates.get("10Y"):
                 return rates
-        else:
-            print(f"  미재무부 XML 파싱 실패 — 응답: {resp.text[:600] if resp else 'N/A'}")
     except Exception as e:
         print(f"  미재무부 XML 오류: {e}")
 
@@ -149,6 +154,10 @@ _EVENT_KW = [
                    "fed chair","fed governor","fed president","fed official",
                    "monetary policy","통화정책","금리 인하 신중","금리 동결"],  "Fed/연준"),
     ("auction",   ["auction","입찰","국채 발행"],                             "국채 입찰"),
+    ("bond_demand",["buying treasur","buying bond","buying us bond",
+                    "blackrock","pimco","vanguard","buying debt",
+                    "strong auction","treasury rally","bond rally",
+                    "국채 매수","채권 매수","강세 마감","수요 강세"],          "국채 매수세"),
     ("cpi",       ["cpi","consumer price","inflation","인플레","물가"],       "물가/CPI"),
     ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
     ("gdp",       ["gdp","recession","경기침체","성장률"],                    "경제성장"),
@@ -199,18 +208,31 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return f"트럼프 무역·재정 정책{dollar_str} — 재정적자 확대 시 미 국채 공급 증가, 장기 시장금리 상승↑ 압력."
 
     elif cat == "fed":
-        if any(w in t for w in ["hike","raise","rais","increase","increas"]):
+        # 과거형/부정 먼저 체크 — "after latest rate hike", "may not have to hike", "no more hike" 등은
+        # 새로운 인상 결정이 아니라 과거 언급이므로 인상 결정으로 오판하지 않음
+        past_hike = any(p in t for p in ["after latest","after the hike","after rate hike","after recent",
+                                          "after last","following the hike","following rate"])
+        neg_hike  = any(p in t for p in ["not have to hike","no more hike","no hike","won't hike",
+                                          "not hike","not raise","may not","need not","needn't",
+                                          "don't need to","doesn't need"])
+
+        if not past_hike and not neg_hike and any(w in t for w in ["hike","raises rate","raised rate",
+                                                                     "votes to raise","voted to raise"]):
             return f"연준(Fed) 기준금리 인상{bp_str} 결정 — 미국 국채 단기물(2년) 시장금리 상승↑, 추가 인상 경로 주목."
-        elif any(w in t for w in ["cut","lower","reduc","decreas"]):
+        elif not past_hike and not neg_hike and any(w in t for w in ["cuts rate","cut rate",
+                                                                       "votes to cut","voted to cut",
+                                                                       "lower","reduc","decreas"]):
             return f"연준(Fed) 기준금리 인하{bp_str} 결정 — 미국 국채 단기물(2년) 시장금리 하락↓, 완화 사이클 본격화."
-        elif any(w in t for w in ["pause","hold","unchanged","maintain"]):
-            return "연준(Fed) 기준금리 동결 — 추가 인하 신중론 유지, 향후 경제 지표 의존 기조."
+        elif any(w in t for w in ["pause","hold","unchanged","maintain","wait-and-see","wait and see","관망"]):
+            return "연준(Fed) 기준금리 동결·관망 — 추가 인상·인하 모두 신중, 향후 경제 지표 의존 기조."
+        elif neg_hike or any(w in t for w in ["may not","not need","no need","no reason to hike"]):
+            return "연준(Fed) 위원 추가 인상 불필요 발언 — 기준금리 인상 종료 시사, 미국 국채 시장금리 하락↓ 요인."
         elif any(w in t for w in ["cautious","patient","gradual","no rush","not yet",
                                    "still high","too high","no hurry","신중","점진적","서두르지"]):
             return "연준(Fed) 위원 금리 인하 신중 발언 — 물가가 여전히 높다는 판단으로 기준금리 인하 속도 조절 시사. 미국 국채 시장금리 상방↑ 압력."
         elif any(w in t for w in ["hawkish","매파","aggressive","더 오래","higher for longer"]):
             return "연준(Fed) 위원 매파 발언 — 고금리 장기화 시사, 미국 국채 시장금리 상승↑ 압력."
-        elif any(w in t for w in ["dovish","비둘기","soon","near","임박","인하 기대"]):
+        elif any(w in t for w in ["dovish","비둘기","soon","near","임박","인하 기대","cut soon","cut next"]):
             return "연준(Fed) 위원 완화적 발언 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         else:
             return "연준(Fed) 위원 발언·통화정책 동향 — 기준금리 방향이 미국 국채 단기물 시장금리에 직접 영향."
@@ -242,6 +264,16 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return f"미국 {idx}{pct_str} 상승 — 연준 기준금리 인하 기대 후퇴, 미국 국채 시장금리 상승↑ 압력."
         else:
             return f"미국 {idx} 지표 발표 — 예상치 대비 결과에 따라 연준 기준금리 기대·시장금리 방향 결정."
+
+    elif cat == "bond_demand":
+        if any(w in t for w in ["blackrock","pimco","vanguard","institutional","fund","hedge"]):
+            who = "블랙록" if "blackrock" in t else ("핌코" if "pimco" in t else ("뱅가드" if "vanguard" in t else "기관"))
+            return (f"{who} 등 기관투자자의 강한 미국 국채 매수 수요 — "
+                    f"CPI·Fed 이슈로 금리가 급등한 후 저가 매수세 유입, 미국 국채 시장금리 상승분 반납·하락↓ 마감.")
+        elif any(w in t for w in ["rally","강세","매수","buying"]):
+            return "미국 국채 강한 매수세 유입 — 금리 급등 후 저가 매수 또는 안전자산 수요로 시장금리 하락↓ 마감."
+        else:
+            return "미국 국채 수요 동향 — 기관 매수 강도가 금리 방향 결정."
 
     elif cat == "auction":
         if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
@@ -292,6 +324,8 @@ _EVENT_IMPACT = {
                 "'금리 인하 시기' 및 '인플레 목표 달성' 표현에 주목.",
     "fed":      "연준 스탠스는 단기금리(2Y) 주도. 금리 인하 기대 후퇴 시 "
                 "단기물 중심 금리 상승↑, 장단기 스프레드 플래트닝 진행.",
+    "bond_demand": "CPI·Fed 이슈 등으로 미국 국채 시장금리가 급등한 후, 기관투자자(블랙록 등)의 저가 매수세 유입 → "
+                   "금리 상승분 일부 반납, 하락↓ 마감. '물가 충격에도 결국 국채가 피난처'라는 시장 판단 반영.",
     "auction":  "미 국채 입찰 수요 부진(낮은 bid-to-cover, 테일 발생) → 금리 상승↑. "
                 "강한 수요(외국인·연기금) → 금리 하락↓. 한국 시간 새벽에 결과 발표.",
     "cpi":      "물가 예상 상회 → 금리 인하 기대 후퇴 → 금리 상승↑. "
@@ -486,9 +520,12 @@ def fetch_bond_news_all():
         "https://news.google.com/rss/search?q=US+Treasury+yield+Fed+bond+buyback&hl=en&gl=US&ceid=US:en",
         "https://news.google.com/rss/search?q=Federal+Reserve+interest+rate+cautious+FOMC&hl=en&gl=US&ceid=US:en",
         "https://news.google.com/rss/search?q=Fed+rate+hike+cut+hold+2026&hl=en&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=US+CPI+inflation+consumer+price+index+Treasury&hl=en&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=Treasury+yield+reaction+CPI+buying+bonds&hl=en&gl=US&ceid=US:en",
     ]
     en_kw = ["treasury","yield","bond","fed","federal reserve","fomc","rate","powell","warsh",
-             "inflation","pce","cpi","buyback","auction","tariff","trump","cautious","gradual","patient"]
+             "inflation","pce","cpi","consumer price","buyback","auction","tariff","trump",
+             "cautious","gradual","patient","buying","rally","blackrock","pimco"]
     for url in en_sources:
         try:
             resp = requests.get(url, timeout=12, headers={"User-Agent": UA})
