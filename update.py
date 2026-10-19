@@ -90,10 +90,10 @@ def fetch_us_rates():
     if stooq_ok > 0 and rates.get("10Y"):
         return rates
 
-    # ── 3순위: yfinance ───────────────────────────────────────────────
+    # ── 3순위: yfinance (10Y·30Y만 — ^IRX는 13주T-bill이라 2Y 아님) ──
     try:
         import yfinance as yf
-        tickers = {"10Y": "^TNX", "30Y": "^TYX", "2Y": "^IRX"}
+        tickers = {"10Y": "^TNX", "30Y": "^TYX"}  # 2Y는 yfinance에 정확한 티커 없음
         for tenor, sym in tickers.items():
             hist = yf.Ticker(sym).history(period="5d", interval="1d", auto_adjust=False)
             closes = hist["Close"].dropna().tolist()
@@ -101,10 +101,6 @@ def fetch_us_rates():
                 curr = round(closes[-1], 3)
                 prev = round(closes[-2], 3)
                 chg  = round((curr - prev) * 100, 1)
-                if tenor == "2Y" and curr > 20:
-                    curr = round(curr / 10, 3)
-                    prev = round(prev / 10, 3)
-                    chg  = round((curr - prev) * 100, 1)
                 rate_date = str(hist.index[-1].date())
                 rates[tenor] = {"rate": curr, "chg_bps": chg, "date": rate_date}
                 print(f"  {tenor}: {curr:.3f}% ({chg:+.1f}bps) [{rate_date}] [yfinance]")
@@ -427,9 +423,50 @@ def fetch_oil_price() -> dict:
         return {}
 
 
+def _parse_infomax_article(article_url: str) -> dict:
+    """연합인포맥스 기사 본문에서 미국 금리·유가·배경 수치 추출.
+    반환: {"us_2y": float, "us_10y": float, "wti": float, "summary": str}
+    """
+    result = {}
+    try:
+        from bs4 import BeautifulSoup
+        resp = requests.get(article_url, timeout=10,
+                            headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"})
+        soup = BeautifulSoup(resp.text, "html.parser")
+        # 인포맥스 본문 선택자
+        body = (soup.select_one(".article-txt") or
+                soup.select_one(".view_text") or
+                soup.select_one("#articleBody") or
+                soup.select_one(".news_view"))
+        if not body:
+            return result
+        text = body.get_text(" ", strip=True)
+
+        # 미국 2년물 금리 (예: "2년물 4.74%", "2-year 4.74%")
+        m2 = re.search(r'(?:2년물|2-year|2Y)[^0-9]*(\d+\.\d+)%', text)
+        if m2: result["us_2y"] = float(m2.group(1))
+
+        # 미국 10년물 금리
+        m10 = re.search(r'(?:10년물|10-year|10Y)[^0-9]*(\d+\.\d+)%', text)
+        if m10: result["us_10y"] = float(m10.group(1))
+
+        # WTI 유가
+        mwti = re.search(r'WTI[^0-9]*(\d+\.\d+)', text)
+        if mwti: result["wti"] = float(mwti.group(1))
+
+        # 미국 금리 변화 방향 (배경 요약용)
+        if text:
+            result["body_text"] = text[:800]
+
+    except Exception as e:
+        print(f"  인포맥스 본문 파싱 오류: {e}")
+    return result
+
+
 def fetch_night_futures():
     """연합인포맥스 국채선물 야간 마감 기사 수집. 오늘 기사만 사용(24시간 이내).
-    반환: {"headline": str, "ticks": str, "direction": "up"/"down"/"flat", "driver": str} 또는 {}
+    반환: {"headline": str, "ticks": str, "direction": "up"/"down"/"flat",
+           "driver": str, "article": dict} 또는 {}
     """
     import xml.etree.ElementTree as ET
     from email.utils import parsedate_to_datetime
@@ -449,6 +486,7 @@ def fetch_night_futures():
             title  = m.group(1).strip() if m else raw
             source = m.group(2).strip() if m else ""
             pub    = it.findtext("pubDate", "")
+            link   = it.findtext("link", "") or it.findtext("guid", "")
             if "국채선물" not in title:
                 continue
             if not ("einfomax" in source.lower() or "인포맥스" in source or "kb" in source.lower()):
@@ -457,20 +495,19 @@ def fetch_night_futures():
                 dt = parsedate_to_datetime(pub) if pub else None
             except Exception:
                 dt = None
-            # 24시간 이내 기사만 사용
             if dt and (now_utc - dt).total_seconds() > 86400:
                 print(f"  건너뜀(오래됨): {title[:50]} ({pub})")
                 continue
-            candidates.append((dt, title))
+            candidates.append((dt, title, link))
 
         if not candidates:
             print("  → 오늘 야간선물 기사 없음")
             return {}
 
         candidates.sort(key=lambda x: x[0] if x[0] else 0, reverse=True)
-        _, headline = candidates[0]
+        _, headline, article_url = candidates[0]
 
-        # 틱수·방향 파싱 (예: "10년물 26틱↓", "3년물 13틱↑")
+        # 틱수·방향 파싱
         tick_m    = re.search(r'(\d+년물)\s+(\d+틱)(↑|↓)', headline)
         ticks     = ""
         direction = "flat"
@@ -478,12 +515,20 @@ def fetch_night_futures():
             ticks     = f"{tick_m.group(1)} {tick_m.group(2)}{tick_m.group(3)}"
             direction = "up" if tick_m.group(3) == "↑" else "down"
 
-        # 이유 파싱: "국채선물, [이유]…"
+        # 이유 파싱
         driver_m = re.match(r'국채선물,\s*(.+?)(?:…|\.\.\.)', headline)
         driver   = driver_m.group(1).strip() if driver_m else ""
 
+        # 기사 본문 파싱 (인포맥스 URL인 경우)
+        article_data = {}
+        if article_url and ("einfomax" in article_url or "yna.co.kr" in article_url):
+            article_data = _parse_infomax_article(article_url)
+            if article_data.get("us_2y"):
+                print(f"  본문 파싱 성공: 2Y={article_data.get('us_2y')} 10Y={article_data.get('us_10y')} WTI={article_data.get('wti')}")
+
         print(f"  → {headline[:70]}")
-        return {"headline": headline, "ticks": ticks, "direction": direction, "driver": driver}
+        return {"headline": headline, "ticks": ticks, "direction": direction,
+                "driver": driver, "article": article_data}
     except Exception as e:
         print(f"  야간선물 기사 오류: {e}")
         return {}
@@ -596,6 +641,19 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
     nf      = night_futures or {}
     oil_data = oil or {}
     oil_chg  = oil_data.get("chg", 0) or 0
+
+    # 기사 본문에서 미국 금리 수치 보완 (yfinance 2Y 오류 대체)
+    nf_article = nf.get("article", {})
+    if nf_article.get("us_2y") and (not rate_2 or abs(nf_article["us_2y"] - rate_2) > 0.3):
+        # 본문에서 추출한 2Y가 yfinance보다 0.3%이상 차이 → 본문 값이 더 정확
+        art_2y = nf_article["us_2y"]
+        chg_2  = round((art_2y - rate_2) * 100, 1) if rate_2 else 0  # 임시 delta
+        rate_2 = art_2y
+        us_rates = dict(us_rates)
+        us_rates["2Y"] = {"rate": art_2y, "chg_bps": chg_2, "date": us_rates.get("10Y", {}).get("date","")}
+        print(f"  2Y 보정: 본문 추출값 {art_2y}% 사용 (yfinance={chg_10}bp)")
+    if nf_article.get("wti") and not oil_data.get("price"):
+        oil_data = {"price": nf_article["wti"], "chg": 0}
 
     # ── 야간선물 파싱 ────────────────────────────────────────────────
     nf_direction = None
