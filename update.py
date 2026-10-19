@@ -729,21 +729,30 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         oil_dir = "↑" if oil_chg > 0 else ("↓" if oil_chg < 0 else "")
         line_us += f"  /  WTI ${oil_data['price']:.1f}({oil_chg:+.1f}달러{oil_dir})"
 
-    # ── 이슈·배경 (의미 있을 때만) ──────────────────────────────────
-    line_event = ""
+    # ── 이슈·배경 — 수집된 헤드라인 항상 표시, 분석 문장은 의미있는 날만 추가 ──
     line_impact = ""
 
+    # 수집된 헤드라인 항상 표시 (HTML)
+    headline_html_parts = []
+    for ev in top_events:
+        title  = ev.get("title", "")
+        source = ev.get("source", "")
+        label  = ev.get("label", "")
+        if title:
+            src_str   = (f' <span style="color:#94a3b8;font-size:.75rem">({_html.escape(source)})</span>'
+                         if source else "")
+            label_str = (f'<span style="color:#64748b;font-size:.72rem;margin-right:4px">[{_html.escape(label)}]</span>'
+                         if label else "")
+            headline_html_parts.append(f"• {label_str}{_html.escape(title)}{src_str}")
+
+    # 분석 문장 (의미 있는 날만)
+    narr_sents = []
     if is_significant:
-        # 배경 문장 구성
-        narr_sents = []
         for cat in active_cats[:3]:
             ev    = detected[cat]
             title = ev.get("title") or ""
-            lang  = ev.get("lang", "en")
             ctx   = _title_to_market_ctx(title, cat) if title else ""
-            if ctx and not _is_followup(title, lang):
-                narr_sents.append(ctx)
-            elif ctx:
+            if ctx:
                 narr_sents.append(ctx)
 
         # 모순 감지 (이벤트 방향 vs 실제 금리 방향)
@@ -762,13 +771,21 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
                     f"다만 실제 미국 국채 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위.")
                 narr_sents.append(contra)
 
-        line_event = "  ".join(narr_sents) if narr_sents else ""
+    # 분석 문장을 이탤릭으로 헤드라인 아래에 추가
+    all_event_parts = headline_html_parts[:]
+    if narr_sents:
+        narr_html = ('<span style="color:#475569;font-size:.8rem;font-style:italic">▶ '
+                     + "  ".join(_html.escape(s) for s in narr_sents) + '</span>')
+        all_event_parts.append(narr_html)
 
-        # 국내 채권시장·조달금리 영향
+    line_event = "<br>".join(all_event_parts) if all_event_parts else ""
+
+    # 국내 채권시장·조달금리 영향 (의미 있는 날만)
+    if is_significant:
         # 야간선물 방향이 있으면 우선, 없으면 US 10Y 기준
         effective_dir = nf_direction  # "up"=국채가격↑=금리↓, "down"=가격↓=금리↑
         if effective_dir is None:
-            if chg_10 >= 5:   effective_dir = "down"
+            if chg_10 >= 5:    effective_dir = "down"
             elif chg_10 <= -5: effective_dir = "up"
 
         if effective_dir == "down":   # 금리 상승
@@ -2123,9 +2140,9 @@ def market_news_section_html(us_rates, analysis):
     if line_night:
         body_rows += _row("야간선물", "#92400e", "#78350f",
                           _html.escape(line_night), extra=nf_sub)
-    # 이슈·배경 (의미 있는 변동일 때만)
-    if is_significant and line_event:
-        body_rows += _row("이슈·배경", "#334155", "#1e293b", _html.escape(line_event))
+    # 이슈·배경 (헤드라인 수집되면 항상 표시)
+    if line_event:
+        body_rows += _row("이슈·배경", "#334155", "#1e293b", line_event)  # already HTML
     # 국내 채권시장·조달금리 영향 (의미 있는 변동일 때만)
     has_impact_row = is_significant and line_impact
     if has_impact_row:
