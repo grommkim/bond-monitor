@@ -6370,5 +6370,32 @@
     "maturity_date": "2031-10-21",
     "rate": null,
     "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-21|2028-10-20|110000000000|kofia",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2026-10-21",
+    "maturity_date": "2028-10-20",
+    "rate": 4.22,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-21|2029-10-19|110000000000|kofia",
+    "category": "전력채",
+    "amount": 110000000000,
+    "issuance_date": "2026-10-21",
+    "maturity_date": "2029-10-19",
+    "rate": 4.27,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-10-21|2031-10-21|20000000000|kofia",
+    "category": "전력채",
+    "amount": 20000000000,
+    "issuance_date": "2026-10-21",
+    "maturity_date": "2031-10-21",
+    "rate": 4.41,
+    "source": "kofia"
   }
 ]
