@@ -231,7 +231,7 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif any(w in t for w in ["dovish","비둘기","soon","near","임박","인하 기대","cut soon","cut next"]):
             return "연준(Fed) 위원 완화적 발언 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         else:
-            return "연준(Fed) 위원 발언·통화정책 동향 — 기준금리 방향이 미국 국채 단기물 시장금리에 직접 영향."
+            return ""  # 원제목 그대로 표시
 
     elif cat == "warsh":
         if any(w in t for w in ["hike","hawkish","매파","more hike","추가 인상","aggressive"]):
@@ -259,7 +259,7 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif any(w in t for w in ["rise","up","high","hot","surge","jump"]):
             return f"미국 {idx}{pct_str} 상승 — 연준 기준금리 인하 기대 후퇴, 미국 국채 시장금리 상승↑ 압력."
         else:
-            return f"미국 {idx} 지표 발표 — 예상치 대비 결과에 따라 연준 기준금리 기대·시장금리 방향 결정."
+            return ""  # 원제목 그대로 표시
 
     elif cat == "bond_demand":
         if any(w in t for w in ["blackrock","pimco","vanguard","institutional","fund","hedge"]):
@@ -277,7 +277,7 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif any(w in t for w in ["strong","solid","robust","demand","well"]):
             return f"미국 국채{dollar_str} 입찰 호조 — 강한 수요(높은 bid-to-cover), 미국 국채 시장금리 하락↓ 요인."
         else:
-            return f"미국 국채{dollar_str} 입찰 결과 — 낙찰금리·수요 강도가 시장금리 방향 가름."
+            return ""
 
     elif cat == "jobs":
         if any(w in t for w in ["strong","beat","surge","rise","robust","add","jump"]):
@@ -285,7 +285,7 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif any(w in t for w in ["weak","fall","miss","slow","decline","lose","soft"]):
             return "미국 고용지표 부진 — 경기 둔화 우려로 연준 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓."
         else:
-            return "미국 고용지표 발표 — 경기 강도가 연준 기준금리 경로·시장금리 방향 결정."
+            return ""
 
     elif cat == "gdp":
         if any(w in t for w in ["recession","contraction","negative","shrink","weak"]):
@@ -293,7 +293,7 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif any(w in t for w in ["growth","beat","strong","expand","robust"]):
             return "미국 경제 성장 호조 — 채권 수요 약화, 미국 국채 시장금리 상승↑ 가능."
         else:
-            return "미국 GDP 지표 — 성장세 확인 시 시장금리 상승↑, 둔화 확인 시 하락↓."
+            return ""
 
     _fallback = {
         "buyback":  "미국 재무부 국채 바이백 — 장기물 공급 축소 효과, 미국 국채 장기 시장금리 하락↓ 요인.",
@@ -706,9 +706,13 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
     is_significant = sig_rate or sig_oil or sig_futures or has_major_event
 
     top_events = []
+    _seen_ev_titles = set()
     for cat, _, _ in _EVENT_KW:
         if cat in detected and len(top_events) < 3:
-            top_events.append(detected[cat])
+            ev_title = detected[cat].get("title", "")
+            if ev_title not in _seen_ev_titles:  # 같은 기사 중복 표시 방지
+                top_events.append(detected[cat])
+                _seen_ev_titles.add(ev_title)
     active_cats = [ev["cat"] for ev in top_events]
 
     # ── 핵심 수치 한 줄 (항상 표시) ─────────────────────────────────
@@ -729,56 +733,68 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         oil_dir = "↑" if oil_chg > 0 else ("↓" if oil_chg < 0 else "")
         line_us += f"  /  WTI ${oil_data['price']:.1f}({oil_chg:+.1f}달러{oil_dir})"
 
-    # ── 이슈·배경 — 수집된 헤드라인 항상 표시, 분석 문장은 의미있는 날만 추가 ──
+    # ── 이슈·배경 — 이벤트 설명 + 실제 시장 반응 수치 항상 표시 ──────
     line_impact = ""
 
-    # 수집된 헤드라인 항상 표시 (HTML)
-    headline_html_parts = []
+    # 미국채 실제 시장 반응 HTML (수치 포함)
+    react_parts = []
+    if rate_10:
+        dir10 = "↑" if chg_10 > 0 else ("↓" if chg_10 < 0 else "")
+        col10 = "#dc2626" if chg_10 > 0 else ("#2563eb" if chg_10 < 0 else "#64748b")
+        react_parts.append(f'<span style="color:{col10}">10년물 {rate_10:.3f}%({chg_10:+.1f}bp{dir10})</span>')
+    if rate_2:
+        dir2 = "↑" if chg_2 > 0 else ("↓" if chg_2 < 0 else "")
+        col2 = "#dc2626" if chg_2 > 0 else ("#2563eb" if chg_2 < 0 else "#64748b")
+        react_parts.append(f'<span style="color:{col2}">2년물 {rate_2:.3f}%({chg_2:+.1f}bp{dir2})</span>')
+    chg_30 = us_rates.get("30Y", {}).get("chg_bps") or 0
+    rate_30_val = us_rates.get("30Y", {}).get("rate")
+    if rate_30_val and not rate_10:  # 10Y 없을 때만 30Y 보여줌
+        dir30 = "↑" if chg_30 > 0 else ("↓" if chg_30 < 0 else "")
+        col30 = "#dc2626" if chg_30 > 0 else ("#2563eb" if chg_30 < 0 else "#64748b")
+        react_parts.append(f'<span style="color:{col30}">30년물 {rate_30_val:.3f}%({chg_30:+.1f}bp{dir30})</span>')
+    react_html = (" / ".join(react_parts)) if react_parts else ""
+
+    # 각 이벤트: [카테고리] 이벤트 설명 → 실제 시장 반응 수치
+    event_html_parts = []
     for ev in top_events:
         title  = ev.get("title", "")
         source = ev.get("source", "")
         label  = ev.get("label", "")
-        if title:
-            src_str   = (f' <span style="color:#94a3b8;font-size:.75rem">({_html.escape(source)})</span>'
-                         if source else "")
-            label_str = (f'<span style="color:#64748b;font-size:.72rem;margin-right:4px">[{_html.escape(label)}]</span>'
-                         if label else "")
-            headline_html_parts.append(f"• {label_str}{_html.escape(title)}{src_str}")
+        cat    = ev.get("cat", "")
+        if not title:
+            continue
+        # 이벤트 설명 (_title_to_market_ctx 사용, 없으면 원제목)
+        ctx = _title_to_market_ctx(title, cat) if title else ""
+        desc = ctx if ctx else title
+        src_str = (f' <span style="color:#94a3b8;font-size:.73rem">({_html.escape(source)})</span>'
+                   if source else "")
+        label_str = (f'<span style="font-weight:700;color:#334155;font-size:.72rem">[{_html.escape(label)}]</span> '
+                     if label else "")
+        react_line = ""
+        if react_html:
+            react_line = (f'<div style="font-size:.77rem;color:#64748b;margin-top:1px;padding-left:4px">'
+                          f'→ 미국채 시장 반응: {react_html}</div>')
+        event_html_parts.append(
+            f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+            f'{label_str}<span style="color:#1e293b">{_html.escape(desc)}</span>{src_str}'
+            f'{react_line}</div>'
+        )
 
-    # 분석 문장 (의미 있는 날만)
-    narr_sents = []
-    if is_significant:
-        for cat in active_cats[:3]:
-            ev    = detected[cat]
-            title = ev.get("title") or ""
-            ctx   = _title_to_market_ctx(title, cat) if title else ""
-            if ctx:
-                narr_sents.append(ctx)
+    # 모순 감지: 이벤트 방향 vs 실제 금리 방향 (체크만, 마지막에 추가)
+    if event_html_parts and active_cats:
+        first_ctx = _title_to_market_ctx(detected[active_cats[0]].get("title",""), active_cats[0])
+        exp_down = any(k in first_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
+        exp_up   = any(k in first_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
+        if exp_down and not exp_up and chg_10 >= 3:
+            contra = (f'<div style="font-size:.78rem;color:#92400e;font-style:italic;margin-top:4px">'
+                      f'⚠ 단, 실제 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응</div>')
+            event_html_parts.append(contra)
+        elif exp_up and not exp_down and chg_10 <= -3:
+            contra = (f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic;margin-top:4px">'
+                      f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
+            event_html_parts.append(contra)
 
-        # 모순 감지 (이벤트 방향 vs 실제 금리 방향)
-        if narr_sents and active_cats:
-            first_narr = narr_sents[0]
-            exp_down = any(k in first_narr for k in ["하락↓","하락 기대","인하","매수","편입"])
-            exp_up   = any(k in first_narr for k in ["상방↑","상승↑","매파","인상","공급 증가"])
-            if exp_down and not exp_up and chg_10 >= 3:
-                contra = _EVENT_CONTRADICT_DOWN_UP.get(
-                    active_cats[0],
-                    f"다만 실제 미국 국채 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응.")
-                narr_sents.append(contra)
-            elif exp_up and not exp_down and chg_10 <= -3:
-                contra = _EVENT_CONTRADICT_UP_DOWN.get(
-                    active_cats[0],
-                    f"다만 실제 미국 국채 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위.")
-                narr_sents.append(contra)
-
-    # 분석 문장을 이탤릭으로 헤드라인 아래에 추가
-    all_event_parts = headline_html_parts[:]
-    if narr_sents:
-        narr_html = ('<span style="color:#475569;font-size:.8rem;font-style:italic">▶ '
-                     + "  ".join(_html.escape(s) for s in narr_sents) + '</span>')
-        all_event_parts.append(narr_html)
-
-    line_event = "<br>".join(all_event_parts) if all_event_parts else ""
+    line_event = "".join(event_html_parts) if event_html_parts else ""
 
     # 국내 채권시장·조달금리 영향 (의미 있는 날만)
     if is_significant:

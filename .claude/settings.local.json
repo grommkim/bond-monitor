@@ -23,7 +23,8 @@
       "Bash(gh workflow *)",
       "Bash(gh run *)",
       "Bash(python *)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(git checkout *)"
     ]
   }
 }
