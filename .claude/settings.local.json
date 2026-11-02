@@ -20,7 +20,10 @@
       "Bash(git pull *)",
       "Bash(git stash *)",
       "Bash(git tag *)",
-      "Bash(gh workflow *)"
+      "Bash(gh workflow *)",
+      "Bash(gh run *)",
+      "Bash(python *)",
+      "Bash(grep -v \"^$\")"
     ]
   }
 }
