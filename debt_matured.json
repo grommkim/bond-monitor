@@ -4264,5 +4264,14 @@
     "maturity_date": "2026-10-30",
     "rate": null,
     "source": "excel"
+  },
+  {
+    "id": "전력채|2019-10-31|2026-10-31|100000000000|r782",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2019-10-31",
+    "maturity_date": "2026-10-31",
+    "rate": null,
+    "source": "excel"
   }
 ]
