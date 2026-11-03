@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>채권 시장 모니터 — 2026년 04월 29일</title>
+<title>채권 시장 모니터 — 2026년 11월 03일</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -11,8 +11,12 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
 a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}
-header{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-header h1{font-size:1.55rem;font-weight:700;letter-spacing:-.5px}
+.top-nav{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;border-bottom:2px solid rgba(255,255,255,.12)}
+.tab-bar{display:flex;gap:0;align-items:stretch}
+.tab-btn{background:transparent;border:none;border-bottom:4px solid transparent;color:rgba(255,255,255,.5);padding:18px 32px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;letter-spacing:-.2px}
+.tab-btn:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
+.tab-active{color:#fff!important;border-bottom-color:#60a5fa!important;background:rgba(255,255,255,.08)!important}
+.top-nav-meta{display:flex;align-items:center;padding:0 28px;font-size:.78rem;opacity:.6}
 .sub{font-size:.83rem;opacity:.75}
 main{max-width:1400px;margin:0 auto;padding:28px 20px}
 section{margin-bottom:40px}
@@ -45,56 +49,323 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 </style>
 </head>
 <body>
-<header>
-  <div><h1>📊 채권 시장 모니터</h1>
-  <div class="sub">국고채 · 한전채 민평금리 · 공사채 발행현황</div></div>
-  <div class="sub">기준일 <strong style="color:#fff">2026년 04월 29일</strong></div>
-</header>
+
+
+<div class="top-nav">
+  <div class="tab-bar">
+    <button class="tab-btn tab-active" id="tab-btn-1" onclick="switchTab(1)">📊 채권시장모니터링</button>
+    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">📋 재무처 주요통계</button>
+  </div>
+  <div class="top-nav-meta">2026년 11월 03일</div>
+</div>
+<div id="tab-panel-1">
 <main>
 
 <section>
   <h2>직전 영업일 금리 요약</h2>
   <div class="cards">
-<div class="card" style="border-top:3px solid #2563eb">
-  <div class="cn">국고채(3년) 민평</div>
-  <div class="cv" style="color:#2563eb">3.530<span class="pct">%</span></div>
-  <div class="cd">민평평균 · 2026-04-28 기준</div>
-</div>
 <div class="card" style="border-top:3px solid #f97316">
   <div class="cn">한전채(3년) 민평</div>
-  <div class="cv" style="color:#f97316">3.854<span class="pct">%</span></div>
-  <div class="cd">민평평균 · 2026-04-28 기준</div>
+  <div class="cv" style="color:#f97316">4.164<span class="pct">%</span></div>
+  <div class="cd">민평평균 · 2026-11-02 기준</div>
+</div>
+<div class="card" style="border-top:3px solid #2563eb">
+  <div class="cn">국고채(3년) 민평</div>
+  <div class="cv" style="color:#2563eb">3.740<span class="pct">%</span></div>
+  <div class="cd">민평평균 · 2026-11-02 기준</div>
 </div>
 <div class="card" style="border-top:3px solid #0d9488">
   <div class="cn">스프레드(한전-국고)</div>
-  <div class="cv" style="color:#0d9488">0.324<span class="pct">%p</span></div>
-  <div class="cd">민평평균 · 2026-04-28 기준</div>
+  <div class="cv" style="color:#0d9488">0.424<span class="pct">%p</span></div>
+  <div class="cd">민평평균 · 2026-11-02 기준</div>
 </div></div>
 </section>
 
 
 <section>
-  <h2 style="border-left-color:#f97316">🔔 발행현황 (2026년 04월 28일)</h2>
-  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">⏰ 금일 발행 데이터는 <strong>오후 3시</strong> 업데이트 예정 · 현재 전일(04/28일) 기준</p>
+  <h2 style="border-left-color:#6366f1">차입금 현황</h2>
+  <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">⏰ 전일 현황 기준 · 당일 발행 반영은 오후 4시 업데이트 예정</p>
+  <div class="table-wrap" style="max-width:800px">
+    <table>
+      <thead>
+        <tr style="background:#0f2a4a;color:#fff">
+          <th>구분</th>
+          <th style="text-align:right;background:#1a3a5c">계획(한도)</th>
+          <th style="text-align:right;background:#1a3a5c">차입(올해)</th>
+          <th style="text-align:right">상환(올해)</th>
+          <th style="text-align:right">잔액</th>
+          <th style="text-align:right">전일비</th>
+        </tr>
+      </thead>
+      <tbody><tr style="background:#eef2ff"><td colspan="6" style="font-weight:700;color:#3730a3;font-size:.82rem;padding:7px 12px">📌 사채 (전력채 · 단기사채 · 외화채권)</td></tr><tr><td style="padding-left:18px;color:#475569">전력채</td><td style="text-align:right;white-space:nowrap">13.70조원</td><td style="text-align:right;white-space:nowrap">15.21조원</td><td style="text-align:right;white-space:nowrap">8.72조원</td><td style="text-align:right;white-space:nowrap">60.07조원</td><td style="color:#2563eb;font-weight:600;text-align:right;white-space:nowrap">-0.10조</td></tr><tr><td style="padding-left:18px;color:#475569">단기사채</td><td style="background:#1a3a5c10;color:#94a3b8;text-align:right">–</td><td style="text-align:right;white-space:nowrap" style="background:#1a3a5c10;font-size:.84rem;white-space:nowrap">순감 1.16조</td><td style="text-align:right;color:#94a3b8">–</td><td style="text-align:right;white-space:nowrap">4.41조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr><td style="padding-left:18px;color:#475569">외화채권</td><td style="text-align:right;white-space:nowrap">2.70조원</td><td style="text-align:right;white-space:nowrap">1.57조원</td><td style="text-align:right;white-space:nowrap">1.63조원</td><td style="text-align:right;white-space:nowrap">6.84조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f1f5f9;font-weight:700"><td>사채 소계</td><td style="text-align:right;white-space:nowrap">16.40조원</td><td style="text-align:right;white-space:nowrap">20.13조원</td><td style="text-align:right;white-space:nowrap">25.63조원</td><td style="text-align:right;white-space:nowrap">71.32조원</td><td style="color:#2563eb;font-weight:600;text-align:right;white-space:nowrap">-0.10조</td></tr><tr style="background:#f0fdf4"><td colspan="6" style="font-weight:700;color:#166534;font-size:.82rem;padding:7px 12px">📌 사채외 (중장기기업어음 · 은행차입 · 기타)</td></tr><tr><td style="padding-left:18px;color:#475569">중장기기업어음</td><td style="text-align:right;white-space:nowrap">2.00조원</td><td style="text-align:right;white-space:nowrap">1.80조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8">–</td><td style="text-align:right;white-space:nowrap">9.95조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr><td style="padding-left:18px;color:#475569">은행차입</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">3.40조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">3.40조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#f1f5f9;font-weight:700"><td>사채외 소계</td><td style="text-align:right;white-space:nowrap">4.60조원</td><td style="text-align:right;white-space:nowrap">5.20조원</td><td style="text-align:right;white-space:nowrap">2.60조원</td><td style="text-align:right;white-space:nowrap">13.36조원</td><td style="text-align:right;white-space:nowrap" style="color:#94a3b8;text-align:right">–</td></tr><tr style="background:#0f2a4a;color:#fff"><td style="font-weight:700">총 차입금</td><td style="font-weight:700;text-align:right;white-space:nowrap">21.00조원</td><td style="font-weight:700;text-align:right;white-space:nowrap">25.33조원</td><td style="font-weight:700;text-align:right;white-space:nowrap">28.23조원</td><td style="font-weight:700;font-size:1rem;text-align:right;white-space:nowrap">84.68조원</td><td style="color:#93c5fd;font-weight:600;text-align:right;white-space:nowrap">-0.10조</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+
+<section>
+  <h2 style="border-left-color:#0d9488">금융시장 동향</h2>
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0 14px;margin-bottom:12px"><div style="padding:9px 0 7px;border-bottom:1px solid #f1f5f9;font-size:.8rem;color:#64748b">📊 미국 국채금리(전일 종가) &nbsp; <span style="font-size:.78rem;color:#64748b">10Y</span> <strong style="color:#2563eb">4.894%</strong><span style="color:#2563eb;font-size:.75rem"> ▼3.5bp</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span style="font-size:.78rem;color:#64748b">30Y</span> <strong style="color:#2563eb">5.269%</strong><span style="color:#2563eb;font-size:.75rem"> ▼4.0bp</span></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#0369a1;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">미국국채</span><div style="font-size:.84rem;color:#0c4a6e;line-height:1.6">미국 국채금리 10년물 4.894%(-3.5bp) | 30년물 5.269%(-4.0bp)  (11/02 종가)  /  WTI $96.5(-7.6달러↓)</div></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#92400e;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">야간선물</span><div style="font-size:.84rem;color:#78350f;line-height:1.6">야간 국채선물: 10년물 28틱↑(약 3.4bp) 금리 하락↓ — 유가 7%대 급락에 상승.<div style="font-size:.76rem;color:#2563eb;margin-top:2px;font-style:italic">국채선물, 유가 7%대 급락에 상승…10년물 28틱↑</div></div></div><div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#334155;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">이슈·배경</span><div style="font-size:.84rem;color:#1e293b;line-height:1.6"><div style="margin-bottom:5px"><span style="font-weight:700;color:#334155;font-size:.72rem">[워시 발언]</span> <span style="color:#1e293b">Fed Chair Kevin Warsh is actually managing U.S. debt costs not inflation, economist says, as interest rates threaten to top GDP growth soon</span> <span style="color:#94a3b8;font-size:.73rem">(Yahoo Finance)</span></div><div style="font-size:.78rem;color:#475569;margin-top:5px;padding-top:5px;border-top:1px solid #e2e8f0">→ 미국채 시장 반응: <span style="color:#2563eb">10년물 4.894%(-3.5bp↓)</span></div></div></div><div style="display:flex;gap:8px;padding:9px 0;align-items:flex-start"><span style="font-size:.7rem;font-weight:700;color:#fff;background:#475569;border-radius:3px;padding:1px 6px;white-space:nowrap;margin-top:2px">국내 영향</span><div style="font-size:.84rem;color:#1e293b;line-height:1.6">국내 채권시장: 장기물 금리 하락↓ 압력 강함 — 국고채 10년물 동반 하락 예상, 한전채·공기업채 조달금리 개선 기대.</div></div></div>
+  
+</section>
+
+
+<section>
+  <h2 style="border-left-color:#f97316">채권 발행현황</h2>
+  
   <div class="today-grid">
     <div>
       <h3 class="sub-h3" style="color:#f97316">⚡ 한국전력공사</h3>
-      <div class="table-wrap"><table><thead><tr><th>발행일</th><th>발행기관</th><th>종목명</th><th>만기</th><th>발행금액</th><th>발행금리</th><th>전일 민평</th><th>발행-민평</th></tr></thead><tbody><tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1571</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.65%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.642%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.008%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1572</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.84%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.826%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.014%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1573</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">900억원</td><td class="rate" style="white-space:nowrap">3.98%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.959%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.021%p</span></td></tr></tbody></table></div>
+      <p style="color:#94a3b8;font-size:.87rem;padding:14px 0">발행 없음</p>
     </div>
     <div>
       <h3 class="sub-h3" style="color:#2563eb">🏛 타기관 공사채</h3>
-      <div class="table-wrap"><table><thead><tr><th>발행일</th><th>발행기관</th><th>종목명</th><th>만기</th><th>발행금액</th><th>발행금리</th><th>전일 민평</th><th>발행-민평</th></tr></thead><tbody><tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국자산관리공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국자산관리공사채권제149회 (사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">2,000억원</td><td class="rate" style="white-space:nowrap">3.73%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.762%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.032%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1004</td><td style="white-space:nowrap"><span class="badge badge-10y">10년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">4.03%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.030%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#94a3b8">0.000%p</span></td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>발행일</th><th>발행기관</th><th>종목명</th><th>만기</th><th>발행금액</th><th>발행금리</th><th>전일 민평</th><th>발행-민평</th></tr></thead><tbody><tr><td style="white-space:nowrap">2026-11-03</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 312(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">4.01%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.013%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(11/02)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.003%p</span></td></tr></tbody></table></div>
     </div>
   </div>
 </section>
 
+
 <section>
-  <h2>국고채 3년 · 한전채 3년 · 스프레드 추이 (최근 약 4주, 민평 기준)</h2>
+  <h2 style="border-left-color:#7c3aed">채권 발행 통계</h2>
+  <div style="margin-bottom:14px">
+    <button onclick="showStat('2026')" id="btn_2026"
+      style="margin-right:8px;padding:6px 18px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.83rem;cursor:pointer;font-weight:600">올해(2026)</button>
+    <button onclick="showStat('2025')" id="btn_2025"
+      style="padding:6px 18px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.83rem;cursor:pointer;font-weight:600">작년(2025)</button>
+  </div>
+  <div id="stat_2026" class="stat-panel">
+<p style="font-size:.8rem;color:#64748b;margin-bottom:12px">2026년 (11/03 기준)</p>
+
+<div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;max-width:544px">
+  <div>
+    <div style="font-size:.78rem;color:#ea580c;font-weight:600;margin-bottom:4px">⚡ 전력채 연간 발행액</div>
+    <div style="font-size:2.2rem;font-weight:700;color:#c2410c">15.59조</div>
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="font-size:.72rem;color:#92400e">특수채 내 비중</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">16.3%</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:.72rem;color:#92400e">전체 채권 내 비중</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">3.0%</div>
+    </div>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:220px 300px;gap:24px;align-items:center;flex-wrap:wrap">
+  <div><canvas id="statChart_2026" style="max-height:220px"></canvas></div>
+  <div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">⚡ 전력채</span>
+    <span style="font-weight:600;color:#f97316">15.59조 <span style="font-weight:400;color:#94a3b8">(2%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#f97316;width:2%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">특수채(전력채 외)</span>
+    <span style="font-weight:600;color:#a78bfa">79.85조 <span style="font-weight:400;color:#94a3b8">(15%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#a78bfa;width:15%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">국채</span>
+    <span style="font-weight:600;color:#3b82f6">144.15조 <span style="font-weight:400;color:#94a3b8">(27%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#3b82f6;width:27%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">기타(금융채·회사채 등)</span>
+    <span style="font-weight:600;color:#94a3b8">284.49조 <span style="font-weight:400;color:#94a3b8">(54%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#94a3b8;width:54%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div></div>
+</div>
+
+<script>
+(function(){
+  var ctx=document.getElementById('statChart_2026').getContext('2d');
+  var totalLabel='524.09조';
+  new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['전력채','특수채(전력채외)','국채','기타'],
+      datasets:[{
+        data:[15.59,79.85,144.15,284.49],
+        backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
+        borderWidth:2,borderColor:'#fff',
+        hoverOffset:8
+      }]
+    },
+    options:{
+      cutout:'62%',
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11},padding:10}},
+        tooltip:{callbacks:{label:function(c){return c.label+': '+c.parsed.toFixed(2)+'조원'}}},
+        beforeDraw:undefined
+      }
+    },
+    plugins:[{
+      id:'centerText',
+      beforeDraw:function(chart){
+        var ca=chart.chartArea,ctx=chart.ctx;
+        var cx=(ca.left+ca.right)/2,cy=(ca.top+ca.bottom)/2;
+        ctx.restore();
+        ctx.font='bold 12px Noto Sans KR,sans-serif';
+        ctx.textBaseline='middle';
+        ctx.textAlign='center';
+        ctx.fillStyle='#64748b';
+        ctx.fillText('전체', cx, cy-10);
+        ctx.font='bold 14px Noto Sans KR,sans-serif';
+        ctx.fillStyle='#0f2a4a';
+        ctx.fillText(totalLabel, cx, cy+10);
+        ctx.save();
+      }
+    }]
+  });
+})();
+</script>
+</div>
+  <div id="stat_2025" class="stat-panel">
+<p style="font-size:.8rem;color:#64748b;margin-bottom:12px">2025년 (연간)</p>
+
+<div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #f97316;border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;max-width:544px">
+  <div>
+    <div style="font-size:.78rem;color:#ea580c;font-weight:600;margin-bottom:4px">⚡ 전력채 연간 발행액</div>
+    <div style="font-size:2.2rem;font-weight:700;color:#c2410c">14.49조</div>
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="font-size:.72rem;color:#92400e">특수채 내 비중</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">16.9%</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:.72rem;color:#92400e">전체 채권 내 비중</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#f97316">3.0%</div>
+    </div>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:220px 300px;gap:24px;align-items:center;flex-wrap:wrap">
+  <div><canvas id="statChart_2025" style="max-height:220px"></canvas></div>
+  <div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">⚡ 전력채</span>
+    <span style="font-weight:600;color:#f97316">14.49조 <span style="font-weight:400;color:#94a3b8">(3%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#f97316;width:3%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">특수채(전력채 외)</span>
+    <span style="font-weight:600;color:#a78bfa">71.14조 <span style="font-weight:400;color:#94a3b8">(14%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#a78bfa;width:14%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">국채</span>
+    <span style="font-weight:600;color:#3b82f6">209.76조 <span style="font-weight:400;color:#94a3b8">(44%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#3b82f6;width:44%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div>
+<div style="margin-bottom:10px">
+  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px">
+    <span style="color:#475569">기타(금융채·회사채 등)</span>
+    <span style="font-weight:600;color:#94a3b8">180.14조 <span style="font-weight:400;color:#94a3b8">(37%)</span></span>
+  </div>
+  <div style="background:#e2e8f0;border-radius:4px;height:10px">
+    <div style="background:#94a3b8;width:37%;height:10px;border-radius:4px;transition:width .4s"></div>
+  </div>
+</div></div>
+</div>
+
+<script>
+(function(){
+  var ctx=document.getElementById('statChart_2025').getContext('2d');
+  var totalLabel='475.53조';
+  new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['전력채','특수채(전력채외)','국채','기타'],
+      datasets:[{
+        data:[14.49,71.14,209.76,180.14],
+        backgroundColor:['#f97316','#a78bfa','#3b82f6','#cbd5e1'],
+        borderWidth:2,borderColor:'#fff',
+        hoverOffset:8
+      }]
+    },
+    options:{
+      cutout:'62%',
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11},padding:10}},
+        tooltip:{callbacks:{label:function(c){return c.label+': '+c.parsed.toFixed(2)+'조원'}}},
+        beforeDraw:undefined
+      }
+    },
+    plugins:[{
+      id:'centerText',
+      beforeDraw:function(chart){
+        var ca=chart.chartArea,ctx=chart.ctx;
+        var cx=(ca.left+ca.right)/2,cy=(ca.top+ca.bottom)/2;
+        ctx.restore();
+        ctx.font='bold 12px Noto Sans KR,sans-serif';
+        ctx.textBaseline='middle';
+        ctx.textAlign='center';
+        ctx.fillStyle='#64748b';
+        ctx.fillText('전체', cx, cy-10);
+        ctx.font='bold 14px Noto Sans KR,sans-serif';
+        ctx.fillStyle='#0f2a4a';
+        ctx.fillText(totalLabel, cx, cy+10);
+        ctx.save();
+      }
+    }]
+  });
+})();
+</script>
+</div>
+</section>
+<script>
+function showStat(yr){
+  ['2026','2025'].forEach(function(y){
+    document.getElementById('stat_'+y).style.display = y===yr?'block':'none';
+    var btn=document.getElementById('btn_'+y);
+    if(y===yr){btn.style.background='#2563eb';btn.style.color='#fff';btn.style.borderColor='#2563eb';}
+    else{btn.style.background='#fff';btn.style.color='#64748b';btn.style.borderColor='#cbd5e1';}
+  });
+}
+showStat('2026');
+</script>
+
+<section>
+  <h2>국고채 3년 · 한전채 3년 · 스프레드 추이 (민평 기준)</h2>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <span style="font-size:.78rem;color:#64748b;font-weight:500">기간</span>
+    <button id="btnYtd" onclick="setRange(0)"
+      style="padding:5px 16px;border-radius:20px;border:2px solid #2563eb;background:#2563eb;color:#fff;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s">연초부터</button>
+    <button id="btn4w" onclick="setRange(20)"
+      style="padding:5px 16px;border-radius:20px;border:2px solid #cbd5e1;background:#fff;color:#64748b;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s">최근 4주</button>
+  </div>
   <div class="chart-box">
-    <canvas id="yieldChart" style="max-height:430px"></canvas>
+    <canvas id="yieldChart" style="max-height:440px"></canvas>
   </div>
   <div class="note">
     📌 KOFIA 채권평가 <strong>3사 평균</strong>(나이스피앤아이·한국자산평가·KIS자산평가) 기준 · 영업일만 표시 ·
@@ -107,25 +378,29 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
   <div class="table-wrap">
     <table>
       <thead><tr><th>발행일</th><th>발행기관</th><th>종목명</th><th>만기</th><th>발행금액</th><th>발행금리</th><th>전일 민평</th><th>발행-민평</th></tr></thead>
-      <tbody><tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1571</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.65%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.642%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.008%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1572</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.84%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.826%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.014%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국자산관리공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국자산관리공사채권제149회 (사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">2,000억원</td><td class="rate" style="white-space:nowrap">3.73%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.762%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.032%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1573</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">900억원</td><td class="rate" style="white-space:nowrap">3.98%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.959%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.021%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-28</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1004</td><td style="white-space:nowrap"><span class="badge badge-10y">10년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">4.03%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.030%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/27)</span></td><td style="white-space:nowrap"><span style="color:#94a3b8">0.000%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-27</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사559</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">3.63%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.645%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/24)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.015%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-27</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 274(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">600억원</td><td class="rate" style="white-space:nowrap">3.70%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.750%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/24)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.050%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-27</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사560</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.80%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.826%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/24)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.026%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-24</td><td><strong>한국농어촌공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국농어촌공사 29</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">3.77%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.784%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/23)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.014%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-22</td><td><strong>국가철도공단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">국가철도공단채권446</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">3.50%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.512%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/21)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.012%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-22</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1002</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">3.64%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.665%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/21)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.025%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-22</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1003</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">400억원</td><td class="rate" style="white-space:nowrap">3.76%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.771%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/21)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.011%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-21</td><td><strong>한국장학재단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국장학재단26-10(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">700억원</td><td class="rate" style="white-space:nowrap">3.39%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.396%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/20)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.006%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-21</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1568</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,500억원</td><td class="rate" style="white-space:nowrap">3.52%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.530%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/20)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.010%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-21</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1569</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,600억원</td><td class="rate" style="white-space:nowrap">3.70%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.706%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/20)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.006%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-21</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1570</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">3.86%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.857%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/20)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.003%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-20</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 273(변)(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">6개월</span></td><td style="white-space:nowrap">1,500억원</td><td class="rate" style="white-space:nowrap">2.83%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">2.816%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/17)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.014%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-17</td><td><strong>인천국제공항공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">인천국제공항공사211</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">2,000억원</td><td class="rate" style="white-space:nowrap">3.68%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.699%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/16)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.019%p</span></td></tr>
-<tr><td style="white-space:nowrap">2026-04-17</td><td><strong>한국수자원공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국수자원공사 296</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,300억원</td><td class="rate" style="white-space:nowrap">3.66%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.677%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(04/16)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.017%p</span></td></tr></tbody>
+      <tbody><tr><td style="white-space:nowrap">2026-11-03</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 312(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">4.01%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.013%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(11/02)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.003%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-30</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 311(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">1년</span></td><td style="white-space:nowrap">1,200억원</td><td class="rate" style="white-space:nowrap">3.94%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.958%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/29)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.018%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사579</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">4.22%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.203%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.017%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사580</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">1,200억원</td><td class="rate" style="white-space:nowrap">4.37%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.295%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.075%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국농어촌공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국농어촌공사31</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">4.23%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.185%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.045%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국장학재단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국장학재단26-34(사)</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">3.98%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">3.983%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.003%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국장학재단</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국장학재단26-33(사)</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.20%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.216%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#2563eb;font-weight:600">-0.016%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1640</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">800억원</td><td class="rate" style="white-space:nowrap">4.16%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.154%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.006%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1641</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,200억원</td><td class="rate" style="white-space:nowrap">4.24%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.226%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.014%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-29</td><td><strong>한국전력공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국전력공사채권1642</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">400억원</td><td class="rate" style="white-space:nowrap">4.34%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.326%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/28)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.014%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-28</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1030</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">800억원</td><td class="rate" style="white-space:nowrap">4.07%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.049%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.021%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-28</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1031</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">1,500억원</td><td class="rate" style="white-space:nowrap">4.27%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.204%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/27)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.066%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-28</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1032</td><td style="white-space:nowrap"><span class="badge badge-10y">29년11개월</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">4.41%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-28</td><td><strong>한국자산관리공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국자산관리공사채권제173회 (사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,100억원</td><td class="rate" style="white-space:nowrap">4.09%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.090%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/27)</span></td><td style="white-space:nowrap"><span style="color:#94a3b8">0.000%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-27</td><td><strong>인천국제공항공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">인천국제공항공사 216</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">2,000억원</td><td class="rate" style="white-space:nowrap">4.33%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.269%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/26)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.061%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-27</td><td><strong>한국수자원공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국수자원공사 301</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.10%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.076%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/26)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.024%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-27</td><td><strong>한국수자원공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국수자원공사302</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">400억원</td><td class="rate" style="white-space:nowrap">4.18%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.156%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/26)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.024%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-26</td><td><strong>한국주택금융공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국주택금융공사 310(사)</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">3,100억원</td><td class="rate" style="white-space:nowrap">4.14%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.131%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/23)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.009%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-22</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사577</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">1,400억원</td><td class="rate" style="white-space:nowrap">4.25%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.203%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.047%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-22</td><td><strong>한국가스공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국가스공사578</td><td style="white-space:nowrap"><span class="badge badge-5y">5년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.39%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.294%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.096%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-22</td><td><strong>한국도로공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국도로공사고속도로건설채권1029</td><td style="white-space:nowrap"><span class="badge badge-10y">29년11개월</span></td><td style="white-space:nowrap">1,000억원</td><td class="rate" style="white-space:nowrap">4.50%</td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td><td style="white-space:nowrap"><span style="color:#cbd5e1">–</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-22</td><td><strong>한국수자원공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국수자원공사299</td><td style="white-space:nowrap"><span class="badge badge-10y">2년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.14%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.081%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.059%p</span></td></tr>
+<tr><td style="white-space:nowrap">2026-10-22</td><td><strong>한국수자원공사</strong></td><td style="font-size:.81rem;color:#64748b;white-space:nowrap">한국수자원공사300</td><td style="white-space:nowrap"><span class="badge badge-3y">3년</span></td><td style="white-space:nowrap">500억원</td><td class="rate" style="white-space:nowrap">4.21%</td><td style="white-space:nowrap"><span style="color:#0d9488;font-weight:600">4.171%</span><span style="font-size:.72rem;color:#94a3b8;margin-left:3px">(10/21)</span></td><td style="white-space:nowrap"><span style="color:#dc2626;font-weight:600">+0.039%p</span></td></tr></tbody>
     </table>
   </div>
   <div class="note">
@@ -135,30 +410,434 @@ footer{text-align:center;padding:22px;font-size:.78rem;color:#94a3b8;line-height
 </section>
 
 </main>
+</div>
+<div id="tab-panel-2" style="display:none">
+
+<style>
+/* ── 재무처 탭 전용 스타일 ───────────────────────────── */
+.fs-hero{background:linear-gradient(135deg,#0f2a4a 0%,#1e40af 60%,#1d4ed8 100%);padding:28px 32px 22px;color:#fff;position:relative;overflow:hidden}
+.fs-hero::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%}
+.fs-hero-title{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;line-height:1.2}
+.fs-hero-sub{font-size:.8rem;opacity:.6;margin-top:6px}
+.fs-hero-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.fs-hero-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:600;backdrop-filter:blur(4px)}
+.fs-wrap{padding:20px 24px}
+.fs-section-block{margin-bottom:28px}
+.fs-section-title{font-size:.9rem;font-weight:800;color:#0f2a4a;padding:0 0 12px 14px;border-left:5px solid #2563eb;margin-bottom:14px;letter-spacing:-.2px}
+.fs-lr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fs-col{border-radius:14px;padding:16px;overflow:hidden}
+.fs-col-c{background:linear-gradient(145deg,#eff6ff,#dbeafe)}
+.fs-col-b{background:linear-gradient(145deg,#f8fafc,#f1f5f9)}
+.fs-col-hd{font-size:.78rem;font-weight:800;letter-spacing:.8px;padding:7px 14px;border-radius:8px;margin-bottom:12px;display:inline-block}
+.fs-col-hd-c{background:linear-gradient(90deg,#1d4ed8,#3b82f6);color:#fff}
+.fs-col-hd-b{background:linear-gradient(90deg,#334155,#64748b);color:#fff}
+.fs-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fs-card{background:#fff;border-radius:10px;padding:13px 12px;box-shadow:0 2px 8px rgba(15,42,74,.1);border-top:3px solid #2563eb;transition:transform .12s,box-shadow .12s}
+.fs-col-b .fs-card{border-top-color:#64748b}
+.fs-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(15,42,74,.14)}
+.fs-card-label{font-size:.68rem;font-weight:600;color:#64748b;margin-bottom:5px;letter-spacing:.2px}
+.fs-card-val{font-size:1.35rem;font-weight:800;color:#0f2a4a;line-height:1.1}
+.fs-card-unit{font-size:.68rem;color:#94a3b8;font-weight:400;margin-left:3px}
+.fs-card-yoy{margin-top:5px;min-height:16px}
+.fs-yoy{font-size:.72rem;font-weight:700;padding:2px 6px;border-radius:4px}
+.fs-yoy-green{color:#15803d;background:#dcfce7}
+.fs-yoy-red{color:#dc2626;background:#fee2e2}
+.fs-yoy-blue{color:#1d4ed8;background:#dbeafe}
+.fs-yoy-flat{color:#94a3b8;background:transparent}
+.fs-flow-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.fs-flow-card{background:#fff;border-radius:12px;padding:16px 12px;box-shadow:0 2px 8px rgba(15,42,74,.08);text-align:center;border-bottom:3px solid #e2e8f0}
+.fs-flow-card-hl{border-bottom-color:#1d4ed8;background:linear-gradient(145deg,#eff6ff,#fff)}
+.fs-flow-label{font-size:.7rem;color:#64748b;font-weight:600;margin-bottom:8px;letter-spacing:.2px}
+.fs-flow-val{font-size:1.25rem;font-weight:800;color:#0f2a4a}
+.fs-flow-card-hl .fs-flow-val{color:#1d4ed8}
+.fs-flow-unit{font-size:.72rem;color:#94a3b8;font-weight:400;margin-left:3px}
+.fs-chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+/* 모바일 */
+@media(max-width:900px){
+  .fs-lr{grid-template-columns:1fr}
+  .fs-hero{padding:20px 20px 16px}
+  .fs-wrap{padding:16px}
+}
+@media(max-width:600px){
+  .fs-kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .fs-flow-grid{grid-template-columns:repeat(3,1fr)}
+  .fs-chart-grid{grid-template-columns:1fr}
+  .fs-hero-title{font-size:1.2rem}
+  .fs-card-val{font-size:1.15rem}
+  .fs-wrap{padding:12px}
+  .fs-col{padding:12px}
+}
+</style>
+
+<div class="fs-hero">
+  <div class="fs-hero-title">'26 상반기 주요 재무통계</div>
+  <div class="fs-hero-sub">기준일 2026.6.30. · 단위 조원 · %</div>
+  <div class="fs-hero-badges">
+    <span class="fs-hero-badge">연결 기준</span>
+    <span class="fs-hero-badge">별도 기준</span>
+    <span class="fs-hero-badge">한국전력공사</span>
+  </div>
+</div>
+
+<div class="fs-wrap">
+  <div class="fs-section-block">
+  <div class="fs-section-title">📈 손익지표</div>
+  <div class="fs-lr">
+    <div class="fs-col fs-col-c">
+      <div class="fs-col-hd fs-col-hd-c">연결</div>
+      <div class="fs-kpi-grid"><div class="fs-card">
+  <div class="fs-card-label">매출액</div>
+  <div class="fs-card-val">46.3<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">영업이익</div>
+  <div class="fs-card-val">4.9<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">순이익</div>
+  <div class="fs-card-val">2.8<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">영업이익률</div>
+  <div class="fs-card-val">10.60<span class="fs-card-unit">%</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">이자비용</div>
+  <div class="fs-card-val">2.1<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">순이익률</div>
+  <div class="fs-card-val">6.00<span class="fs-card-unit">%</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div></div>
+    </div>
+    <div class="fs-col fs-col-b">
+      <div class="fs-col-hd fs-col-hd-b">별도</div>
+      <div class="fs-kpi-grid"><div class="fs-card">
+  <div class="fs-card-label">매출액</div>
+  <div class="fs-card-val">45.0<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">영업이익</div>
+  <div class="fs-card-val">2.1<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">순이익</div>
+  <div class="fs-card-val">2.9<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">영업이익률</div>
+  <div class="fs-card-val">4.70<span class="fs-card-unit">%</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">이자비용</div>
+  <div class="fs-card-val">1.2<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">순이익률</div>
+  <div class="fs-card-val">6.40<span class="fs-card-unit">%</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div></div>
+    </div>
+  </div>
+</div>
+  <div class="fs-section-block">
+  <div class="fs-section-title">🏦 재무지표</div>
+  <div class="fs-lr">
+    <div class="fs-col fs-col-c">
+      <div class="fs-col-hd fs-col-hd-c">연결</div>
+      <div class="fs-kpi-grid"><div class="fs-card">
+  <div class="fs-card-label">총자산</div>
+  <div class="fs-card-val">262.6<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">총부채</div>
+  <div class="fs-card-val">210.7<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">자기자본</div>
+  <div class="fs-card-val">51.8<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">부채비율</div>
+  <div class="fs-card-val">406.4<span class="fs-card-unit">%</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">이자보상배율</div>
+  <div class="fs-card-val">2.40<span class="fs-card-unit">배</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">–</div>
+  <div class="fs-card-val">0.0<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div></div>
+    </div>
+    <div class="fs-col fs-col-b">
+      <div class="fs-col-hd fs-col-hd-b">별도</div>
+      <div class="fs-kpi-grid"><div class="fs-card">
+  <div class="fs-card-label">총자산</div>
+  <div class="fs-card-val">146.7<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">총부채</div>
+  <div class="fs-card-val">118.3<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">자기자본</div>
+  <div class="fs-card-val">28.4<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">부채비율</div>
+  <div class="fs-card-val">415.8<span class="fs-card-unit">%</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">이자보상배율</div>
+  <div class="fs-card-val">1.80<span class="fs-card-unit">배</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div><div class="fs-card">
+  <div class="fs-card-label">–</div>
+  <div class="fs-card-val">0.0<span class="fs-card-unit">조</span></div>
+  <div class="fs-card-yoy"><span class="fs-yoy fs-yoy-flat">— %</span></div>
+</div></div>
+    </div>
+  </div>
+</div>
+
+  <div class="fs-section-block">
+    <div class="fs-section-title" style="border-left-color:#7c3aed">💳 차입금 현황 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
+    <div class="fs-flow-grid">
+      <div class="fs-flow-card">
+  <div class="fs-flow-label">사채배수</div>
+  <div class="fs-flow-val">2.9<span class="fs-flow-unit">배</span></div>
+</div>
+      <div class="fs-flow-card">
+  <div class="fs-flow-label">사채잔액</div>
+  <div class="fs-flow-val">71.5<span class="fs-flow-unit">조</span></div>
+</div>
+      <div class="fs-flow-card">
+  <div class="fs-flow-label">차입금잔액</div>
+  <div class="fs-flow-val">83.9<span class="fs-flow-unit">조</span></div>
+</div>
+      <div class="fs-flow-card">
+  <div class="fs-flow-label">조달액</div>
+  <div class="fs-flow-val">9.8<span class="fs-flow-unit">조</span></div>
+</div>
+      <div class="fs-flow-card">
+  <div class="fs-flow-label">상환액</div>
+  <div class="fs-flow-val">10.5<span class="fs-flow-unit">조</span></div>
+</div>
+      <div class="fs-flow-card fs-flow-card-hl">
+  <div class="fs-flow-label">조달금리</div>
+  <div class="fs-flow-val">3.350<span class="fs-flow-unit">%</span></div>
+</div>
+    </div>
+  </div>
+
+  <div class="fs-section-block">
+    <div class="fs-section-title" style="border-left-color:#f59e0b">📊 연도별 주요 통계 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(연결 기준)</span></div>
+    <div class="fs-chart-grid">
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">매출액 <span style="font-weight:400">(조원)</span></div><canvas id="sc1" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">영업이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc2" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">순이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc3" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">이자비용 <span style="font-weight:400">(조원)</span></div><canvas id="sc4" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">사채/차입금 <span style="font-weight:400">(조원)</span></div><canvas id="sc5" style="max-height:180px"></canvas></div>
+      <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">조달금리 <span style="font-weight:400">(%)</span></div><canvas id="sc6" style="max-height:180px"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var yrs = ["2022", "2023", "2024", "2025", "'26\uc0c1"];
+  var negBarClr = function(data) {
+    return data.map(function(v,i) {
+      if(i===data.length-1) return 'rgba(251,146,60,0.85)';
+      return v>=0 ? 'rgba(37,99,235,0.8)' : 'rgba(220,38,38,0.75)';
+    });
+  };
+  var miniOpts = {
+    responsive:true, maintainAspectRatio:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.parsed.y.toFixed(2);}}}},
+    scales:{
+      x:{ticks:{font:{size:9},color:'#94a3b8'},grid:{display:false}},
+      y:{ticks:{font:{size:9},color:'#94a3b8'},grid:{color:'#f1f5f9'}}
+    }
+  };
+  function mkBar(id,data){new Chart(document.getElementById(id),{type:'bar',data:{labels:yrs,datasets:[{data:data,backgroundColor:negBarClr(data),borderRadius:4}]},options:miniOpts});}
+  function mkLine(id,data,color){color=color||'#1d4ed8';new Chart(document.getElementById(id),{type:'line',data:{labels:yrs,datasets:[{data:data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:color,borderWidth:2}]},options:miniOpts});}
+  function mkBarGreen(id,data){new Chart(document.getElementById(id),{type:'bar',data:{labels:yrs,datasets:[{data:data,backgroundColor:data.map(function(v,i){return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}),borderRadius:4}]},options:miniOpts});}
+  if(document.getElementById('sc1')){
+    mkBar('sc1',[76.8, 89.2, 86.4, 82.1, 46.3]);
+    mkBar('sc2',[-14.3, -32.6, 2.4, 1.7, 4.9]);
+    mkBar('sc3',[-24.3, -14.7, 4.1, 2.2, 2.8]);
+    mkLine('sc4',[2.4, 3.1, 3.5, 3.2, 2.1],'#dc2626');
+    mkBarGreen('sc5',[95.2, 102.4, 105.7, 103.1, 83.9]);
+    mkLine('sc6',[3.92, 4.78, 4.82, 4.55, 3.35]);
+  }
+})();
+</script>
+</div>
 <footer>
   데이터: <a href="https://www.kofiabond.or.kr" target="_blank">금융투자협회 KOFIA</a> ·
-  평일 오전 9시·오후 3시 자동 업데이트 · 마지막 생성: 2026년 04월 29일
+  평일 오전 9시·오후 3시 자동 업데이트 · 마지막 생성: 2026년 11월 03일
 </footer>
 
 <script>
-const labels   = ["03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28"];
-const datasets = [{"label": "국고채(3년) 민평", "data": [3.328, 3.412, 3.63, 3.532, 3.555, 3.545, 3.592, 3.542, 3.555, 3.37, 3.475, 3.445, 3.43, 3.446, 3.32, 3.33, 3.357, 3.38, 3.337, 3.333, 3.337, 3.37, 3.347, 3.335, 3.364, 3.453, 3.495, 3.497, 3.53], "type": "line", "borderColor": "#2563eb", "backgroundColor": "transparent", "borderWidth": 2.5, "pointRadius": 4, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 1}, {"label": "한전채(3년) 민평", "data": [3.674, 3.758, 3.971, 3.876, 3.901, 3.895, 3.94, 3.892, 3.905, 3.733, 3.842, 3.81, 3.795, 3.813, 3.69, 3.702, 3.73, 3.753, 3.709, 3.7, 3.703, 3.731, 3.706, 3.692, 3.718, 3.795, 3.829, 3.826, 3.854], "type": "line", "borderColor": "#f97316", "backgroundColor": "transparent", "borderWidth": 2.5, "pointRadius": 4, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 2}, {"label": "스프레드(한전-국고)", "data": [0.346, 0.346, 0.341, 0.344, 0.346, 0.35, 0.348, 0.35, 0.35, 0.363, 0.367, 0.365, 0.365, 0.367, 0.37, 0.372, 0.373, 0.373, 0.372, 0.367, 0.366, 0.361, 0.359, 0.357, 0.354, 0.342, 0.334, 0.329, 0.324], "type": "line", "fill": "start", "borderColor": "rgba(20,184,166,0.85)", "backgroundColor": "rgba(20,184,166,0.18)", "borderWidth": 1.5, "pointRadius": 2, "pointHoverRadius": 5, "tension": 0.3, "yAxisID": "y2", "order": 3}];
-new Chart(document.getElementById('yieldChart'), {
-  type:'line', data:{labels,datasets},
+const allLabels   = ["03/19", "03/20", "03/23", "03/24", "03/25", "03/26", "03/27", "03/30", "03/31", "04/01", "04/02", "04/03", "04/06", "04/07", "04/08", "04/09", "04/10", "04/13", "04/14", "04/15", "04/16", "04/17", "04/20", "04/21", "04/22", "04/23", "04/24", "04/27", "04/28", "09/16", "09/17", "09/18", "09/21", "09/22", "09/23", "09/28", "09/29", "09/30", "10/01", "10/02", "10/06", "10/07", "10/08", "10/12", "10/13", "10/14", "10/15", "10/16", "10/19", "10/20", "10/21", "10/22", "10/23", "10/26", "10/27", "10/28", "10/29", "10/30", "11/02"];
+const allDatasets = [{"label": "국고채(3년) 민평 (좌)", "data": [3.328, 3.412, 3.63, 3.532, 3.555, 3.545, 3.592, 3.542, 3.555, 3.37, 3.475, 3.445, 3.43, 3.446, 3.32, 3.33, 3.357, 3.38, 3.337, 3.333, 3.337, 3.37, 3.347, 3.335, 3.364, 3.453, 3.495, 3.497, 3.53, 4.04, 4.045, 4.027, 4.052, 4.03, 3.996, 4.111, 4.072, 4.015, 4.015, 3.927, 3.934, 3.962, 3.997, 3.918, 3.852, 3.882, 3.872, 3.835, 3.877, 3.835, 3.811, 3.837, 3.809, 3.787, 3.762, 3.802, 3.755, 3.71, 3.74], "type": "line", "borderColor": "#2563eb", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 1}, {"label": "한전채(3년) 민평 (좌)", "data": [3.674, 3.758, 3.971, 3.876, 3.901, 3.895, 3.94, 3.892, 3.905, 3.733, 3.842, 3.81, 3.795, 3.813, 3.69, 3.702, 3.73, 3.753, 3.709, 3.7, 3.703, 3.731, 3.706, 3.692, 3.718, 3.795, 3.829, 3.826, 3.854, 4.438, 4.443, 4.425, 4.451, 4.435, 4.399, 4.515, 4.476, 4.421, 4.421, 4.334, 4.339, 4.367, 4.401, 4.326, 4.267, 4.296, 4.291, 4.256, 4.292, 4.249, 4.231, 4.257, 4.229, 4.212, 4.187, 4.226, 4.182, 4.135, 4.164], "type": "line", "borderColor": "#f97316", "backgroundColor": "transparent", "borderWidth": 2, "pointRadius": 2, "pointHoverRadius": 6, "tension": 0.3, "yAxisID": "y", "order": 2}, {"label": "스프레드(한전-국고) (우)", "data": [0.346, 0.346, 0.341, 0.344, 0.346, 0.35, 0.348, 0.35, 0.35, 0.363, 0.367, 0.365, 0.365, 0.367, 0.37, 0.372, 0.373, 0.373, 0.372, 0.367, 0.366, 0.361, 0.359, 0.357, 0.354, 0.342, 0.334, 0.329, 0.324, 0.398, 0.398, 0.398, 0.399, 0.405, 0.403, 0.404, 0.404, 0.406, 0.406, 0.407, 0.405, 0.405, 0.404, 0.408, 0.415, 0.414, 0.419, 0.421, 0.415, 0.414, 0.42, 0.42, 0.42, 0.425, 0.425, 0.424, 0.427, 0.425, 0.424], "type": "line", "fill": "start", "borderColor": "rgba(20,184,166,0.9)", "backgroundColor": "rgba(20,184,166,0.12)", "borderWidth": 1.5, "pointRadius": 1.5, "pointHoverRadius": 5, "tension": 0.3, "yAxisID": "y2", "order": 3}, {"label": "전력채 발행금리 (좌)", "data": [null, null, null, null, null, null, null, null, null, null, 3.783, null, null, 3.76, null, null, null, null, null, 3.638, null, null, null, 3.673, null, null, null, null, 3.802, null, 4.532, null, null, 4.512, null, null, null, null, 4.455, null, null, null, null, 4.428, null, 4.274, null, null, null, null, 4.259, null, null, null, null, null, 4.23, null, null], "type": "bar", "backgroundColor": "rgba(249,115,22,0.28)", "borderColor": "rgba(249,115,22,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 5}, {"label": "국고채 3년 발행금리 (좌)", "data": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "type": "bar", "backgroundColor": "rgba(99,102,241,0.28)", "borderColor": "rgba(99,102,241,0.75)", "borderWidth": 1.5, "borderRadius": {"topLeft": 4, "topRight": 4, "bottomLeft": 0, "bottomRight": 0}, "maxBarThickness": 18, "yAxisID": "y", "order": 6}];
+const RATE_MIN=2.5, RATE_MAX=4.67;
+const SPRD_MIN=0.0, SPRD_MAX=0.75;
+const kepcoAmt = {"2026-10-29": 2400, "2026-10-21": 2400, "2026-10-14": 2500, "2026-10-12": 3100, "2026-10-01": 3900, "2026-09-22": 2700, "2026-09-17": 4700, "2026-09-11": 3400, "2026-09-08": 3300, "2026-09-03": 5400, "2026-08-26": 4400, "2026-08-12": 2000, "2026-08-06": 10700, "2026-07-15": 3000, "2026-07-09": 6500, "2026-07-02": 15100, "2026-06-25": 1800, "2026-06-19": 12000, "2026-06-16": 1500, "2026-06-11": 2400, "2026-06-08": 1900, "2026-06-02": 1800, "2026-05-26": 2400, "2026-05-20": 1100, "2026-05-12": 3400, "2026-05-07": 4100, "2026-04-28": 3700, "2026-04-21": 4100, "2026-04-15": 4000, "2026-04-07": 4000, "2026-04-02": 3200, "2026-03-17": 2400, "2026-03-05": 3000, "2026-02-24": 4400, "2026-02-10": 3400, "2026-02-03": 3000, "2026-01-27": 2100, "2026-01-19": 3700, "2026-01-12": 4000, "2026-01-06": 3000};
+const ktbAmt   = {};
+function switchTab(n) {
+  document.getElementById('tab-panel-1').style.display = n===1 ? '' : 'none';
+  document.getElementById('tab-panel-2').style.display = n===2 ? '' : 'none';
+  document.getElementById('tab-btn-1').className = 'tab-btn' + (n===1 ? ' tab-active' : '');
+  document.getElementById('tab-btn-2').className = 'tab-btn' + (n===2 ? ' tab-active' : '');
+}
+
+let activeRange = 0;
+
+function calcAxes(datasets) {
+  const rates   = [...datasets[0].data, ...datasets[1].data].filter(v=>v!=null);
+  const spreads = datasets[2].data.filter(v=>v!=null);
+  const barRates = [...(datasets[3]?.data||[]), ...(datasets[4]?.data||[])].filter(v=>v!=null);
+  const allRates = [...rates, ...barRates];
+  const rMin = allRates.length ? Math.min(RATE_MIN, Math.round((Math.min(...allRates)-0.05)*100)/100) : RATE_MIN;
+  const rMax = allRates.length ? Math.round((Math.max(...allRates)+0.15)*100)/100 : RATE_MAX;
+  const rawSMax = spreads.length ? Math.round((Math.max(...spreads)*1.75)*100)/100 : SPRD_MAX;
+  return { rMin, rMax, sMin: 0, sMax: Math.max(rawSMax, SPRD_MAX) };
+}
+
+function buildChartData(n) {
+  const sl = n === 0 ? allLabels.length : Math.min(n, allLabels.length);
+  return {
+    labels:   allLabels.slice(-sl),
+    datasets: allDatasets.map(ds => ({...ds, data: ds.data.slice(-sl)}))
+  };
+}
+
+// 발행금리 라벨을 막대 위에 표시하는 플러그인
+const issLabelPlugin = {
+  id: 'issLabel',
+  afterDatasetsDraw(chart) {
+    [[3,'rgba(194,65,12,0.9)'],[4,'rgba(67,56,202,0.9)']].forEach(([dsIdx, color]) => {
+      const meta = chart.getDatasetMeta(dsIdx);
+      if(!meta || meta.hidden) return;
+      const ctx2 = chart.ctx;
+      meta.data.forEach((bar, i) => {
+        const v = chart.data.datasets[dsIdx].data[i];
+        if(v == null) return;
+        ctx2.save();
+        ctx2.font = "bold 10px 'Noto Sans KR',sans-serif";
+        ctx2.fillStyle = color;
+        ctx2.textAlign = 'center';
+        ctx2.textBaseline = 'bottom';
+        ctx2.fillText(v.toFixed(2)+'%', bar.x, bar.y - 3);
+        ctx2.restore();
+      });
+    });
+  }
+};
+
+const initData = buildChartData(0);
+const initAxes = calcAxes(initData.datasets);
+
+const yieldChart = new Chart(document.getElementById('yieldChart'), {
+  type:'line',
+  data: initData,
+  plugins: [issLabelPlugin],
   options:{
     responsive:true,
     interaction:{mode:'index',intersect:false},
     plugins:{
-      legend:{position:'top',labels:{font:{family:"'Noto Sans KR',sans-serif",size:12},usePointStyle:true,padding:22}},
-      tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}${ctx.datasetIndex===2?'%p':'%'}`}}
+      legend:{
+        position:'top',
+        labels:{
+          font:{family:"'Noto Sans KR',sans-serif",size:12},
+          usePointStyle:true, padding:20,
+          generateLabels(chart) {
+            const items = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            items.forEach(item => {
+              if(item.datasetIndex === 3 || item.datasetIndex === 4) {
+                item.pointStyle = 'rect';
+                item.rotation = 0;
+              }
+            });
+            return items;
+          }
+        }
+      },
+      tooltip:{
+        callbacks:{
+          label: ctx => {
+            if(ctx.datasetIndex===3) {
+              const rate = ctx.parsed.y;
+              if(rate == null) return null;
+              const lbl = ctx.chart.data.labels[ctx.dataIndex];
+              const e = Object.entries(kepcoAmt).find(([k])=>k.slice(5).replace('-','/')=== lbl);
+              const amtStr = e ? ` ${e[1].toLocaleString()}억원` : '';
+              return ` ⚡ 전력채 발행금리: ${rate.toFixed(3)}%${amtStr}`;
+            }
+            if(ctx.datasetIndex===4) {
+              const rate = ctx.parsed.y;
+              if(rate == null) return null;
+              const lbl = ctx.chart.data.labels[ctx.dataIndex];
+              const e = Object.entries(ktbAmt).find(([k])=>k.slice(5).replace('-','/')=== lbl);
+              const amtStr = e ? ` ${e[1].toLocaleString()}억원` : '';
+              return ` 🏛 국고채 3년 발행금리: ${rate.toFixed(3)}%${amtStr}`;
+            }
+            const unit = ctx.datasetIndex===2 ? '%p' : '%';
+            return ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}${unit}`;
+          }
+        }
+      }
     },
     scales:{
-      x:{type:'category',grid:{color:'#f1f5f9'},ticks:{font:{family:"'Noto Sans KR'",size:11},maxRotation:0,autoSkip:true,maxTicksLimit:15}},
-      y:{position:'left',min:3.0,title:{display:true,text:'금리 (%)',font:{size:11},color:'#64748b'},grid:{color:'#f1f5f9'},ticks:{font:{family:"'Noto Sans KR'",size:11},callback:v=>v.toFixed(2)+'%'}},
-      y2:{position:'right',min:0.250,title:{display:true,text:'스프레드 (%p)',font:{size:11},color:'#0d9488'},ticks:{stepSize:0.05,font:{family:"'Noto Sans KR'",size:11},color:'#0d9488',callback:v=>v.toFixed(3)+'%p'},grid:{drawOnChartArea:false}}
+      x:{
+        type:'category',
+        grid:{color:'rgba(241,245,249,0.7)'},
+        ticks:{font:{family:"'Noto Sans KR'",size:10},maxRotation:0,autoSkip:true,maxTicksLimit:18}
+      },
+      y:{
+        position:'left',
+        min: initAxes.rMin, max: initAxes.rMax,
+        title:{display:true,text:'금리 (%)',font:{size:10},color:'#94a3b8'},
+        grid:{color:'rgba(241,245,249,0.7)'},
+        ticks:{font:{family:"'Noto Sans KR'",size:11},callback:v=>v.toFixed(2)+'%'}
+      },
+      y2:{
+        position:'right',
+        min: initAxes.sMin, max: initAxes.sMax,
+        title:{display:true,text:'스프레드 (%p)',font:{size:10},color:'#0d9488'},
+        ticks:{font:{family:"'Noto Sans KR'",size:10},color:'#0d9488',callback:v=>v.toFixed(3)+'%p'},
+        grid:{drawOnChartArea:false}
+      }
     }
   }
 });
+
+function setRange(n) {
+  activeRange = n;
+  const d = buildChartData(n);
+  const ax = calcAxes(d.datasets);
+  yieldChart.data.labels   = d.labels;
+  yieldChart.data.datasets = d.datasets;
+  yieldChart.options.scales.y.min  = ax.rMin;
+  yieldChart.options.scales.y.max  = ax.rMax;
+  yieldChart.options.scales.y2.min = ax.sMin;
+  yieldChart.options.scales.y2.max = ax.sMax;
+  yieldChart.options.scales.x.ticks.maxTicksLimit = n===0 ? 18 : 12;
+  yieldChart.update();
+  const active = '#2563eb', inactive = '#fff', inactText = '#64748b', inactBrd = '#cbd5e1';
+  ['btnYtd','btn4w'].forEach((id,i) => {
+    const on = (i===0 && n===0) || (i===1 && n===20);
+    const el = document.getElementById(id);
+    el.style.background  = on ? active  : inactive;
+    el.style.color       = on ? '#fff'  : inactText;
+    el.style.borderColor = on ? active  : inactBrd;
+  });
+}
 </script>
 </body>
 </html>
