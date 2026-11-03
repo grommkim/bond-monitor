@@ -2243,12 +2243,12 @@ def kepco_stats_tab_html() -> str:
     상환액     = 10.5    # 조원
     조달금리   =  3.350  # %
 
-    # 연도별 추이 차트 데이터 (2022~2025 연간 + '26상, 연결 기준)
+    # 연도별 추이 차트 데이터 (2022~2025 연간 + '26상, 별도 기준)
     CHART_YEARS = ["2022", "2023", "2024", "2025", "'26상"]
-    CH_매출액     = [76.8,  89.2, 86.4, 82.1, 46.3]
-    CH_영업이익   = [-14.3, -32.6,  2.4,  1.7,  4.9]
-    CH_순이익     = [-24.3, -14.7,  4.1,  2.2,  2.8]
-    CH_이자비용   = [  2.4,   3.1,  3.5,  3.2,  2.1]
+    CH_매출액     = [74.0,  86.9, 84.2, 79.8, 45.0]
+    CH_영업이익   = [-13.7, -31.4,  2.0,  1.4,  2.1]
+    CH_순이익     = [-24.4, -14.1,  3.8,  2.0,  2.9]
+    CH_이자비용   = [  1.4,   1.9,  2.1,  2.0,  1.2]
     CH_사채차입금 = [ 95.2, 102.4,105.7,103.1, 83.9]
     CH_조달금리   = [  3.92,  4.78, 4.82, 4.55, 3.35]
     # ── 수치 업데이트 영역 끝 ────────────────────────────────────────────
@@ -2395,7 +2395,7 @@ def kepco_stats_tab_html() -> str:
   </div>
 
   <div class="fs-section-block">
-    <div class="fs-section-title" style="border-left-color:#f59e0b">📊 연도별 주요 통계 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(연결 기준)</span></div>
+    <div class="fs-section-title" style="border-left-color:#f59e0b">📊 연도별 주요 통계 <span style="font-size:.75rem;font-weight:400;color:#94a3b8">(별도 기준)</span></div>
     <div class="fs-chart-grid">
       <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">매출액 <span style="font-weight:400">(조원)</span></div><canvas id="sc1" style="max-height:180px"></canvas></div>
       <div class="chart-box"><div style="font-size:.78rem;color:#64748b;margin-bottom:8px;font-weight:600">영업이익 <span style="font-weight:400">(조원)</span></div><canvas id="sc2" style="max-height:180px"></canvas></div>
@@ -2409,6 +2409,7 @@ def kepco_stats_tab_html() -> str:
 
 <script>
 (function() {{
+  if(typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
   var yrs = {json.dumps(CHART_YEARS)};
   var negBarClr = function(data) {{
     return data.map(function(v,i) {{
@@ -2416,17 +2417,37 @@ def kepco_stats_tab_html() -> str:
       return v>=0 ? 'rgba(37,99,235,0.8)' : 'rgba(220,38,38,0.75)';
     }});
   }};
-  var miniOpts = {{
+  var dlBar = {{
+    display:true,
+    anchor:function(ctx){{return ctx.dataset.data[ctx.dataIndex]>=0?'end':'start';}},
+    align:function(ctx){{return ctx.dataset.data[ctx.dataIndex]>=0?'top':'bottom';}},
+    formatter:function(v){{return v===0?'':v.toFixed(1);}},
+    font:{{size:9,weight:'700'}},
+    color:function(ctx){{
+      var v=ctx.dataset.data[ctx.dataIndex];
+      return v<0?'#dc2626':(ctx.dataIndex===ctx.dataset.data.length-1?'#ea580c':'#1d4ed8');
+    }},
+    offset:2
+  }};
+  var dlLine = {{
+    display:true, anchor:'end', align:'top',
+    formatter:function(v){{return v===0?'':v.toFixed(2);}},
+    font:{{size:9,weight:'700'}}, color:'#475569', offset:4
+  }};
+  var baseOpts = {{
     responsive:true, maintainAspectRatio:true,
+    layout:{{padding:{{top:18}}}},
     plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:function(c){{return c.parsed.y.toFixed(2);}}}}}}}},
     scales:{{
       x:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{display:false}}}},
       y:{{ticks:{{font:{{size:9}},color:'#94a3b8'}},grid:{{color:'#f1f5f9'}}}}
     }}
   }};
-  function mkBar(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:negBarClr(data),borderRadius:4}}]}},options:miniOpts}});}}
-  function mkLine(id,data,color){{color=color||'#1d4ed8';new Chart(document.getElementById(id),{{type:'line',data:{{labels:yrs,datasets:[{{data:data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:color,borderWidth:2}}]}},options:miniOpts}});}}
-  function mkBarGreen(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}),borderRadius:4}}]}},options:miniOpts}});}}
+  function optsBar(){{return Object.assign({{}},baseOpts,{{plugins:Object.assign({{}},baseOpts.plugins,{{datalabels:dlBar}})}});}}
+  function optsLine(){{return Object.assign({{}},baseOpts,{{plugins:Object.assign({{}},baseOpts.plugins,{{datalabels:dlLine}})}});}}
+  function mkBar(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:negBarClr(data),borderRadius:4}}]}},options:optsBar()}});}}
+  function mkLine(id,data,color){{color=color||'#1d4ed8';new Chart(document.getElementById(id),{{type:'line',data:{{labels:yrs,datasets:[{{data:data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:color,borderWidth:2}}]}},options:optsLine()}});}}
+  function mkBarGreen(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}),borderRadius:4}}]}},options:optsBar()}});}}
   if(document.getElementById('sc1')){{
     mkBar('sc1',{json.dumps(CH_매출액)});
     mkBar('sc2',{json.dumps(CH_영업이익)});
@@ -2489,6 +2510,7 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}}
