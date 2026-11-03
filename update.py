@@ -212,9 +212,12 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
                                           "not hike","not raise","may not","need not","needn't",
                                           "don't need to","doesn't need"])
 
-        if not past_hike and not neg_hike and any(w in t for w in ["hike","raises rate","raised rate",
-                                                                     "votes to raise","voted to raise"]):
-            return f"연준(Fed) 기준금리 인상{bp_str} 결정 — 미국 국채 단기물(2년) 시장금리 상승↑, 추가 인상 경로 주목."
+        if not past_hike and not neg_hike and any(w in t for w in [
+                "hike","raises rate","raised rate","votes to raise","voted to raise",
+                "rate increase","rate increases","rate rises","more increase","more hikes",
+                "additional hike","additional increase","further hike","further increase",
+                "two more","need to raise","needs to raise","should raise","must raise"]):
+            return f"연준(Fed) 기준금리 인상{bp_str} 결정·인상 필요 발언 — 긴축 경로 지속 시사, 단기물(2년) 시장금리 상승↑ 압력."
         elif not past_hike and not neg_hike and any(w in t for w in ["cuts rate","cut rate",
                                                                        "votes to cut","voted to cut",
                                                                        "lower","reduc","decreas"]):
@@ -239,7 +242,7 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif any(w in t for w in ["cut","dovish","비둘기","인하","slow"]):
             return "워시 Fed 의장 완화 신호 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         else:
-            return "워시 Fed 의장 발언 — 기준금리 경로의 핵심 신호, 시장금리 변동성 주의."
+            return ""  # 원제목 그대로 표시
 
     elif cat == "cpi":
         # "rises...below expectations" 오판 방지: 복합구 먼저 체크
@@ -754,7 +757,7 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         react_parts.append(f'<span style="color:{col30}">30년물 {rate_30_val:.3f}%({chg_30:+.1f}bp{dir30})</span>')
     react_html = (" / ".join(react_parts)) if react_parts else ""
 
-    # 각 이벤트: [카테고리] 이벤트 설명 → 실제 시장 반응 수치
+    # 각 이벤트: [카테고리] 이벤트 설명 (소스) — 시장 반응은 맨 마지막에 한 번만
     event_html_parts = []
     for ev in top_events:
         title  = ev.get("title", "")
@@ -763,36 +766,44 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         cat    = ev.get("cat", "")
         if not title:
             continue
-        # 이벤트 설명 (_title_to_market_ctx 사용, 없으면 원제목)
         ctx = _title_to_market_ctx(title, cat) if title else ""
         desc = ctx if ctx else title
         src_str = (f' <span style="color:#94a3b8;font-size:.73rem">({_html.escape(source)})</span>'
                    if source else "")
         label_str = (f'<span style="font-weight:700;color:#334155;font-size:.72rem">[{_html.escape(label)}]</span> '
                      if label else "")
-        react_line = ""
-        if react_html:
-            react_line = (f'<div style="font-size:.77rem;color:#64748b;margin-top:1px;padding-left:4px">'
-                          f'→ 미국채 시장 반응: {react_html}</div>')
         event_html_parts.append(
-            f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+            f'<div style="margin-bottom:5px">'
             f'{label_str}<span style="color:#1e293b">{_html.escape(desc)}</span>{src_str}'
-            f'{react_line}</div>'
+            f'</div>'
         )
 
-    # 모순 감지: 이벤트 방향 vs 실제 금리 방향 (체크만, 마지막에 추가)
+    # 모순 감지: 이벤트 방향 vs 실제 금리 방향 (ctx 있는 첫 이벤트 기준)
     if event_html_parts and active_cats:
-        first_ctx = _title_to_market_ctx(detected[active_cats[0]].get("title",""), active_cats[0])
+        best_ctx = next(
+            (_title_to_market_ctx(detected[c].get("title",""), c)
+             for c in active_cats
+             if _title_to_market_ctx(detected[c].get("title",""), c)),
+            ""
+        )
+        first_ctx = best_ctx
         exp_down = any(k in first_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
         exp_up   = any(k in first_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
         if exp_down and not exp_up and chg_10 >= 3:
-            contra = (f'<div style="font-size:.78rem;color:#92400e;font-style:italic;margin-top:4px">'
-                      f'⚠ 단, 실제 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응</div>')
-            event_html_parts.append(contra)
+            event_html_parts.append(
+                f'<div style="font-size:.78rem;color:#92400e;font-style:italic;margin-top:3px">'
+                f'⚠ 단, 실제 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응</div>')
         elif exp_up and not exp_down and chg_10 <= -3:
-            contra = (f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic;margin-top:4px">'
-                      f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
-            event_html_parts.append(contra)
+            event_html_parts.append(
+                f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic;margin-top:3px">'
+                f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
+
+    # 시장 반응 수치 — 맨 마지막에 한 번만 표시
+    if event_html_parts and react_html:
+        event_html_parts.append(
+            f'<div style="font-size:.78rem;color:#475569;margin-top:5px;padding-top:5px;border-top:1px solid #e2e8f0">'
+            f'→ 미국채 시장 반응: {react_html}</div>'
+        )
 
     line_event = "".join(event_html_parts) if event_html_parts else ""
 

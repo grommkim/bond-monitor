@@ -18,13 +18,7 @@
       "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(git pull *)",
-      "Bash(git stash *)",
-      "Bash(git tag *)",
-      "Bash(gh workflow *)",
-      "Bash(gh run *)",
-      "Bash(python *)",
-      "Bash(grep -v \"^$\")",
-      "Bash(git checkout *)"
+      "Bash(git stash *)"
     ]
   }
 }
