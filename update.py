@@ -157,6 +157,14 @@ _EVENT_KW = [
     ("cpi",       ["cpi","consumer price","inflation","인플레","물가"],       "물가/CPI"),
     ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
     ("gdp",       ["gdp","recession","경기침체","성장률"],                    "경제성장"),
+    ("ism",       ["ism manufacturing","ism services","ism index",
+                   "manufacturing pmi","services pmi","pmi"],                "ISM/PMI"),
+    ("election",  ["election","midterm","vote","primary","ballot",
+                   "선거","중간선거","대선","총선"],                           "선거/정치"),
+    ("oil",       ["crude oil","wti","brent","유가","oil price",
+                   "opec","iran","oil supply","oil demand"],                  "유가/원자재"),
+    ("kr_close",  ["국고채 금리","국채선물","국채 금리","채권 시장 마감",
+                   "채권 강세","채권 약세","국고채 상승","국고채 하락"],       "국내채권"),
 ]
 
 # 후속/평가 기사 감지 키워드 — 과거 이벤트의 사후 평가 보도임을 판별
@@ -298,11 +306,35 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         else:
             return ""
 
+    elif cat == "ism":
+        if any(w in t for w in ["above","beat","strong","expand","above expect","상회"]):
+            return "ISM 지수 예상 상회 — 제조업·서비스 경기 확장세 확인, 경기 강세로 채권 약세 요인."
+        elif any(w in t for w in ["below","miss","contraction","below expect","하회","위축"]):
+            return "ISM 지수 예상 하회 — 경기 둔화 신호, 채권 강세(금리 하락) 요인."
+        else:
+            return ""
+
+    elif cat == "election":
+        if any(w in t for w in ["republican","공화","red wave","gop"]):
+            return "선거 결과 — 공화당 강세: 재정 확대·감세 기대로 국채 공급 증가 우려, 장기금리 상승↑ 압력."
+        elif any(w in t for w in ["democrat","민주","blue"]):
+            return "선거 결과 — 민주당 강세: 정책 불확실성 완화."
+        else:
+            return ""  # 원제목 표시
+
+    elif cat == "oil":
+        if any(w in t for w in ["drop","fall","decline","crash","급락","하락","급등하락"]):
+            return "유가 하락 — 인플레 압력 완화 기대, 채권 강세(금리 하락↓) 요인."
+        elif any(w in t for w in ["rise","surge","jump","spike","급등","상승"]):
+            return "유가 상승 — 인플레 우려 재부각, 채권 약세(금리 상승↑) 압력."
+        else:
+            return ""
+
     _fallback = {
         "buyback":  "미국 재무부 국채 바이백 — 장기물 공급 축소 효과, 미국 국채 장기 시장금리 하락↓ 요인.",
         "bessent":  "베센트 미국 재무장관 발언 — 국채 발행·만기 구조 결정권자, 장기물 방향 주목.",
-        "wgbi":     "한국 WGBI(세계국채지수) 편입 — 글로벌 패시브 자금의 한국 국채 매수 유입 기대, 국내 시장금리 하락↓.",
-        "kr_close": "전일 국내 채권시장 마감 — 한국 국고채 시장금리 실제 변동 반영.",
+        "wgbi":     "",  # 한국어 원제목이 더 정확 → ctx 없이 원제목 표시
+        "kr_close": "",
         "powell":   "파월 연준 전 의장 발언 — 통화정책 방향 참고 신호.",
     }
     return _fallback.get(cat, "")
@@ -573,7 +605,10 @@ def fetch_bond_news_all():
     ]
     en_kw = ["treasury","yield","bond","fed","federal reserve","fomc","rate","powell","warsh",
              "inflation","pce","cpi","consumer price","buyback","auction","tariff","trump",
-             "cautious","gradual","patient","buying","rally","blackrock","pimco"]
+             "cautious","gradual","patient","buying","rally","blackrock","pimco",
+             # 대형 매크로 이벤트 (채권 직접 관련 없어도 시장 컨텍스트로 중요)
+             "election","midterm","gdp","jobs report","nonfarm","ism manufacturing",
+             "debt ceiling","fiscal","recession","oil","wti","crude"]
     for url in en_sources:
         try:
             resp = requests.get(url, timeout=12, headers={"User-Agent": UA})
@@ -675,18 +710,15 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         bp_str = _ticks_to_bp(ticks) if ticks else ""
 
         # 틱 방향 → 금리 논점으로 서술 (틱↑=선물가격↑=금리↓, 틱↓=금리↑)
-        if direction == "up":    # 선물 상승 → 금리 하락
-            rate_dir_str = f"금리 하락 방향({bp_str} 수준)" if bp_str else "금리 하락 방향"
-            trend_str    = f"전일 대비 {ticks} 상승" if ticks else "상승"
-        elif direction == "down":  # 선물 하락 → 금리 상승
-            rate_dir_str = f"금리 상승 방향({bp_str} 수준)" if bp_str else "금리 상승 방향"
-            trend_str    = f"전일 대비 {ticks} 하락" if ticks else "하락"
+        bp_display = bp_str if bp_str else "약 0.0bp"
+        if direction == "up":
+            line_night = f"야간 국채선물: {ticks} 상승으로 금리 하락({bp_display} 수준)."
+        elif direction == "down":
+            line_night = f"야간 국채선물: {ticks} 하락으로 금리 상승({bp_display} 수준)."
         else:
-            rate_dir_str = "보합"
-            trend_str    = ticks if ticks else "보합"
-
-        driver_part = f" — {driver}" if driver else ""
-        line_night = f"야간 국채선물: {trend_str} → {rate_dir_str}{driver_part}."
+            line_night = f"야간 국채선물: {ticks if ticks else '보합'} — 금리 방향 미확인."
+        if driver:
+            line_night = line_night.rstrip(".") + f" ({driver}거래)"
 
     # ── 의미 있는 변동 판단 ──────────────────────────────────────────
     # 이벤트 감지 (한국어 우선)
@@ -820,6 +852,24 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             f'</div>'
         )
 
+    # 연준 발언자 추출 헬퍼
+    _FED_SPEAKERS = {
+        "logan":"달라스 Fed 로건", "williams":"뉴욕 Fed 윌리엄스",
+        "waller":"Fed 월러", "jefferson":"Fed 제퍼슨",
+        "bowman":"Fed 보우먼", "daly":"샌프란시스코 Fed 데일리",
+        "kashkari":"미니애폴리스 Fed 카시카리", "bostic":"애틀란타 Fed 보스틱",
+        "harker":"필라델피아 Fed 하커", "kugler":"Fed 쿠글러",
+        "barr":"Fed 바","mester":"클리블랜드 Fed 메스터",
+        "goolsbee":"시카고 Fed 굴스비", "cook":"Fed 쿡",
+        "powell":"파월 Fed 의장", "warsh":"워시 Fed 의장",
+    }
+
+    def _extract_speaker(title_lower):
+        for key, name in _FED_SPEAKERS.items():
+            if key in title_lower:
+                return name
+        return ""
+
     # 이슈 2, 3: 감지된 이벤트 ────────────────────────────────────────
     event_html_parts = [issue1_html] if issue1_html else []
     issue_num = 2
@@ -827,15 +877,40 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         raw_title = ev.get("title", "")
         source    = ev.get("source", "")
         cat       = ev.get("cat", "")
+        lang      = ev.get("lang", "en")
         if not raw_title:
             continue
         ctx = _title_to_market_ctx(raw_title, cat)
-        short_title, desc = _issue_split(ctx, cat, raw_title)
+
+        # 한국어 기사: 원제목이 훨씬 정확 → 원제목을 헤드라인으로
+        if lang == "ko":
+            # 말줄임표 앞까지만 (너무 긴 경우)
+            ko_head = raw_title.split("…")[0].split("·")[0] if len(raw_title) > 30 else raw_title
+            ko_head = ko_head[:35].strip()
+            _, desc = _issue_split(ctx, cat, "")
+            short_title = ko_head
+        else:
+            # 영어 기사: ctx 기반 제목, 발언자 추출로 보강
+            short_title, desc = _issue_split(ctx, cat, raw_title)
+            speaker = _extract_speaker(raw_title.lower())
+            if speaker and cat in ("fed","warsh","powell","bessent"):
+                # 제목에 발언자 삽입
+                short_title = f"{speaker} 발언" if not ctx else short_title.replace("연준(Fed) 위원","연준").replace("연준(Fed)","연준")
+                if speaker not in short_title:
+                    short_title = f"{speaker} — {short_title}" if short_title else f"{speaker} 발언"
+            desc = desc or ""
+
+        # 설명이 없으면 원제목 이탤릭
+        if not desc and lang == "en":
+            desc_html = (f'<span style="color:#94a3b8;font-size:.78rem;font-style:italic">'
+                         f' ({_html.escape(raw_title[:80])})</span>')
+        elif desc:
+            desc_html = f'<span style="color:#475569"> — {_html.escape(desc)}</span>'
+        else:
+            desc_html = ""
 
         src_str = (f' <span style="color:#94a3b8;font-size:.73rem">{_html.escape(source)}</span>'
                    if source else "")
-        desc_html = (f'<span style="color:#475569"> — {_html.escape(desc)}</span>' if desc else
-                     f'<span style="color:#94a3b8;font-size:.78rem;font-style:italic"> {_html.escape(raw_title)}</span>')
         event_html_parts.append(
             f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
             f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 {issue_num}｜</span>'
