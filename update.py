@@ -245,12 +245,16 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return ""  # 원제목 그대로 표시
 
     elif cat == "warsh":
-        if any(w in t for w in ["hike","hawkish","매파","more hike","추가 인상","aggressive"]):
-            return "워시 Fed 의장 매파 발언 — 기준금리 추가 인상 시사, 고금리 장기화 우려로 미국 국채 시장금리 상승↑."
+        if ("debt cost" in t or "managing" in t) and ("not inflation" in t or "inflation" not in t[:80]):
+            return "워시 Fed 의장 — 연준이 인플레보다 국채 이자비용 관리에 집중 발언. 금리 GDP 성장률 초과 위험 경고, 장기금리 상승↑ 압력."
+        elif "gdp" in t and any(w in t for w in ["top","exceed","threat","surpass","over","soon"]):
+            return "워시 Fed 의장 — 금리가 GDP 성장률 초과 위협 경고. 재정 지속가능성 우려로 장기금리 상승↑."
+        elif any(w in t for w in ["hike","hawkish","매파","more hike","추가 인상","aggressive","higher for longer"]):
+            return "워시 Fed 의장 매파 발언 — 기준금리 추가 인상 또는 고금리 장기화 시사, 국채 시장금리 상승↑."
         elif any(w in t for w in ["cut","dovish","비둘기","인하","slow"]):
-            return "워시 Fed 의장 완화 신호 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
+            return "워시 Fed 의장 완화 신호 — 기준금리 인하 기대 강화, 국채 시장금리 하락↓ 요인."
         else:
-            return ""  # 원제목 그대로 표시
+            return ""
 
     elif cat == "cpi":
         # "rises...below expectations" 오판 방지: 복합구 먼저 체크
@@ -283,6 +287,14 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return "미국 국채 수요 동향 — 기관 매수 강도가 금리 방향 결정."
 
     elif cat == "auction":
+        is_kr_auction = any(w in t for w in ["국고채","서울채권","한국 국채","국내 채권"])
+        if is_kr_auction:
+            if any(w in t for w in ["강하","호조","강세","견조","상승"]):
+                return "국내채권 입찰 호조 — 강한 국고채 수요 확인, 국내 시장금리 하락↓ 요인."
+            elif any(w in t for w in ["부진","약세","약하","하락"]):
+                return "국내채권 입찰 부진 — 국고채 수요 약화, 국내 시장금리 상승↑ 압력."
+            else:
+                return ""
         if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
             return f"미국 국채{dollar_str} 입찰 부진 — 낙찰금리 상승(테일 발생), 미국 국채 시장금리 상승↑."
         elif any(w in t for w in ["strong","solid","robust","demand","well"]):
@@ -781,13 +793,16 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
     line_impact = ""
     import re as _re2
 
-    def _issue_split(ctx, cat, raw_title):
+    def _issue_split(ctx, cat, raw_title, lang="en"):
         """ctx → (단문 제목, 상세 설명) 분리. ctx 없으면 카테고리 기본 제목 + 원제목"""
+        import re as _re_is
+        is_kr = lang == "ko" or bool(_re_is.search(r'[가-힣]', raw_title))
         _cat_default = {
             "warsh":"워시 Fed 의장 발언", "powell":"파월 전 의장 발언",
             "fed":"연준 위원 발언", "cpi":"물가 지표 발표",
             "jobs":"고용 지표 발표", "gdp":"GDP 지표 발표",
-            "auction":"미 국채 입찰", "buyback":"재무부 국채 바이백",
+            "auction": "국내채권 입찰" if is_kr else "미 국채 입찰",
+            "buyback":"재무부 국채 바이백",
             "bond_demand":"국채 매수세", "wgbi":"WGBI 편입",
             "kr_close":"국내 채권시장", "bessent":"베센트 장관 발언",
             "tariff":"관세·무역 이슈", "trump":"트럼프 정책",
@@ -800,48 +815,71 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             return head, body.strip()
         return ctx[:35].rstrip("—").strip(), ""
 
-    # 이슈 1: 금리+유가 실제 수치 자동 생성 ─────────────────────────
-    issue1_headline_parts = []
-    issue1_detail_parts   = []
-
+    # 이슈 1: 원인 이벤트 → 금리 결과 연결 ──────────────────────────
     oil_price = oil_data.get("price")
     oil_prev  = oil_data.get("prev", 0)
     oil_pct   = ((oil_chg / oil_prev) * 100) if oil_prev else 0
-    if oil_price and abs(oil_pct) >= 1.0:
-        if oil_pct <= -5:    oil_lbl = "유가 급락"
-        elif oil_pct < -1:   oil_lbl = "유가 하락"
-        elif oil_pct >= 5:   oil_lbl = "유가 급등"
-        else:                oil_lbl = "유가 상승"
-        issue1_headline_parts.append(oil_lbl)
-        issue1_detail_parts.append(
-            f"WTI 배럴당 ${oil_price:.2f}({oil_chg:+.2f}달러, {oil_pct:+.1f}%)")
+    if oil_pct <= -5:    oil_lbl = "유가 급락"
+    elif oil_pct < -1:   oil_lbl = "유가 하락"
+    elif oil_pct >= 5:   oil_lbl = "유가 급등"
+    elif oil_pct > 1:    oil_lbl = "유가 상승"
+    else:                oil_lbl = ""
 
+    # 원인 찾기: 유가 우선, 없으면 top_events(ism/cpi/jobs/election/gdp)
+    issue1_cause_lbl = ""
+    if oil_price and abs(oil_pct) >= 1.5:
+        issue1_cause_lbl = oil_lbl
+    else:
+        for _ev in top_events:
+            _ec = _ev.get("cat","")
+            _et = _ev.get("title","").lower()
+            if _ec == "ism":
+                issue1_cause_lbl = "ISM 제조업 강세" if any(w in _et for w in ["beat","above","expand","상회","strong"]) else "ISM 제조업 부진"
+            elif _ec == "cpi":
+                issue1_cause_lbl = "물가 지표 하회" if any(w in _et for w in ["below","miss","cool","soft","하회"]) else "물가 지표 상회"
+            elif _ec == "jobs":
+                issue1_cause_lbl = "고용 부진" if any(w in _et for w in ["weak","miss","slow","decline"]) else "고용 강세"
+            elif _ec == "election":
+                issue1_cause_lbl = "선거 결과"
+            elif _ec == "gdp":
+                issue1_cause_lbl = "경기 침체 우려"
+            if issue1_cause_lbl:
+                break
+
+    # 단기·장기 방향 감지
+    if rate_2 and rate_10 and abs(chg_2) >= 2 and abs(chg_10) >= 2:
+        if chg_2 > 0 and chg_10 < 0:
+            rate_spread_note = " (단기 상승·장기 하락)"
+        elif chg_2 < 0 and chg_10 > 0:
+            rate_spread_note = " (단기 하락·장기 상승)"
+        else:
+            rate_spread_note = ""
+    else:
+        rate_spread_note = ""
+
+    # 헤드라인
+    if rate_10 and abs(chg_10) >= 0.5:
+        rate_dir = "장기금리 하락" if chg_10 < 0 else "장기금리 상승"
+        h1 = f"{issue1_cause_lbl}에 {rate_dir}{rate_spread_note}" if issue1_cause_lbl else f"{rate_dir}{rate_spread_note}"
+    else:
+        h1 = issue1_cause_lbl if issue1_cause_lbl else ""
+
+    # 설명: 유가(있으면) + 10년물 + 2년물 모두
+    issue1_detail_parts = []
+    if oil_price and abs(oil_pct) >= 0.5:
+        issue1_detail_parts.append(f"WTI ${oil_price:.2f}({oil_chg:+.2f}달러, {oil_pct:+.1f}%)")
     if rate_10:
-        if abs(chg_10) >= 1.5:
-            issue1_headline_parts.append("장기금리 하락" if chg_10 < 0 else "장기금리 상승")
         dir10 = "로 하락" if chg_10 < -0.5 else ("로 상승" if chg_10 > 0.5 else "으로 보합권")
         issue1_detail_parts.append(f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp){dir10}")
     if rate_2:
         dir2 = "로 하락" if chg_2 < -0.5 else ("로 상승" if chg_2 > 0.5 else "으로 보합권")
         issue1_detail_parts.append(f"2년물 {rate_2:.3f}%({chg_2:+.1f}bp){dir2}")
-    # 단기·장기 반대 방향 감지
-    if rate_2 and rate_10 and abs(chg_2) >= 2 and abs(chg_10) >= 2:
-        if chg_2 > 0 and chg_10 < 0:
-            issue1_headline_parts = (issue1_headline_parts[:1] +
-                                     ["단기물 상승·장기물 하락"])
-        elif chg_2 < 0 and chg_10 > 0:
-            issue1_headline_parts = (issue1_headline_parts[:1] +
-                                     ["단기물 하락·장기물 상승"])
 
-    if len(issue1_headline_parts) >= 2:
-        h1 = "에 ".join(issue1_headline_parts)
-    elif issue1_headline_parts:
-        h1 = issue1_headline_parts[0]
-    else:
-        h1 = "미 금융시장 동향"
+    # 표시 조건: 원인 있거나 금리 변동 3bp 이상이거나 유가 2% 이상
+    show_issue1 = bool(issue1_cause_lbl) or (rate_10 and abs(chg_10) >= 3.0) or (oil_price and abs(oil_pct) >= 2.0)
 
     issue1_html = ""
-    if issue1_detail_parts:
+    if h1 and show_issue1 and issue1_detail_parts:
         detail_txt = ". ".join(issue1_detail_parts)
         h1_col = "#dc2626" if chg_10 > 2 else ("#2563eb" if chg_10 < -2 else "#334155")
         issue1_html = (
@@ -884,14 +922,13 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
 
         # 한국어 기사: 원제목이 훨씬 정확 → 원제목을 헤드라인으로
         if lang == "ko":
-            # 말줄임표 앞까지만 (너무 긴 경우)
             ko_head = raw_title.split("…")[0].split("·")[0] if len(raw_title) > 30 else raw_title
             ko_head = ko_head[:35].strip()
-            _, desc = _issue_split(ctx, cat, "")
+            _, desc = _issue_split(ctx, cat, "", lang="ko")
             short_title = ko_head
         else:
             # 영어 기사: ctx 기반 제목, 발언자 추출로 보강
-            short_title, desc = _issue_split(ctx, cat, raw_title)
+            short_title, desc = _issue_split(ctx, cat, raw_title, lang="en")
             speaker = _extract_speaker(raw_title.lower())
             if speaker and cat in ("fed","warsh","powell","bessent"):
                 # 제목에 발언자 삽입
