@@ -2283,13 +2283,13 @@ def kepco_stats_tab_html() -> str:
         return f"""<div class="fs-section-block">
   <div class="fs-section-title">{icon} {title}</div>
   <div class="fs-lr">
-    <div class="fs-col fs-col-c">
-      <div class="fs-col-hd fs-col-hd-c">연결</div>
-      <div class="fs-kpi-grid">{c_cards}</div>
-    </div>
     <div class="fs-col fs-col-b">
       <div class="fs-col-hd fs-col-hd-b">별도</div>
       <div class="fs-kpi-grid">{b_cards}</div>
+    </div>
+    <div class="fs-col fs-col-c">
+      <div class="fs-col-hd fs-col-hd-c">연결</div>
+      <div class="fs-kpi-grid">{c_cards}</div>
     </div>
   </div>
 </div>"""
@@ -2493,7 +2493,7 @@ def generate_html(chart, latest, issuances, debt_summary=None, debt_prev=None, d
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:'Noto Sans KR',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}}
 a{{color:#2563eb;text-decoration:none}}a:hover{{text-decoration:underline}}
-.top-nav{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;border-bottom:2px solid rgba(255,255,255,.12)}}
+.top-nav{{background:linear-gradient(135deg,#0f2a4a 0%,#1d4ed8 100%);color:#fff;display:flex;align-items:stretch;justify-content:space-between;border-bottom:2px solid rgba(255,255,255,.12);position:sticky;top:0;z-index:100}}
 .tab-bar{{display:flex;gap:0;align-items:stretch}}
 .tab-btn{{background:transparent;border:none;border-bottom:4px solid transparent;color:rgba(255,255,255,.5);padding:18px 32px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;letter-spacing:-.2px}}
 .tab-btn:hover{{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}}
