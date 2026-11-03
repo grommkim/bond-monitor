@@ -666,18 +666,27 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         ticks     = nf.get("ticks", "")
         direction = nf.get("direction", "flat")
         driver    = nf.get("driver", "")
-        dir_kor   = ("금리 하락↓" if direction == "up"
-                     else ("금리 상승↑" if direction == "down" else "보합"))
         if direction in ("up", "down"):
             nf_direction = direction
         import re as _re2
         m = _re2.search(r'(\d+)틱', ticks)
         if m:
             nf_ticks_num = int(m.group(1))
-        bp_str    = _ticks_to_bp(ticks) if ticks else ""
-        tick_part = (f"{ticks}({bp_str}) {dir_kor}" if bp_str else f"{ticks} {dir_kor}" if ticks else dir_kor)
+        bp_str = _ticks_to_bp(ticks) if ticks else ""
+
+        # 틱 방향 → 금리 논점으로 서술 (틱↑=선물가격↑=금리↓, 틱↓=금리↑)
+        if direction == "up":    # 선물 상승 → 금리 하락
+            rate_dir_str = f"금리 하락 방향({bp_str} 수준)" if bp_str else "금리 하락 방향"
+            trend_str    = f"전일 대비 {ticks} 상승" if ticks else "상승"
+        elif direction == "down":  # 선물 하락 → 금리 상승
+            rate_dir_str = f"금리 상승 방향({bp_str} 수준)" if bp_str else "금리 상승 방향"
+            trend_str    = f"전일 대비 {ticks} 하락" if ticks else "하락"
+        else:
+            rate_dir_str = "보합"
+            trend_str    = ticks if ticks else "보합"
+
         driver_part = f" — {driver}" if driver else ""
-        line_night = f"야간 국채선물: {tick_part}{driver_part}."
+        line_night = f"야간 국채선물: {trend_str} → {rate_dir_str}{driver_part}."
 
     # ── 의미 있는 변동 판단 ──────────────────────────────────────────
     # 이벤트 감지 (한국어 우선)
@@ -736,74 +745,122 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         oil_dir = "↑" if oil_chg > 0 else ("↓" if oil_chg < 0 else "")
         line_us += f"  /  WTI ${oil_data['price']:.1f}({oil_chg:+.1f}달러{oil_dir})"
 
-    # ── 이슈·배경 — 이벤트 설명 + 실제 시장 반응 수치 항상 표시 ──────
+    # ── 이슈·배경 — "이슈 N｜제목 — 설명+수치" 형식 ──────────────────
     line_impact = ""
+    import re as _re2
 
-    # 미국채 실제 시장 반응 HTML (수치 포함)
-    react_parts = []
+    def _issue_split(ctx, cat, raw_title):
+        """ctx → (단문 제목, 상세 설명) 분리. ctx 없으면 카테고리 기본 제목 + 원제목"""
+        _cat_default = {
+            "warsh":"워시 Fed 의장 발언", "powell":"파월 전 의장 발언",
+            "fed":"연준 위원 발언", "cpi":"물가 지표 발표",
+            "jobs":"고용 지표 발표", "gdp":"GDP 지표 발표",
+            "auction":"미 국채 입찰", "buyback":"재무부 국채 바이백",
+            "bond_demand":"국채 매수세", "wgbi":"WGBI 편입",
+            "kr_close":"국내 채권시장", "bessent":"베센트 장관 발언",
+            "tariff":"관세·무역 이슈", "trump":"트럼프 정책",
+        }
+        if not ctx:
+            return _cat_default.get(cat, "시장 이슈"), raw_title
+        if "—" in ctx:
+            head, body = ctx.split("—", 1)
+            head = _re2.sub(r'\([^)]{0,25}\)', '', head).strip().rstrip("·").strip()
+            return head, body.strip()
+        return ctx[:35].rstrip("—").strip(), ""
+
+    # 이슈 1: 금리+유가 실제 수치 자동 생성 ─────────────────────────
+    issue1_headline_parts = []
+    issue1_detail_parts   = []
+
+    oil_price = oil_data.get("price")
+    oil_prev  = oil_data.get("prev", 0)
+    oil_pct   = ((oil_chg / oil_prev) * 100) if oil_prev else 0
+    if oil_price and abs(oil_pct) >= 1.0:
+        if oil_pct <= -5:    oil_lbl = "유가 급락"
+        elif oil_pct < -1:   oil_lbl = "유가 하락"
+        elif oil_pct >= 5:   oil_lbl = "유가 급등"
+        else:                oil_lbl = "유가 상승"
+        issue1_headline_parts.append(oil_lbl)
+        issue1_detail_parts.append(
+            f"WTI 배럴당 ${oil_price:.2f}({oil_chg:+.2f}달러, {oil_pct:+.1f}%)")
+
     if rate_10:
-        dir10 = "↑" if chg_10 > 0 else ("↓" if chg_10 < 0 else "")
-        col10 = "#dc2626" if chg_10 > 0 else ("#2563eb" if chg_10 < 0 else "#64748b")
-        react_parts.append(f'<span style="color:{col10}">10년물 {rate_10:.3f}%({chg_10:+.1f}bp{dir10})</span>')
+        if abs(chg_10) >= 1.5:
+            issue1_headline_parts.append("장기금리 하락" if chg_10 < 0 else "장기금리 상승")
+        dir10 = "로 하락" if chg_10 < -0.5 else ("로 상승" if chg_10 > 0.5 else "으로 보합권")
+        issue1_detail_parts.append(f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp){dir10}")
     if rate_2:
-        dir2 = "↑" if chg_2 > 0 else ("↓" if chg_2 < 0 else "")
-        col2 = "#dc2626" if chg_2 > 0 else ("#2563eb" if chg_2 < 0 else "#64748b")
-        react_parts.append(f'<span style="color:{col2}">2년물 {rate_2:.3f}%({chg_2:+.1f}bp{dir2})</span>')
-    chg_30 = us_rates.get("30Y", {}).get("chg_bps") or 0
-    rate_30_val = us_rates.get("30Y", {}).get("rate")
-    if rate_30_val and not rate_10:  # 10Y 없을 때만 30Y 보여줌
-        dir30 = "↑" if chg_30 > 0 else ("↓" if chg_30 < 0 else "")
-        col30 = "#dc2626" if chg_30 > 0 else ("#2563eb" if chg_30 < 0 else "#64748b")
-        react_parts.append(f'<span style="color:{col30}">30년물 {rate_30_val:.3f}%({chg_30:+.1f}bp{dir30})</span>')
-    react_html = (" / ".join(react_parts)) if react_parts else ""
+        dir2 = "로 하락" if chg_2 < -0.5 else ("로 상승" if chg_2 > 0.5 else "으로 보합권")
+        issue1_detail_parts.append(f"2년물 {rate_2:.3f}%({chg_2:+.1f}bp){dir2}")
+    # 단기·장기 반대 방향 감지
+    if rate_2 and rate_10 and abs(chg_2) >= 2 and abs(chg_10) >= 2:
+        if chg_2 > 0 and chg_10 < 0:
+            issue1_headline_parts = (issue1_headline_parts[:1] +
+                                     ["단기물 상승·장기물 하락"])
+        elif chg_2 < 0 and chg_10 > 0:
+            issue1_headline_parts = (issue1_headline_parts[:1] +
+                                     ["단기물 하락·장기물 상승"])
 
-    # 각 이벤트: [카테고리] 이벤트 설명 (소스) — 시장 반응은 맨 마지막에 한 번만
-    event_html_parts = []
-    for ev in top_events:
-        title  = ev.get("title", "")
-        source = ev.get("source", "")
-        label  = ev.get("label", "")
-        cat    = ev.get("cat", "")
-        if not title:
-            continue
-        ctx = _title_to_market_ctx(title, cat) if title else ""
-        desc = ctx if ctx else title
-        src_str = (f' <span style="color:#94a3b8;font-size:.73rem">({_html.escape(source)})</span>'
-                   if source else "")
-        label_str = (f'<span style="font-weight:700;color:#334155;font-size:.72rem">[{_html.escape(label)}]</span> '
-                     if label else "")
-        event_html_parts.append(
-            f'<div style="margin-bottom:5px">'
-            f'{label_str}<span style="color:#1e293b">{_html.escape(desc)}</span>{src_str}'
+    if len(issue1_headline_parts) >= 2:
+        h1 = "에 ".join(issue1_headline_parts)
+    elif issue1_headline_parts:
+        h1 = issue1_headline_parts[0]
+    else:
+        h1 = "미 금융시장 동향"
+
+    issue1_html = ""
+    if issue1_detail_parts:
+        detail_txt = ". ".join(issue1_detail_parts)
+        h1_col = "#dc2626" if chg_10 > 2 else ("#2563eb" if chg_10 < -2 else "#334155")
+        issue1_html = (
+            f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+            f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 1｜</span>'
+            f'<span style="font-weight:700;color:{h1_col}">{_html.escape(h1)}</span>'
+            f'<span style="color:#475569"> — {_html.escape(detail_txt)}.</span>'
             f'</div>'
         )
 
-    # 모순 감지: 이벤트 방향 vs 실제 금리 방향 (ctx 있는 첫 이벤트 기준)
-    if event_html_parts and active_cats:
+    # 이슈 2, 3: 감지된 이벤트 ────────────────────────────────────────
+    event_html_parts = [issue1_html] if issue1_html else []
+    issue_num = 2
+    for ev in top_events:
+        raw_title = ev.get("title", "")
+        source    = ev.get("source", "")
+        cat       = ev.get("cat", "")
+        if not raw_title:
+            continue
+        ctx = _title_to_market_ctx(raw_title, cat)
+        short_title, desc = _issue_split(ctx, cat, raw_title)
+
+        src_str = (f' <span style="color:#94a3b8;font-size:.73rem">{_html.escape(source)}</span>'
+                   if source else "")
+        desc_html = (f'<span style="color:#475569"> — {_html.escape(desc)}</span>' if desc else
+                     f'<span style="color:#94a3b8;font-size:.78rem;font-style:italic"> {_html.escape(raw_title)}</span>')
+        event_html_parts.append(
+            f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+            f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 {issue_num}｜</span>'
+            f'<span style="font-weight:700;color:#334155">{_html.escape(short_title)}</span>'
+            f'{desc_html}{src_str}'
+            f'</div>'
+        )
+        issue_num += 1
+
+    # 모순 감지 (이벤트 방향 vs 실제 금리 방향)
+    if active_cats:
         best_ctx = next(
             (_title_to_market_ctx(detected[c].get("title",""), c)
              for c in active_cats
-             if _title_to_market_ctx(detected[c].get("title",""), c)),
-            ""
-        )
-        first_ctx = best_ctx
-        exp_down = any(k in first_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
-        exp_up   = any(k in first_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
+             if _title_to_market_ctx(detected[c].get("title",""), c)), "")
+        exp_down = any(k in best_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
+        exp_up   = any(k in best_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
         if exp_down and not exp_up and chg_10 >= 3:
             event_html_parts.append(
-                f'<div style="font-size:.78rem;color:#92400e;font-style:italic;margin-top:3px">'
+                f'<div style="font-size:.78rem;color:#92400e;font-style:italic">'
                 f'⚠ 단, 실제 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응</div>')
         elif exp_up and not exp_down and chg_10 <= -3:
             event_html_parts.append(
-                f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic;margin-top:3px">'
+                f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic">'
                 f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
-
-    # 시장 반응 수치 — 맨 마지막에 한 번만 표시
-    if event_html_parts and react_html:
-        event_html_parts.append(
-            f'<div style="font-size:.78rem;color:#475569;margin-top:5px;padding-top:5px;border-top:1px solid #e2e8f0">'
-            f'→ 미국채 시장 반응: {react_html}</div>'
-        )
 
     line_event = "".join(event_html_parts) if event_html_parts else ""
 
