@@ -4273,5 +4273,23 @@
     "maturity_date": "2026-10-31",
     "rate": null,
     "source": "excel"
+  },
+  {
+    "id": "전력채|2021-11-04|2026-11-04|100000000000|r783",
+    "category": "전력채",
+    "amount": 100000000000,
+    "issuance_date": "2021-11-04",
+    "maturity_date": "2026-11-04",
+    "rate": null,
+    "source": "excel"
+  },
+  {
+    "id": "전력채|2024-11-04|2026-11-04|300000000000|r784",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-11-04",
+    "maturity_date": "2026-11-04",
+    "rate": null,
+    "source": "excel"
   }
 ]
