@@ -333,14 +333,23 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             el_type = "미국 대선"
         else:
             el_type = "미국 선거"
+        # 금리 방향이 제목에 직접 있으면 추출
+        yield_up   = any(w in t for w in ["yields rise","yield rise","rates rise","rate rise",
+                                           "yields higher","yields climb","yields jump","금리 상승","금리 올라"])
+        yield_down = any(w in t for w in ["yields fall","yield fall","rates fall","rate fall",
+                                           "yields lower","yields drop","금리 하락","금리 내려"])
+        yield_note = " 실제 미 국채 금리 상승↑." if yield_up else (" 실제 미 국채 금리 하락↓." if yield_down else "")
         if any(w in t for w in ["republican","공화","red wave","gop","red sweep"]):
-            return (f"{el_type} — 공화당 강세, 재정 확대·감세 정책 기대 → "
-                    f"국채 공급 증가 우려, 장기금리 상승↑ 압력.")
+            return (f"{el_type} — 공화당 강세, 감세·재정 확대 기대 → "
+                    f"국채 공급 증가 우려, 장기금리 상승↑ 압력.{yield_note}")
         elif any(w in t for w in ["democrat","민주","blue wave","blue sweep"]):
-            return f"{el_type} — 민주당 강세, 재정 긴축 기대 → 국채 공급 우려 완화, 장기금리 하락↓ 요인."
+            return f"{el_type} — 민주당 강세, 재정 긴축 기대 → 국채 공급 우려 완화, 장기금리 하락↓ 요인.{yield_note}"
+        elif any(w in t for w in ["await","result","결과","불확실","uncertain"]):
+            return (f"{el_type} — 결과 불확실성에 금리 변동."
+                    f" 공화당 집권 시 감세·재정 확대 → 국채 공급 증가 → 장기금리 상승↑ 예상.{yield_note}")
         else:
-            return (f"{el_type} — 재정 정책 방향 불확실성 ↑. 공화당 집권 시 감세·재정 확대 → "
-                    f"국채 공급 증가 → 장기금리 상승↑ 압력 예상.")
+            return (f"{el_type} — 재정 정책 방향 주목."
+                    f" 공화당 집권 시 감세·재정 확대 → 국채 공급 증가 → 장기금리 상승↑ 압력.{yield_note}")
 
     elif cat == "oil":
         if any(w in t for w in ["drop","fall","decline","crash","급락","하락","급등하락"]):
@@ -844,8 +853,10 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
 
     # 원인 찾기: 유가 우선, 없으면 top_events(ism/cpi/jobs/election/gdp)
     issue1_cause_lbl = ""
+    issue1_cause_cat = None   # 이슈 2/3 중복 방지용
     if oil_price and abs(oil_pct) >= 1.5:
         issue1_cause_lbl = oil_lbl
+        issue1_cause_cat = "oil"
     else:
         for _ev in top_events:
             _ec = _ev.get("cat","")
@@ -857,16 +868,16 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             elif _ec == "jobs":
                 issue1_cause_lbl = "고용 부진" if any(w in _et for w in ["weak","miss","slow","decline"]) else "고용 강세"
             elif _ec == "election":
-                _et_lower = _ev.get("title","").lower()
-                if "midterm" in _et_lower or "중간선거" in _et_lower:
+                if "midterm" in _et or "중간선거" in _et:
                     issue1_cause_lbl = "미국 중간선거"
-                elif "presidential" in _et_lower or "대선" in _et_lower:
+                elif "presidential" in _et or "대선" in _et:
                     issue1_cause_lbl = "미국 대선"
                 else:
                     issue1_cause_lbl = "미국 선거"
             elif _ec == "gdp":
                 issue1_cause_lbl = "경기 침체 우려"
             if issue1_cause_lbl:
+                issue1_cause_cat = _ec
                 break
 
     # 단기·장기 방향 감지
@@ -887,8 +898,22 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
     else:
         h1 = issue1_cause_lbl if issue1_cause_lbl else ""
 
-    # 설명: 유가(있으면) + 10년물 + 2년물 모두
+    # 원인 ctx 가져오기 (이슈 1 설명에 포함)
+    issue1_cause_ctx = ""
+    if issue1_cause_cat and issue1_cause_cat != "oil":
+        for _ev in top_events:
+            if _ev.get("cat") == issue1_cause_cat:
+                _raw_ctx = _title_to_market_ctx(_ev.get("title",""), issue1_cause_cat)
+                if _raw_ctx and "—" in _raw_ctx:
+                    issue1_cause_ctx = _raw_ctx.split("—",1)[1].strip()
+                elif _raw_ctx:
+                    issue1_cause_ctx = _raw_ctx
+                break
+
+    # 설명: 원인 설명(있으면) + 유가(있으면) + 10년물 + 2년물
     issue1_detail_parts = []
+    if issue1_cause_ctx:
+        issue1_detail_parts.append(issue1_cause_ctx.rstrip("."))
     if oil_price and abs(oil_pct) >= 0.5:
         issue1_detail_parts.append(f"WTI ${oil_price:.2f}({oil_chg:+.2f}달러, {oil_pct:+.1f}%)")
     if rate_10:
@@ -931,7 +956,7 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
                 return name
         return ""
 
-    # 이슈 2, 3: 감지된 이벤트 ────────────────────────────────────────
+    # 이슈 2, 3: 감지된 이벤트 (이슈 1 원인으로 사용된 카테고리 제외)
     event_html_parts = [issue1_html] if issue1_html else []
     issue_num = 2
     for ev in top_events:
@@ -940,6 +965,9 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         cat       = ev.get("cat", "")
         lang      = ev.get("lang", "en")
         if not raw_title:
+            continue
+        # 이슈 1 원인과 같은 카테고리는 중복 → 스킵
+        if issue1_cause_cat and cat == issue1_cause_cat:
             continue
         ctx = _title_to_market_ctx(raw_title, cat)
 
