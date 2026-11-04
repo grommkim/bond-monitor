@@ -327,12 +327,20 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
             return ""
 
     elif cat == "election":
-        if any(w in t for w in ["republican","공화","red wave","gop"]):
-            return "선거 결과 — 공화당 강세: 재정 확대·감세 기대로 국채 공급 증가 우려, 장기금리 상승↑ 압력."
-        elif any(w in t for w in ["democrat","민주","blue"]):
-            return "선거 결과 — 민주당 강세: 정책 불확실성 완화."
+        if "midterm" in t or "중간선거" in t:
+            el_type = "미국 중간선거"
+        elif "presidential" in t or "대선" in t:
+            el_type = "미국 대선"
         else:
-            return ""  # 원제목 표시
+            el_type = "미국 선거"
+        if any(w in t for w in ["republican","공화","red wave","gop","red sweep"]):
+            return (f"{el_type} — 공화당 강세, 재정 확대·감세 정책 기대 → "
+                    f"국채 공급 증가 우려, 장기금리 상승↑ 압력.")
+        elif any(w in t for w in ["democrat","민주","blue wave","blue sweep"]):
+            return f"{el_type} — 민주당 강세, 재정 긴축 기대 → 국채 공급 우려 완화, 장기금리 하락↓ 요인."
+        else:
+            return (f"{el_type} — 재정 정책 방향 불확실성 ↑. 공화당 집권 시 감세·재정 확대 → "
+                    f"국채 공급 증가 → 장기금리 상승↑ 압력 예상.")
 
     elif cat == "oil":
         if any(w in t for w in ["drop","fall","decline","crash","급락","하락","급등하락"]):
@@ -619,7 +627,8 @@ def fetch_bond_news_all():
              "inflation","pce","cpi","consumer price","buyback","auction","tariff","trump",
              "cautious","gradual","patient","buying","rally","blackrock","pimco",
              # 대형 매크로 이벤트 (채권 직접 관련 없어도 시장 컨텍스트로 중요)
-             "election","midterm","gdp","jobs report","nonfarm","ism manufacturing",
+             "election","midterm","midterm results","republicans win","democrats win",
+             "gdp","jobs report","nonfarm","ism manufacturing",
              "debt ceiling","fiscal","recession","oil","wti","crude"]
     for url in en_sources:
         try:
@@ -797,6 +806,13 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         """ctx → (단문 제목, 상세 설명) 분리. ctx 없으면 카테고리 기본 제목 + 원제목"""
         import re as _re_is
         is_kr = lang == "ko" or bool(_re_is.search(r'[가-힣]', raw_title))
+        _rt_l = raw_title.lower()
+        if "midterm" in _rt_l or "중간선거" in _rt_l:
+            _el_lbl = "미국 중간선거"
+        elif "presidential" in _rt_l or "대선" in _rt_l:
+            _el_lbl = "미국 대선"
+        else:
+            _el_lbl = "미국 선거"
         _cat_default = {
             "warsh":"워시 Fed 의장 발언", "powell":"파월 전 의장 발언",
             "fed":"연준 위원 발언", "cpi":"물가 지표 발표",
@@ -806,6 +822,7 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             "bond_demand":"국채 매수세", "wgbi":"WGBI 편입",
             "kr_close":"국내 채권시장", "bessent":"베센트 장관 발언",
             "tariff":"관세·무역 이슈", "trump":"트럼프 정책",
+            "election": _el_lbl, "ism":"ISM/PMI 지표", "oil":"유가·원자재",
         }
         if not ctx:
             return _cat_default.get(cat, "시장 이슈"), raw_title
@@ -840,7 +857,13 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             elif _ec == "jobs":
                 issue1_cause_lbl = "고용 부진" if any(w in _et for w in ["weak","miss","slow","decline"]) else "고용 강세"
             elif _ec == "election":
-                issue1_cause_lbl = "선거 결과"
+                _et_lower = _ev.get("title","").lower()
+                if "midterm" in _et_lower or "중간선거" in _et_lower:
+                    issue1_cause_lbl = "미국 중간선거"
+                elif "presidential" in _et_lower or "대선" in _et_lower:
+                    issue1_cause_lbl = "미국 대선"
+                else:
+                    issue1_cause_lbl = "미국 선거"
             elif _ec == "gdp":
                 issue1_cause_lbl = "경기 침체 우려"
             if issue1_cause_lbl:
@@ -957,11 +980,15 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         )
         issue_num += 1
 
-    # 모순 감지 (이벤트 방향 vs 실제 금리 방향)
-    if active_cats:
+    # 모순 감지: 미국 금리 방향 예측이 명확한 카테고리만 (auction 제외 — 한국 국내채권 기사도 auction으로 잡힘)
+    _US_CATS = {"fed","warsh","powell","cpi","jobs","gdp","buyback",
+                "bessent","tariff","trump","ism","election","bond_demand"}
+    _us_active = [c for c in active_cats if c in _US_CATS]
+    if _us_active:
+        active_cats = _us_active  # 모순 감지용으로 미국 카테고리만 사용
         best_ctx = next(
             (_title_to_market_ctx(detected[c].get("title",""), c)
-             for c in active_cats
+             for c in _us_active
              if _title_to_market_ctx(detected[c].get("title",""), c)), "")
         exp_down = any(k in best_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
         exp_up   = any(k in best_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
