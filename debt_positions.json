@@ -6271,5 +6271,23 @@
     "maturity_date": "2026-12-18",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761MW|seibro",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-11-04",
+    "maturity_date": "2026-12-21",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761MX|seibro",
+    "category": "단기사채",
+    "amount": 60000000000,
+    "issuance_date": "2026-11-04",
+    "maturity_date": "2026-12-18",
+    "rate": null,
+    "source": "seibro"
   }
 ]
