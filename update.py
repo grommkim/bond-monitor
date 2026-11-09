@@ -134,7 +134,8 @@ def fetch_kr_bond_rate():
 
 # 이벤트 감지 키워드 (우선순위 순서)
 _EVENT_KW = [
-    ("buyback",   ["buyback","buy back","buy-back","바이백"],                "재무부 바이백"),
+    ("buyback",   ["treasury buyback","treasury buy-back","treasury buy back",
+                   "재무부 바이백","국채 바이백","국채 매입 프로그램"],            "재무부 바이백"),
     ("warsh",     ["warsh","워시","kevin warsh","매파 본색"],                 "워시 발언"),
     ("wgbi",      ["WGBI","wgbi","세계국채지수","채권지수 편입","wgbi 편입"], "WGBI 편입"),
     ("bessent",   ["bessent","베센트","베선트"],                              "베센트 재무장관"),
@@ -144,9 +145,9 @@ _EVENT_KW = [
     ("fed",       ["federal reserve","fomc","연준","금통위",
                    "rate hike","rate cut","rate decision","interest rate",
                    "fed rate","fed votes","fed raises","fed cuts","fed holds",
-                   "rate unchanged","fed decision",
+                   "rate unchanged","fed decision","fed-hike","hike bets",
                    "kashkari","daly","waller","barkin","bostic","cook","kugler",
-                   "jefferson","williams","mester","logan","collins",
+                   "jefferson","williams","mester","logan","collins","hammack",
                    "fed chair","fed governor","fed president","fed official",
                    "monetary policy","통화정책","금리 인하 신중","금리 동결"],  "Fed/연준"),
     ("auction",   ["auction","입찰","국채 발행"],                             "국채 입찰"),
@@ -154,8 +155,13 @@ _EVENT_KW = [
                     "blackrock","pimco","vanguard","buying debt",
                     "strong auction","treasury rally","bond rally",
                     "국채 매수","채권 매수","강세 마감","수요 강세"],          "국채 매수세"),
-    ("cpi",       ["cpi","consumer price","inflation","인플레","물가"],       "물가/CPI"),
-    ("jobs",      ["payroll","nonfarm","employment","고용","실업"],           "고용지표"),
+    ("cpi",       ["cpi","consumer price","pce","inflation data","inflation report",
+                   "inflation figures","inflation slows","inflation rises","inflation falls",
+                   "inflation cools","inflation jumps","inflation eases","inflation hits",
+                   "인플레","물가 지수","물가 상승률","물가 발표","소비자물가"],    "물가/CPI"),
+    ("jobs",      ["payroll","nonfarm","employment","labor market","labor report",
+                   "job market","jobs report","jobs data","job gains","job losses",
+                   "고용","실업","노동"],                                       "고용지표"),
     ("gdp",       ["gdp","recession","경기침체","성장률"],                    "경제성장"),
     ("ism",       ["ism manufacturing","ism services","ism index",
                    "manufacturing pmi","services pmi","pmi"],                "ISM/PMI"),
@@ -765,7 +771,10 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
                 break
         if cat not in detected:
             for title, source, lang in all_headlines:
-                if lang == "en" and any(kw.lower() in title.lower() for kw in kws):
+                if (lang == "en"
+                        and any(kw.lower() in title.lower() for kw in kws)
+                        and title not in seen_titles):
+                    seen_titles.add(title)
                     detected[cat] = {"cat": cat, "label": label,
                                      "title": title, "source": source, "lang": "en"}
                     break
@@ -862,11 +871,31 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             _ec = _ev.get("cat","")
             _et = _ev.get("title","").lower()
             if _ec == "ism":
-                issue1_cause_lbl = "ISM 제조업 강세" if any(w in _et for w in ["beat","above","expand","상회","strong"]) else "ISM 제조업 부진"
+                _ism_strong = any(w in _et for w in ["beat","above","expand","상회","strong"])
+                # ISM 강세 → 금리 상승 / ISM 부진 → 금리 하락 — 방향 모순 시 스킵
+                if _ism_strong and chg_10 < -1.0:
+                    continue
+                if not _ism_strong and chg_10 > 1.0:
+                    continue
+                issue1_cause_lbl = "ISM 제조업 강세" if _ism_strong else "ISM 제조업 부진"
             elif _ec == "cpi":
-                issue1_cause_lbl = "물가 지표 하회" if any(w in _et for w in ["below","miss","cool","soft","하회"]) else "물가 지표 상회"
+                _cpi_soft = any(w in _et for w in ["below","miss","cool","soft","하회","eases","slows","falls","cools"])
+                _cpi_hot  = any(w in _et for w in ["above","beat","hot","surge","jump","상회","rises","jumps","hits"])
+                # 방향 모순 방지: CPI 상회인데 금리가 떨어지면 → CPI가 원인이 아님 → 스킵
+                if _cpi_hot and chg_10 < -1.0:
+                    continue
+                # CPI 하회인데 금리가 올라도 → 스킵
+                if _cpi_soft and chg_10 > 1.0:
+                    continue
+                issue1_cause_lbl = "물가 지표 하회" if _cpi_soft else "물가 지표 상회"
             elif _ec == "jobs":
-                issue1_cause_lbl = "고용 부진" if any(w in _et for w in ["weak","miss","slow","decline"]) else "고용 강세"
+                _jobs_weak = any(w in _et for w in ["weak","miss","slow","decline","부진"])
+                # 고용 강세 → 금리 상승 / 고용 부진 → 금리 하락 — 방향 모순 시 스킵
+                if not _jobs_weak and chg_10 < -1.0:
+                    continue
+                if _jobs_weak and chg_10 > 1.0:
+                    continue
+                issue1_cause_lbl = "고용 부진" if _jobs_weak else "고용 강세"
             elif _ec == "election":
                 if "midterm" in _et or "중간선거" in _et:
                     issue1_cause_lbl = "미국 중간선거"
