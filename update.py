@@ -241,14 +241,18 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
         elif neg_hike or any(w in t for w in ["may not","not need","no need","no reason to hike"]):
             return "연준(Fed) 위원 추가 인상 불필요 발언 — 기준금리 인상 종료 시사, 미국 국채 시장금리 하락↓ 요인."
         elif any(w in t for w in ["cautious","patient","gradual","no rush","not yet",
-                                   "still high","too high","no hurry","신중","점진적","서두르지"]):
-            return "연준(Fed) 위원 금리 인하 신중 발언 — 물가가 여전히 높다는 판단으로 기준금리 인하 속도 조절 시사. 미국 국채 시장금리 상방↑ 압력."
+                                   "still high","too high","no hurry","신중","점진적","서두르지",
+                                   "overheating","on watch","watch for","weigh rate","weigh interest",
+                                   "data-depend","data depend","assess","monitoring","looming",
+                                   "hike bets","hike-bets","fed-hike","rate path","rate hike path",
+                                   "labor market","strong labor","tight labor"]):
+            return "연준(Fed) 위원 금리 인하 신중 발언 — 물가·수요 과열 모니터링 중, 기준금리 인하 속도 조절 시사. 미국 국채 시장금리 상방↑ 압력."
         elif any(w in t for w in ["hawkish","매파","aggressive","더 오래","higher for longer"]):
             return "연준(Fed) 위원 매파 발언 — 고금리 장기화 시사, 미국 국채 시장금리 상승↑ 압력."
         elif any(w in t for w in ["dovish","비둘기","soon","near","임박","인하 기대","cut soon","cut next"]):
             return "연준(Fed) 위원 완화적 발언 — 기준금리 인하 기대 강화, 미국 국채 시장금리 하락↓ 요인."
         else:
-            return ""  # 원제목 그대로 표시
+            return ""
 
     elif cat == "warsh":
         if ("debt cost" in t or "managing" in t) and ("not inflation" in t or "inflation" not in t[:80]):
@@ -301,6 +305,11 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
                 return "국내채권 입찰 부진 — 국고채 수요 약화, 국내 시장금리 상승↑ 압력."
             else:
                 return ""
+        # 입찰 예정(looms/ahead/upcoming) 기사는 결과 없음 → 분석 불가
+        if any(w in t for w in ["looms","loom","upcoming","ahead","this week","scheduled",
+                                  "coming up","awaits","awaiting","anticipat","set for",
+                                  "gauntlet","tread water","tread-water"]):
+            return ""
         if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
             return f"미국 국채{dollar_str} 입찰 부진 — 낙찰금리 상승(테일 발생), 미국 국채 시장금리 상승↑."
         elif any(w in t for w in ["strong","solid","robust","demand","well"]):
@@ -1017,11 +1026,10 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
                     short_title = f"{speaker} — {short_title}" if short_title else f"{speaker} 발언"
             desc = desc or ""
 
-        # 설명이 없으면 원제목 이탤릭
-        if not desc and lang == "en":
-            desc_html = (f'<span style="color:#94a3b8;font-size:.78rem;font-style:italic">'
-                         f' ({_html.escape(raw_title[:80])})</span>')
-        elif desc:
+        # 영어 기사에서 ctx(한국어 분석) 없으면 → 표시 안 함
+        if lang == "en" and not ctx:
+            continue
+        if desc:
             desc_html = f'<span style="color:#475569"> — {_html.escape(desc)}</span>'
         else:
             desc_html = ""
