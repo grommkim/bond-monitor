@@ -4669,5 +4669,14 @@
     "maturity_date": "2026-11-10",
     "rate": null,
     "source": "seibro"
+  },
+  {
+    "id": "전력채|2024-11-12|2026-11-12|300000000000|r785",
+    "category": "전력채",
+    "amount": 300000000000,
+    "issuance_date": "2024-11-12",
+    "maturity_date": "2026-11-12",
+    "rate": null,
+    "source": "excel"
   }
 ]
