@@ -28,7 +28,9 @@
       "Bash(curl -s \"https://m.stock.naver.com/api/stock/015760/finance/annual?fsDiv=OFS\" -H \"User-Agent: Mozilla/5.0\")",
       "Bash(curl *)",
       "WebFetch(domain:m.stock.naver.com)",
-      "Bash(echo \"EXIT: $?\")"
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(git rebase *)",
+      "Bash(date -j -f \"%Y-%m-%d\" \"2026-11-10\" \"+%A\")"
     ]
   }
 }

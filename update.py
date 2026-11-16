@@ -209,13 +209,13 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
 
     if cat in ("tariff", "trump"):
         if ease and not tight:
-            return f"미·중 관세 협상 완화{dollar_str} — 수입물가 상승 우려 감소, 미국 국채 시장금리 하락↓ 요인."
+            return "미·중 관세 협상 완화 — 수입물가 상승 우려 감소, 미국 국채 시장금리 하락↓ 요인."
         elif tight and not ease:
-            return f"미국 관세 강화·무역 갈등{dollar_str} — 수입물가 상승으로 인플레이션 기대 자극, 미국 국채 시장금리 상승↑ 압력."
+            return "미국 관세 강화·무역 갈등 — 수입물가 상승으로 인플레이션 기대 자극, 미국 국채 시장금리 상승↑ 압력."
         elif "summit" in t or "meeting" in t:
-            return f"미·중 정상회담{dollar_str} — 협상 결과에 따라 관세·인플레이션 기대 및 미국 국채 시장금리 방향 결정."
+            return "미·중 정상회담 — 협상 결과에 따라 관세·인플레이션 기대 및 미국 국채 시장금리 방향 결정."
         else:
-            return f"트럼프 무역·재정 정책{dollar_str} — 재정적자 확대 시 미 국채 공급 증가, 장기 시장금리 상승↑ 압력."
+            return "트럼프 무역·재정 정책 — 재정적자 확대 시 미 국채 공급 증가, 장기 시장금리 상승↑ 압력."
 
     elif cat == "fed":
         # 과거형/부정 먼저 체크 — "after latest rate hike", "may not have to hike", "no more hike" 등은
@@ -311,9 +311,9 @@ def _title_to_market_ctx(title: str, cat: str) -> str:
                                   "gauntlet","tread water","tread-water"]):
             return ""
         if any(w in t for w in ["weak","poor","tail","disappoint","miss","soft"]):
-            return f"미국 국채{dollar_str} 입찰 부진 — 낙찰금리 상승(테일 발생), 미국 국채 시장금리 상승↑."
+            return "미국 국채 입찰 부진 — 낙찰금리 상승(테일 발생), 미국 국채 시장금리 상승↑."
         elif any(w in t for w in ["strong","solid","robust","demand","well"]):
-            return f"미국 국채{dollar_str} 입찰 호조 — 강한 수요(높은 bid-to-cover), 미국 국채 시장금리 하락↓ 요인."
+            return "미국 국채 입찰 호조 — 강한 수요(높은 bid-to-cover), 미국 국채 시장금리 하락↓ 요인."
         else:
             return ""
 
@@ -568,13 +568,15 @@ def fetch_night_futures():
             link   = it.findtext("link", "") or it.findtext("guid", "")
             if "국채선물" not in title:
                 continue
-            if not ("einfomax" in source.lower() or "인포맥스" in source or "kb" in source.lower()):
+            if not ("einfomax" in source.lower() or "인포맥스" in source
+                    or "연합" in source or "yonhap" in source.lower()
+                    or "kb" in source.lower() or "서울경제" in source):
                 continue
             try:
                 dt = parsedate_to_datetime(pub) if pub else None
             except Exception:
                 dt = None
-            if dt and (now_utc - dt).total_seconds() > 86400:
+            if dt and (now_utc - dt).total_seconds() > 36 * 3600:
                 print(f"  건너뜀(오래됨): {title[:50]} ({pub})")
                 continue
             candidates.append((dt, title, link))
@@ -961,11 +963,15 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
         dir2 = "로 하락" if chg_2 < -0.5 else ("로 상승" if chg_2 > 0.5 else "으로 보합권")
         issue1_detail_parts.append(f"2년물 {rate_2:.3f}%({chg_2:+.1f}bp){dir2}")
 
-    # 표시 조건: 원인 있거나 금리 변동 3bp 이상이거나 유가 2% 이상
-    show_issue1 = bool(issue1_cause_lbl) or (rate_10 and abs(chg_10) >= 3.0) or (oil_price and abs(oil_pct) >= 2.0)
+    # 이슈 1은 항상 표시 (rate_10 있으면 무조건)
+    if rate_10 and not issue1_detail_parts:
+        dir10 = "로 하락" if chg_10 < -0.5 else ("로 상승" if chg_10 > 0.5 else "으로 보합권")
+        issue1_detail_parts.append(f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp){dir10}")
+    if not h1 and rate_10:
+        h1 = "장기금리 동향"
 
     issue1_html = ""
-    if h1 and show_issue1 and issue1_detail_parts:
+    if h1 and issue1_detail_parts:
         detail_txt = ". ".join(issue1_detail_parts)
         h1_col = "#dc2626" if chg_10 > 2 else ("#2563eb" if chg_10 < -2 else "#334155")
         issue1_html = (
@@ -1009,26 +1015,22 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             continue
         ctx = _title_to_market_ctx(raw_title, cat)
 
-        # 한국어 기사: 원제목이 훨씬 정확 → 원제목을 헤드라인으로
+        # 분석(ctx) 없으면 언어 무관하게 스킵 — 영어 제목/리포트 제목 그대로 노출 방지
+        if not ctx:
+            continue
+
+        # 한국어 기사: ctx 기반 분석 사용
         if lang == "ko":
-            ko_head = raw_title.split("…")[0].split("·")[0] if len(raw_title) > 30 else raw_title
-            ko_head = ko_head[:35].strip()
-            _, desc = _issue_split(ctx, cat, "", lang="ko")
-            short_title = ko_head
+            short_title, desc = _issue_split(ctx, cat, "", lang="ko")
         else:
             # 영어 기사: ctx 기반 제목, 발언자 추출로 보강
             short_title, desc = _issue_split(ctx, cat, raw_title, lang="en")
             speaker = _extract_speaker(raw_title.lower())
             if speaker and cat in ("fed","warsh","powell","bessent"):
-                # 제목에 발언자 삽입
                 short_title = f"{speaker} 발언" if not ctx else short_title.replace("연준(Fed) 위원","연준").replace("연준(Fed)","연준")
                 if speaker not in short_title:
                     short_title = f"{speaker} — {short_title}" if short_title else f"{speaker} 발언"
             desc = desc or ""
-
-        # 영어 기사에서 ctx(한국어 분석) 없으면 → 표시 안 함
-        if lang == "en" and not ctx:
-            continue
         if desc:
             desc_html = f'<span style="color:#475569"> — {_html.escape(desc)}</span>'
         else:
@@ -1065,6 +1067,16 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
             event_html_parts.append(
                 f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic">'
                 f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
+
+    # 이슈 슬롯 최소 3개 보장 (빈 슬롯은 플레이스홀더)
+    while issue_num <= 3:
+        event_html_parts.append(
+            f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+            f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 {issue_num}｜</span>'
+            f'<span style="color:#94a3b8">추가 이슈 없음</span>'
+            f'</div>'
+        )
+        issue_num += 1
 
     line_event = "".join(event_html_parts) if event_html_parts else ""
 
@@ -2424,10 +2436,10 @@ def market_news_section_html(us_rates, analysis):
     # 미국 국채금리 수치 (항상)
     if line_us:
         body_rows += _row("미국국채", "#0369a1", "#0c4a6e", _html.escape(line_us))
-    # 야간선물 (있을 때만)
-    if line_night:
-        body_rows += _row("야간선물", "#92400e", "#78350f",
-                          _html.escape(line_night), extra=nf_sub)
+    # 야간선물 항상 표시 (기사 없으면 플레이스홀더)
+    night_content = _html.escape(line_night) if line_night else "야간 국채선물 마감 기사 없음"
+    body_rows += _row("야간선물", "#92400e", "#78350f",
+                      night_content, extra=nf_sub if line_night else "")
     # 이슈·배경 (헤드라인 수집되면 항상 표시)
     if line_event:
         body_rows += _row("이슈·배경", "#334155", "#1e293b", line_event)  # already HTML
