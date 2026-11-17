@@ -707,6 +707,65 @@ def fetch_bond_news_all():
     return items
 
 
+def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
+    """Gemini 1.5 Flash → 헤드라인 기반 한국어 채권시장 이슈 2·3 생성.
+    반환: {"issue2": {"title": str, "desc": str}, "issue3": ...} 또는 {}"""
+    api_key = os.environ.get("GEMINI_API_KEY", "")
+    if not api_key:
+        print("  [Gemini] GEMINI_API_KEY 없음 → 키워드 폴백")
+        return {}
+
+    headline_lines = [f"- {t} ({s}, {lang})" for t, s, lang in headlines[:20]]
+    headline_text  = "\n".join(headline_lines) if headline_lines else "(헤드라인 없음)"
+
+    rate_line = f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp)" if rate_10 else ""
+    oil_line  = f"WTI ${oil_price:.1f}({oil_chg:+.1f}달러)" if oil_price else ""
+    mkt_data  = " / ".join(x for x in [rate_line, oil_line] if x)
+
+    prompt = f"""당신은 한국 금융사 채권 운용 담당자를 위한 미국 채권시장 분석가입니다.
+아래 헤드라인과 시장 데이터를 바탕으로 어제 미국 채권시장에 영향을 준 주요 이슈 2가지를 분석하세요.
+
+[시장 데이터]
+{mkt_data}
+
+[헤드라인 (최근 48시간 이내)]
+{headline_text}
+
+[응답 규칙]
+1. 아래 JSON 형식으로만 응답 (다른 텍스트·마크다운 없이)
+2. 한국어로 작성
+3. title: 15자 이내 핵심 제목 (예: "연준 매파 발언", "트럼프 관세 우려", "미 국채 입찰 약세")
+4. desc: 2문장 이내. 실제 뉴스 내용 + 채권금리 방향 영향 연결 필수 (예: "Fed 위원 X가 금리 인상 가능성을 시사해 단기물 중심으로 금리 상승 압력.")
+5. 채권과 무관하거나 뉴스 근거 없으면 null
+6. 헤드라인 영문 원문 그대로 사용 금지
+
+{{"issue2": {{"title": "...", "desc": "..."}}, "issue3": {{"title": "...", "desc": "..."}}}}"""
+
+    try:
+        url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
+               f"gemini-1.5-flash:generateContent?key={api_key}")
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
+        }
+        resp = requests.post(url, json=payload, timeout=25)
+        if resp.status_code != 200:
+            print(f"  [Gemini] 오류 {resp.status_code}: {resp.text[:150]}")
+            return {}
+        raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+        m = re.search(r'\{.*\}', raw_text, re.DOTALL)
+        if not m:
+            print(f"  [Gemini] JSON 파싱 실패: {raw_text[:100]}")
+            return {}
+        result = json.loads(m.group())
+        print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
+        print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
+        return result
+    except Exception as e:
+        print(f"  [Gemini] 예외: {e}")
+        return {}
+
+
 def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None, oil=None):
     """
     미국 국채 금리 + 이벤트 + 야간선물 → 임원 보고용 시장 분석
@@ -1000,73 +1059,86 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
                 return name
         return ""
 
-    # 이슈 2, 3: 감지된 이벤트 (이슈 1 원인으로 사용된 카테고리 제외)
+    # 이슈 2, 3: Gemini AI 우선 → 키워드 폴백
     event_html_parts = [issue1_html] if issue1_html else []
     issue_num = 2
-    for ev in top_events:
-        raw_title = ev.get("title", "")
-        source    = ev.get("source", "")
-        cat       = ev.get("cat", "")
-        lang      = ev.get("lang", "en")
-        if not raw_title:
-            continue
-        # 이슈 1 원인과 같은 카테고리는 중복 → 스킵
-        if issue1_cause_cat and cat == issue1_cause_cat:
-            continue
-        ctx = _title_to_market_ctx(raw_title, cat)
 
-        # 분석(ctx) 없으면 언어 무관하게 스킵 — 영어 제목/리포트 제목 그대로 노출 방지
-        if not ctx:
-            continue
+    ai_issues = generate_ai_issues(all_headlines, rate_10, chg_10, oil_price, oil_chg)
+    ai_used = False
 
-        # 한국어 기사: ctx 기반 분석 사용
-        if lang == "ko":
-            short_title, desc = _issue_split(ctx, cat, "", lang="ko")
-        else:
-            # 영어 기사: ctx 기반 제목, 발언자 추출로 보강
-            short_title, desc = _issue_split(ctx, cat, raw_title, lang="en")
-            speaker = _extract_speaker(raw_title.lower())
-            if speaker and cat in ("fed","warsh","powell","bessent"):
-                short_title = f"{speaker} 발언" if not ctx else short_title.replace("연준(Fed) 위원","연준").replace("연준(Fed)","연준")
-                if speaker not in short_title:
-                    short_title = f"{speaker} — {short_title}" if short_title else f"{speaker} 발언"
-            desc = desc or ""
-        if desc:
-            desc_html = f'<span style="color:#475569"> — {_html.escape(desc)}</span>'
-        else:
-            desc_html = ""
-
-        src_str = (f' <span style="color:#94a3b8;font-size:.73rem">{_html.escape(source)}</span>'
-                   if source else "")
-        event_html_parts.append(
-            f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
-            f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 {issue_num}｜</span>'
-            f'<span style="font-weight:700;color:#334155">{_html.escape(short_title)}</span>'
-            f'{desc_html}{src_str}'
-            f'</div>'
-        )
-        issue_num += 1
-
-    # 모순 감지: 미국 금리 방향 예측이 명확한 카테고리만 (auction 제외 — 한국 국내채권 기사도 auction으로 잡힘)
-    _US_CATS = {"fed","warsh","powell","cpi","jobs","gdp","buyback",
-                "bessent","tariff","trump","ism","election","bond_demand"}
-    _us_active = [c for c in active_cats if c in _US_CATS]
-    if _us_active:
-        active_cats = _us_active  # 모순 감지용으로 미국 카테고리만 사용
-        best_ctx = next(
-            (_title_to_market_ctx(detected[c].get("title",""), c)
-             for c in _us_active
-             if _title_to_market_ctx(detected[c].get("title",""), c)), "")
-        exp_down = any(k in best_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
-        exp_up   = any(k in best_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
-        if exp_down and not exp_up and chg_10 >= 3:
+    if ai_issues:
+        for slot_key in ("issue2", "issue3"):
+            slot = ai_issues.get(slot_key)
+            if not slot or not slot.get("title"):
+                continue
+            title_e = _html.escape(slot["title"])
+            desc_e  = _html.escape(slot.get("desc", ""))
+            desc_html = f'<span style="color:#475569"> — {desc_e}</span>' if desc_e else ""
             event_html_parts.append(
-                f'<div style="font-size:.78rem;color:#92400e;font-style:italic">'
-                f'⚠ 단, 실제 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응</div>')
-        elif exp_up and not exp_down and chg_10 <= -3:
+                f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+                f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 {issue_num}｜</span>'
+                f'<span style="font-weight:700;color:#334155">{title_e}</span>'
+                f'{desc_html}'
+                f'</div>'
+            )
+            issue_num += 1
+        ai_used = True
+
+    if not ai_used:
+        # 키워드 기반 폴백 (Gemini 없을 때)
+        for ev in top_events:
+            raw_title = ev.get("title", "")
+            source    = ev.get("source", "")
+            cat       = ev.get("cat", "")
+            lang      = ev.get("lang", "en")
+            if not raw_title:
+                continue
+            if issue1_cause_cat and cat == issue1_cause_cat:
+                continue
+            ctx = _title_to_market_ctx(raw_title, cat)
+            if not ctx:
+                continue
+            if lang == "ko":
+                short_title, desc = _issue_split(ctx, cat, "", lang="ko")
+            else:
+                short_title, desc = _issue_split(ctx, cat, raw_title, lang="en")
+                speaker = _extract_speaker(raw_title.lower())
+                if speaker and cat in ("fed","warsh","powell","bessent"):
+                    short_title = short_title.replace("연준(Fed) 위원","연준").replace("연준(Fed)","연준")
+                    if speaker not in short_title:
+                        short_title = f"{speaker} — {short_title}" if short_title else f"{speaker} 발언"
+                desc = desc or ""
+            desc_html = f'<span style="color:#475569"> — {_html.escape(desc)}</span>' if desc else ""
+            src_str   = (f' <span style="color:#94a3b8;font-size:.73rem">{_html.escape(source)}</span>'
+                         if source else "")
             event_html_parts.append(
-                f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic">'
-                f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
+                f'<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f1f5f9">'
+                f'<span style="font-size:.72rem;font-weight:700;color:#64748b;margin-right:4px">이슈 {issue_num}｜</span>'
+                f'<span style="font-weight:700;color:#334155">{_html.escape(short_title)}</span>'
+                f'{desc_html}{src_str}'
+                f'</div>'
+            )
+            issue_num += 1
+
+        # 모순 감지 (키워드 폴백 시에만)
+        _US_CATS = {"fed","warsh","powell","cpi","jobs","gdp","buyback",
+                    "bessent","tariff","trump","ism","election","bond_demand"}
+        _us_active = [c for c in active_cats if c in _US_CATS]
+        if _us_active:
+            best_ctx = next(
+                (_title_to_market_ctx(detected[c].get("title",""), c)
+                 for c in _us_active
+                 if _title_to_market_ctx(detected[c].get("title",""), c)), "")
+            exp_down = any(k in best_ctx for k in ["하락↓","하락 기대","인하","매수","편입"])
+            exp_up   = any(k in best_ctx for k in ["상방↑","상승↑","매파","인상","공급 증가"])
+            if exp_down and not exp_up and chg_10 >= 3:
+                event_html_parts.append(
+                    f'<div style="font-size:.78rem;color:#92400e;font-style:italic">'
+                    f'⚠ 단, 실제 시장금리는 +{chg_10:.1f}bp 상승 마감 — 시장이 예상과 달리 반응</div>')
+            elif exp_up and not exp_down and chg_10 <= -3:
+                event_html_parts.append(
+                    f'<div style="font-size:.78rem;color:#1d4ed8;font-style:italic">'
+                    f'⚠ 단, 실제 시장금리는 {chg_10:.1f}bp 하락 마감 — 매수세 우위</div>')
 
     # 이슈 슬롯 최소 3개 보장 (빈 슬롯은 플레이스홀더)
     while issue_num <= 3:

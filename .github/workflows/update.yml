@@ -29,6 +29,8 @@ jobs:
 
       - name: 대시보드 업데이트
         run: python update.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: 결과 커밋 & 푸시
         run: |
