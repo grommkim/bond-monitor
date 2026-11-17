@@ -3051,6 +3051,7 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
           }}
         }}
       }},
+      datalabels: {{display: false}},
       tooltip:{{
         callbacks:{{
           label: ctx => {{
