@@ -741,29 +741,43 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
 
 {{"issue2": {{"title": "...", "desc": "..."}}, "issue3": {{"title": "...", "desc": "..."}}}}"""
 
-    try:
-        url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
-               f"gemini-2.0-flash:generateContent?key={api_key}")
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
-        }
-        resp = requests.post(url, json=payload, timeout=25)
-        if resp.status_code != 200:
-            print(f"  [Gemini] 오류 {resp.status_code}: {resp.text[:150]}")
+    # 사용 가능한 모델 순서대로 시도 (구 버전부터 최신 순)
+    _MODELS = [
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
+        "gemini-2.0-flash-lite",
+        "gemini-1.5-pro",
+    ]
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
+    }
+    for model in _MODELS:
+        try:
+            url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
+                   f"{model}:generateContent?key={api_key}")
+            resp = requests.post(url, json=payload, timeout=25)
+            if resp.status_code == 404:
+                print(f"  [Gemini] {model} 404 → 다음 모델 시도")
+                continue
+            if resp.status_code != 200:
+                print(f"  [Gemini] {model} 오류 {resp.status_code}: {resp.text[:300]}")
+                return {}
+            raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+            print(f"  [Gemini] {model} 응답: {raw_text[:80]}")
+            m = re.search(r'\{.*\}', raw_text, re.DOTALL)
+            if not m:
+                print(f"  [Gemini] JSON 파싱 실패: {raw_text[:150]}")
+                return {}
+            result = json.loads(m.group())
+            print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
+            print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
+            return result
+        except Exception as e:
+            print(f"  [Gemini] {model} 예외: {e}")
             return {}
-        raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-        m = re.search(r'\{.*\}', raw_text, re.DOTALL)
-        if not m:
-            print(f"  [Gemini] JSON 파싱 실패: {raw_text[:100]}")
-            return {}
-        result = json.loads(m.group())
-        print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
-        print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
-        return result
-    except Exception as e:
-        print(f"  [Gemini] 예외: {e}")
-        return {}
+    print("  [Gemini] 모든 모델 404 → 키워드 폴백")
+    return {}
 
 
 def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None, oil=None):
