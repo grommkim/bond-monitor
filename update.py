@@ -1871,14 +1871,23 @@ def update_debt_pm(positions, issuances):
         existing_keys.add(key); added += 1
     if added: print(f"  신규 전력채 추가: {added}건")
 
-    # SEIBRO 단기사채 신규 추가 (최근 5영업일 재조회 → 15:00 이후 SEIBRO 등록분 보완)
+    # SEIBRO 단기사채 신규 추가 (최근 60일 월별 분할 조회 → 누락 방지)
     today_dt = last_biz()
-    lookback = today_dt
-    for _ in range(4):          # 5영업일 전까지
-        lookback = prev_biz(lookback)
-    stb_start = lookback.strftime("%Y%m%d")
-    stb_end   = today_dt.strftime("%Y%m%d")
-    stb_list  = collect_seibro_stb(stb_start, stb_end)
+    # 60일 전부터 월별로 조회 (300건 한계 회피)
+    from datetime import timedelta as _td
+    start_dt = today_dt - _td(days=60)
+    stb_list  = []
+    cur = start_dt
+    while cur <= today_dt:
+        # 월말 계산
+        if cur.month == 12:
+            m_end = cur.replace(year=cur.year+1, month=1, day=1) - _td(days=1)
+        else:
+            m_end = cur.replace(month=cur.month+1, day=1) - _td(days=1)
+        m_end = min(m_end, today_dt)
+        chunk = collect_seibro_stb(cur.strftime("%Y%m%d"), m_end.strftime("%Y%m%d"))
+        stb_list.extend(chunk)
+        cur = m_end + _td(days=1)
     stb_added = 0
     for stb in stb_list:
         isin = stb.get("isin", "")
