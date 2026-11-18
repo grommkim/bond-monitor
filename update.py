@@ -797,7 +797,7 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         try:
             url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
                    f"{model}:generateContent?key={api_key}")
-            resp = requests.post(url, json=payload, timeout=30)
+            resp = requests.post(url, json=payload, timeout=60)
             if resp.status_code == 404:
                 suggested = _extract_suggested(resp.text)
                 if suggested:
