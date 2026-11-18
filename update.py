@@ -743,7 +743,7 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
 
     try:
         url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
-               f"gemini-1.5-flash:generateContent?key={api_key}")
+               f"gemini-2.0-flash:generateContent?key={api_key}")
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
