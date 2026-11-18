@@ -780,30 +780,50 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
 
 {{"issue2": {{"title": "...", "desc": "..."}}, "issue3": {{"title": "...", "desc": "..."}}}}"""
 
-    try:
-        url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
-               f"{model}:generateContent?key={api_key}")
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
-        }
-        resp = requests.post(url, json=payload, timeout=30)
-        if resp.status_code != 200:
-            print(f"  [Gemini] {model} 오류 {resp.status_code}: {resp.text[:300]}")
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
+    }
+    # 404 응답에서 "use models/X" 패턴으로 대체 모델명 추출
+    def _extract_suggested(text):
+        m2 = re.search(r'use models/(gemini[\w.\-]+)', text)
+        return m2.group(1) if m2 else None
+
+    tried = set()
+    for _ in range(3):  # 최대 2회 리다이렉트 허용
+        if model in tried:
+            break
+        tried.add(model)
+        try:
+            url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
+                   f"{model}:generateContent?key={api_key}")
+            resp = requests.post(url, json=payload, timeout=30)
+            if resp.status_code == 404:
+                suggested = _extract_suggested(resp.text)
+                if suggested:
+                    print(f"  [Gemini] {model} 사용 중단 → {suggested} 로 재시도")
+                    model = suggested
+                    continue
+                print(f"  [Gemini] {model} 404: {resp.text[:200]}")
+                return {}
+            if resp.status_code != 200:
+                print(f"  [Gemini] {model} 오류 {resp.status_code}: {resp.text[:300]}")
+                return {}
+            raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+            print(f"  [Gemini] {model} 성공: {raw_text[:120]}")
+            m2 = re.search(r'\{.*\}', raw_text, re.DOTALL)
+            if not m2:
+                print(f"  [Gemini] JSON 파싱 실패: {raw_text[:200]}")
+                return {}
+            result = json.loads(m2.group())
+            print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
+            print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
+            return result
+        except Exception as e:
+            print(f"  [Gemini] {model} 예외: {e}")
             return {}
-        raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-        print(f"  [Gemini] {model} 원문: {raw_text[:120]}")
-        m = re.search(r'\{.*\}', raw_text, re.DOTALL)
-        if not m:
-            print(f"  [Gemini] JSON 파싱 실패: {raw_text[:200]}")
-            return {}
-        result = json.loads(m.group())
-        print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
-        print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
-        return result
-    except Exception as e:
-        print(f"  [Gemini] 예외: {e}")
-        return {}
+    print(f"  [Gemini] 모델 리다이렉트 한계 초과 → 키워드 폴백")
+    return {}
 
 
 def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=None, oil=None):
