@@ -708,7 +708,7 @@ def fetch_bond_news_all():
 
 
 def _gemini_pick_model(api_key):
-    """사용 가능한 Gemini generateContent 모델 중 flash 계열 하나 반환. 없으면 None."""
+    """사용 가능한 Gemini generateContent 모델 목록 반환 (우선순위 정렬). 없으면 []."""
     try:
         r = requests.get(
             f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}",
@@ -716,30 +716,27 @@ def _gemini_pick_model(api_key):
         )
         if r.status_code != 200:
             print(f"  [Gemini] 모델목록 오류 {r.status_code}: {r.text[:200]}")
-            return None
-        models = r.json().get("models", [])
-        # generateContent 지원 + flash 계열 우선, 없으면 아무 모델
-        def _priority(m):
-            name = m.get("name", "")
-            methods = m.get("supportedGenerationMethods", [])
-            if "generateContent" not in methods:
-                return 999
-            if "flash" in name:
-                return 0
-            if "pro" in name:
-                return 1
-            return 2
-        candidates = [m for m in models if "generateContent" in m.get("supportedGenerationMethods", [])]
-        if not candidates:
-            print("  [Gemini] generateContent 지원 모델 없음")
-            return None
-        candidates.sort(key=_priority)
-        chosen = candidates[0]["name"].split("/")[-1]  # "models/gemini-xxx" → "gemini-xxx"
-        print(f"  [Gemini] 선택 모델: {chosen} (전체 {len(candidates)}개)")
-        return chosen
+            return []
+        all_models = r.json().get("models", [])
+        candidates = [
+            m["name"].split("/")[-1]
+            for m in all_models
+            if "generateContent" in m.get("supportedGenerationMethods", [])
+        ]
+        # 전체 목록 출력 (디버깅용)
+        print(f"  [Gemini] generateContent 지원 모델 {len(candidates)}개: {', '.join(candidates[:15])}")
+
+        # lite/flash-lite → flash → pro 순으로 선호 (lite가 더 빠르고 안정적)
+        def _rank(name):
+            if "lite" in name:    return 0
+            if "flash" in name:   return 1
+            if "pro" in name:     return 2
+            return 3
+        candidates.sort(key=_rank)
+        return candidates
     except Exception as e:
         print(f"  [Gemini] 모델목록 조회 예외: {e}")
-        return None
+        return []
 
 
 def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
@@ -750,11 +747,12 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         print("  [Gemini] GEMINI_API_KEY 없음 → 키워드 폴백")
         return {}
 
-    model = _gemini_pick_model(api_key)
-    if not model:
+    model_queue = _gemini_pick_model(api_key)
+    if not model_queue:
         return {}
+    model = model_queue.pop(0)
 
-    headline_lines = [f"- {t} ({s}, {lang})" for t, s, lang in headlines[:20]]
+    headline_lines = [f"- {t} ({s}, {lang})" for t, s, lang in headlines[:15]]
     headline_text  = "\n".join(headline_lines) if headline_lines else "(헤드라인 없음)"
 
     rate_line = f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp)" if rate_10 else ""
@@ -790,33 +788,48 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         return m2.group(1) if m2 else None
 
     import time as _time
-    tried = set()
-    for attempt in range(5):  # 모델 리다이렉트 + 503 재시도 합산 최대 5회
-        if model in tried and attempt > 0:
-            # 같은 모델 재시도는 503 requeue만 허용 — 2초 대기
-            _time.sleep(2)
-        tried_before = model in tried
-        tried.add(model)
+
+    def _try_next_model():
+        nonlocal model
+        if model_queue:
+            model = model_queue.pop(0)
+            return True
+        return False
+
+    # 모델당 최대 2회 503 재시도, 실패 시 큐의 다음 모델로 이동
+    model_503_count = 0
+    for attempt in range(8):
         try:
             url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
                    f"{model}:generateContent?key={api_key}")
-            resp = requests.post(url, json=payload, timeout=60)
+            resp = requests.post(url, json=payload, timeout=45)
             if resp.status_code == 404:
                 suggested = _extract_suggested(resp.text)
                 if suggested:
-                    print(f"  [Gemini] {model} 사용 중단 → {suggested} 로 재시도")
-                    model = suggested
-                    tried.discard(model)  # 새 모델이므로 tried 에서 제거
-                    continue
-                print(f"  [Gemini] {model} 404: {resp.text[:200]}")
-                return {}
+                    print(f"  [Gemini] {model} 사용 중단 → {suggested} 시도")
+                    model_queue.insert(0, suggested)
+                else:
+                    print(f"  [Gemini] {model} 404: {resp.text[:200]}")
+                if not _try_next_model():
+                    break
+                model_503_count = 0
+                continue
             if resp.status_code == 503:
-                print(f"  [Gemini] {model} 503 과부하 → {attempt+1}회 재시도")
-                tried.discard(model)
+                model_503_count += 1
+                if model_503_count >= 2:
+                    print(f"  [Gemini] {model} 503 반복 → 다음 모델")
+                    if not _try_next_model():
+                        break
+                    model_503_count = 0
+                else:
+                    print(f"  [Gemini] {model} 503 → 3초 후 재시도")
+                    _time.sleep(3)
                 continue
             if resp.status_code != 200:
                 print(f"  [Gemini] {model} 오류 {resp.status_code}: {resp.text[:300]}")
-                return {}
+                if not _try_next_model():
+                    break
+                continue
             raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
             print(f"  [Gemini] {model} 성공: {raw_text[:120]}")
             m2 = re.search(r'\{.*\}', raw_text, re.DOTALL)
@@ -828,9 +841,11 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
             print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
             return result
         except Exception as e:
-            print(f"  [Gemini] {model} 예외: {e}")
-            return {}
-    print(f"  [Gemini] 최대 재시도 초과 → 키워드 폴백")
+            print(f"  [Gemini] {model} 예외: {e} → 다음 모델 시도")
+            if not _try_next_model():
+                break
+            model_503_count = 0
+    print(f"  [Gemini] 모든 모델 실패 → 키워드 폴백")
     return {}
 
 
