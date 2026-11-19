@@ -789,10 +789,13 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         m2 = re.search(r'use models/(gemini[\w.\-]+)', text)
         return m2.group(1) if m2 else None
 
+    import time as _time
     tried = set()
-    for _ in range(3):  # 최대 2회 리다이렉트 허용
-        if model in tried:
-            break
+    for attempt in range(5):  # 모델 리다이렉트 + 503 재시도 합산 최대 5회
+        if model in tried and attempt > 0:
+            # 같은 모델 재시도는 503 requeue만 허용 — 2초 대기
+            _time.sleep(2)
+        tried_before = model in tried
         tried.add(model)
         try:
             url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
@@ -803,9 +806,14 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
                 if suggested:
                     print(f"  [Gemini] {model} 사용 중단 → {suggested} 로 재시도")
                     model = suggested
+                    tried.discard(model)  # 새 모델이므로 tried 에서 제거
                     continue
                 print(f"  [Gemini] {model} 404: {resp.text[:200]}")
                 return {}
+            if resp.status_code == 503:
+                print(f"  [Gemini] {model} 503 과부하 → {attempt+1}회 재시도")
+                tried.discard(model)
+                continue
             if resp.status_code != 200:
                 print(f"  [Gemini] {model} 오류 {resp.status_code}: {resp.text[:300]}")
                 return {}
@@ -822,7 +830,7 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         except Exception as e:
             print(f"  [Gemini] {model} 예외: {e}")
             return {}
-    print(f"  [Gemini] 모델 리다이렉트 한계 초과 → 키워드 폴백")
+    print(f"  [Gemini] 최대 재시도 초과 → 키워드 폴백")
     return {}
 
 
