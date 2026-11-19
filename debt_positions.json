@@ -5049,24 +5049,6 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761KG|seibro",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KD|seibro",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761KX|seibro",
     "category": "단기사채",
     "amount": 10000000000,
@@ -5094,47 +5076,11 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761KM|seibro",
-    "category": "단기사채",
-    "amount": 10000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KK|seibro",
-    "category": "단기사채",
-    "amount": 50000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KH|seibro",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761KP|seibro",
     "category": "단기사채",
     "amount": 50000000000,
     "issuance_date": "2026-10-12",
     "maturity_date": "2026-11-20",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KF|seibro",
-    "category": "단기사채",
-    "amount": 40000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
     "rate": null,
     "source": "seibro"
   },
@@ -5148,15 +5094,6 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761KN|seibro",
-    "category": "단기사채",
-    "amount": 50000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761KS|seibro",
     "category": "단기사채",
     "amount": 20000000000,
@@ -5166,38 +5103,11 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761KJ|seibro",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761KW|seibro",
     "category": "단기사채",
     "amount": 60000000000,
     "issuance_date": "2026-10-12",
     "maturity_date": "2026-11-20",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KL|seibro",
-    "category": "단기사채",
-    "amount": 80000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KE|seibro",
-    "category": "단기사채",
-    "amount": 10000000000,
-    "issuance_date": "2026-10-12",
-    "maturity_date": "2026-11-19",
     "rate": null,
     "source": "seibro"
   },
@@ -6228,29 +6138,11 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761JQ|seibro",
-    "category": "단기사채",
-    "amount": 20000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761JP|seibro",
     "category": "단기사채",
     "amount": 30000000000,
     "issuance_date": "2026-10-06",
     "maturity_date": "2026-11-20",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761JN|seibro",
-    "category": "단기사채",
-    "amount": 30000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
     "rate": null,
     "source": "seibro"
   },
@@ -6264,38 +6156,11 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761JS|seibro",
-    "category": "단기사채",
-    "amount": 30000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761JR|seibro",
     "category": "단기사채",
     "amount": 60000000000,
     "issuance_date": "2026-10-06",
     "maturity_date": "2026-11-20",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KC|seibro",
-    "category": "단기사채",
-    "amount": 10000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761KA|seibro",
-    "category": "단기사채",
-    "amount": 50000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
     "rate": null,
     "source": "seibro"
   },
@@ -6309,29 +6174,11 @@
     "source": "seibro"
   },
   {
-    "id": "단기사채|KRZS015761JY|seibro",
-    "category": "단기사채",
-    "amount": 100000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
     "id": "단기사채|KRZS015761JX|seibro",
     "category": "단기사채",
     "amount": 100000000000,
     "issuance_date": "2026-10-06",
     "maturity_date": "2026-11-20",
-    "rate": null,
-    "source": "seibro"
-  },
-  {
-    "id": "단기사채|KRZS015761JW|seibro",
-    "category": "단기사채",
-    "amount": 10000000000,
-    "issuance_date": "2026-10-06",
-    "maturity_date": "2026-11-19",
     "rate": null,
     "source": "seibro"
   },
@@ -6462,6 +6309,33 @@
     "source": "seibro"
   },
   {
+    "id": "전력채|2026-11-19|2028-11-17|160000000000|kofia",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2026-11-19",
+    "maturity_date": "2028-11-17",
+    "rate": 4.08,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-11-19|2029-11-19|160000000000|kofia",
+    "category": "전력채",
+    "amount": 160000000000,
+    "issuance_date": "2026-11-19",
+    "maturity_date": "2029-11-19",
+    "rate": 4.11,
+    "source": "kofia"
+  },
+  {
+    "id": "전력채|2026-11-19|2031-11-19|130000000000|kofia",
+    "category": "전력채",
+    "amount": 130000000000,
+    "issuance_date": "2026-11-19",
+    "maturity_date": "2031-11-19",
+    "rate": 4.2,
+    "source": "kofia"
+  },
+  {
     "id": "단기사채|KRZS015761JM|seibro",
     "category": "단기사채",
     "amount": 30000000000,
@@ -6557,6 +6431,159 @@
     "amount": 10000000000,
     "issuance_date": "2026-09-28",
     "maturity_date": "2026-11-16",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KF|seibro",
+    "category": "단기사채",
+    "amount": 40000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KE|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KL|seibro",
+    "category": "단기사채",
+    "amount": 80000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KJ|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KN|seibro",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KH|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KK|seibro",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KM|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KD|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KG|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-10-12",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761JQ|seibro",
+    "category": "단기사채",
+    "amount": 20000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761JN|seibro",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761JS|seibro",
+    "category": "단기사채",
+    "amount": 30000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KC|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761KA|seibro",
+    "category": "단기사채",
+    "amount": 50000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761JY|seibro",
+    "category": "단기사채",
+    "amount": 100000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
+    "rate": null,
+    "source": "seibro"
+  },
+  {
+    "id": "단기사채|KRZS015761JW|seibro",
+    "category": "단기사채",
+    "amount": 10000000000,
+    "issuance_date": "2026-10-06",
+    "maturity_date": "2026-11-19",
     "rate": null,
     "source": "seibro"
   }
