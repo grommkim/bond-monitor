@@ -2846,7 +2846,7 @@ def kepco_stats_tab_html() -> str:
 
 <script>
 (function() {{
-  if(typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
+  var dl = (typeof ChartDataLabels !== 'undefined') ? [ChartDataLabels] : [];
   var yrs = {json.dumps(CHART_YEARS)};
   var negBarClr = function(data) {{
     return data.map(function(v,i) {{
@@ -2882,9 +2882,9 @@ def kepco_stats_tab_html() -> str:
   }};
   function optsBar(){{return Object.assign({{}},baseOpts,{{plugins:Object.assign({{}},baseOpts.plugins,{{datalabels:dlBar}})}});}}
   function optsLine(){{return Object.assign({{}},baseOpts,{{plugins:Object.assign({{}},baseOpts.plugins,{{datalabels:dlLine}})}});}}
-  function mkBar(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:negBarClr(data),borderRadius:4}}]}},options:optsBar()}});}}
-  function mkLine(id,data,color){{color=color||'#1d4ed8';new Chart(document.getElementById(id),{{type:'line',data:{{labels:yrs,datasets:[{{data:data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:color,borderWidth:2}}]}},options:optsLine()}});}}
-  function mkBarGreen(id,data){{new Chart(document.getElementById(id),{{type:'bar',data:{{labels:yrs,datasets:[{{data:data,backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}),borderRadius:4}}]}},options:optsBar()}});}}
+  function mkBar(id,data){{new Chart(document.getElementById(id),{{type:'bar',plugins:dl,data:{{labels:yrs,datasets:[{{data:data,backgroundColor:negBarClr(data),borderRadius:4}}]}},options:optsBar()}});}}
+  function mkLine(id,data,color){{color=color||'#1d4ed8';new Chart(document.getElementById(id),{{type:'line',plugins:dl,data:{{labels:yrs,datasets:[{{data:data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:color,borderWidth:2}}]}},options:optsLine()}});}}
+  function mkBarGreen(id,data){{new Chart(document.getElementById(id),{{type:'bar',plugins:dl,data:{{labels:yrs,datasets:[{{data:data,backgroundColor:data.map(function(v,i){{return i===data.length-1?'rgba(251,146,60,0.85)':'rgba(13,148,136,0.8)'}}),borderRadius:4}}]}},options:optsBar()}});}}
   if(document.getElementById('sc1')){{
     mkBar('sc1',{json.dumps(CH_매출액)});
     mkBar('sc2',{json.dumps(CH_영업이익)});
@@ -3143,7 +3143,6 @@ const yieldChart = new Chart(document.getElementById('yieldChart'), {{
           }}
         }}
       }},
-      datalabels: {{display: false}},
       tooltip:{{
         callbacks:{{
           label: ctx => {{
