@@ -780,7 +780,7 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.3, "maxOutputTokens": 600},
+        "generationConfig": {"temperature": 0.3, "maxOutputTokens": 1200},
     }
     # 404 응답에서 "use models/X" 패턴으로 대체 모델명 추출
     def _extract_suggested(text):
@@ -832,11 +832,38 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
                 continue
             raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
             print(f"  [Gemini] {model} 성공: {raw_text[:120]}")
+            # 완전한 JSON 추출 시도
             m2 = re.search(r'\{.*\}', raw_text, re.DOTALL)
-            if not m2:
+            result = None
+            if m2:
+                try:
+                    result = json.loads(m2.group())
+                except json.JSONDecodeError:
+                    pass
+            # 잘린 JSON 복구 시도: 닫힌 중괄호 개수 맞춰 붙이기
+            if result is None:
+                try:
+                    start = raw_text.index('{')
+                    fragment = raw_text[start:]
+                    open_count = fragment.count('{') - fragment.count('}')
+                    repaired = fragment + '}' * max(open_count, 0)
+                    result = json.loads(repaired)
+                    print(f"  [Gemini] 잘린 JSON 복구 성공")
+                except Exception:
+                    pass
+            # 개별 issue 키 파싱 fallback
+            if result is None:
+                result = {}
+                for key in ("issue2", "issue3"):
+                    m_k = re.search(
+                        r'"' + key + r'"\s*:\s*\{"title"\s*:\s*"([^"]+)"\s*,\s*"desc"\s*:\s*"([^"]+)"',
+                        raw_text
+                    )
+                    if m_k:
+                        result[key] = {"title": m_k.group(1), "desc": m_k.group(2)}
+            if not result:
                 print(f"  [Gemini] JSON 파싱 실패: {raw_text[:200]}")
                 return {}
-            result = json.loads(m2.group())
             print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
             print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
             return result
