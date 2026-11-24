@@ -649,13 +649,27 @@ def fetch_bond_news_all():
         "https://news.google.com/rss/search?q=US+CPI+inflation+consumer+price+index+Treasury&hl=en&gl=US&ceid=US:en",
         "https://news.google.com/rss/search?q=Treasury+yield+reaction+CPI+buying+bonds&hl=en&gl=US&ceid=US:en",
     ]
-    en_kw = ["treasury","yield","bond","fed","federal reserve","fomc","rate","powell","warsh",
-             "inflation","pce","cpi","consumer price","buyback","auction","tariff","trump",
-             "cautious","gradual","patient","buying","rally","blackrock","pimco",
-             # 대형 매크로 이벤트 (채권 직접 관련 없어도 시장 컨텍스트로 중요)
-             "election","midterm","midterm results","republicans win","democrats win",
-             "gdp","jobs report","nonfarm","ism manufacturing",
-             "debt ceiling","fiscal","recession","oil","wti","crude"]
+    # 핵심 채권/금리 키워드: 하나라도 있으면 통과
+    en_kw_core = ["treasury","yield","bond","fed","federal reserve","fomc","powell","warsh",
+                  "inflation","pce","cpi","consumer price","buyback","auction","rate hike",
+                  "rate cut","interest rate","basis point","10-year","2-year","30-year",
+                  "debt ceiling","fiscal deficit","quantitative"]
+    # 맥락 키워드: 핵심 키워드와 함께 있을 때만 통과
+    en_kw_ctx  = ["tariff","trump","gdp","jobs report","nonfarm","ism","recession","oil","wti","crude"]
+    # 제외 키워드: 이게 있으면 무조건 제외
+    en_kw_excl = ["startup","health benefit","silver price","xag/usd","gold price","xau/usd",
+                  "crypto","bitcoin","ethereum","nft","real estate","mortgage application"]
+
+    def _en_relevant(t):
+        tl = t.lower()
+        if any(x in tl for x in en_kw_excl):
+            return False
+        if any(x in tl for x in en_kw_core):
+            return True
+        # 맥락 키워드만 있는 경우: "trump tariff" + 10년물 언급 같이 있어야
+        if any(x in tl for x in en_kw_ctx):
+            return any(x in tl for x in ["treasury","yield","bond","rate","fomc"])
+        return False
     import html as _html_mod
     import re as _re
 
@@ -679,7 +693,7 @@ def fetch_bond_news_all():
                     continue
                 title, source = _parse_rss_title(it.findtext("title","").strip())
                 desc = _clean_desc(it.findtext("description",""))
-                if any(k in title.lower() for k in en_kw) and title not in [x[0] for x in items]:
+                if _en_relevant(title) and title not in [x[0] for x in items]:
                     items.append((title, source, "en", desc))
                     cnt += 1
                     if cnt >= 4:
