@@ -772,7 +772,9 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         base = f"- [{s}] {t}"
         return f"{base}\n  {desc}" if desc else base
 
-    headline_lines = [_fmt_item(item) for item in headlines[:12]]
+    # 미국 야간시장 분석 → 영문 뉴스만 사용 (한국 장 시간 기사 제외)
+    en_headlines = [item for item in headlines if item[2] == "en"]
+    headline_lines = [_fmt_item(item) for item in en_headlines[:12]]
     headline_text  = "\n".join(headline_lines) if headline_lines else "(헤드라인 없음)"
 
     rate_line = f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp)" if rate_10 else ""
