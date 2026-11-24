@@ -754,12 +754,14 @@ def _gemini_pick_model(api_key):
         # 전체 목록 출력 (디버깅용)
         print(f"  [Gemini] generateContent 지원 모델 {len(candidates)}개: {', '.join(candidates[:15])}")
 
-        # 2.5-flash → flash → lite → pro 순으로 선호 (lite는 한국어 JSON 잘림 문제)
+        # tts/image/preview 모델 제외 (generateContent 텍스트 미지원 or 불안정)
+        candidates = [c for c in candidates
+                      if not any(x in c for x in ["tts", "image", "preview"])]
+        # lite → flash → pro 순 (lite가 텍스트 JSON 출력 가장 안정적)
         def _rank(name):
-            if "2.5-flash" in name and "lite" not in name: return 0
-            if "flash" in name and "lite" not in name:     return 1
-            if "lite" in name:                             return 2
-            if "pro" in name:                              return 3
+            if "lite" in name:  return 0
+            if "flash" in name: return 1
+            if "pro" in name:   return 2
             return 3
         candidates.sort(key=_rank)
         return candidates
@@ -817,11 +819,7 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.3,
-            "maxOutputTokens": 2048,
-            "response_mime_type": "application/json",
-        },
+        "generationConfig": {"temperature": 0.3, "maxOutputTokens": 2048},
     }
     # 404 응답에서 "use models/X" 패턴으로 대체 모델명 추출
     def _extract_suggested(text):
