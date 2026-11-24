@@ -656,6 +656,18 @@ def fetch_bond_news_all():
              "election","midterm","midterm results","republicans win","democrats win",
              "gdp","jobs report","nonfarm","ism manufacturing",
              "debt ceiling","fiscal","recession","oil","wti","crude"]
+    import html as _html_mod
+    import re as _re
+
+    def _clean_desc(raw: str) -> str:
+        """RSS description에서 HTML 태그 제거 후 200자로 자르기"""
+        if not raw:
+            return ""
+        txt = _re.sub(r'<[^>]+>', ' ', raw)
+        txt = _html_mod.unescape(txt)
+        txt = _re.sub(r'\s+', ' ', txt).strip()
+        return txt[:220]
+
     for url in en_sources:
         try:
             resp = requests.get(url, timeout=12, headers={"User-Agent": UA})
@@ -666,8 +678,9 @@ def fetch_bond_news_all():
                 if not _is_fresh(pub):
                     continue
                 title, source = _parse_rss_title(it.findtext("title","").strip())
+                desc = _clean_desc(it.findtext("description",""))
                 if any(k in title.lower() for k in en_kw) and title not in [x[0] for x in items]:
-                    items.append((title, source, "en"))
+                    items.append((title, source, "en", desc))
                     cnt += 1
                     if cnt >= 4:
                         break
@@ -693,8 +706,9 @@ def fetch_bond_news_all():
                 if not _is_fresh(pub):
                     continue
                 title, source = _parse_rss_title(it.findtext("title","").strip())
+                desc = _clean_desc(it.findtext("description",""))
                 if any(k in title for k in kw) and title not in [x[0] for x in items]:
-                    items.append((title, source, "ko"))
+                    items.append((title, source, "ko", desc))
                     cnt += 1
                     if cnt >= 3:
                         break
@@ -702,7 +716,7 @@ def fetch_bond_news_all():
             print(f"  국내 뉴스 오류: {e}")
 
     print(f"  → 총 {len(items)}개 헤드라인 수집 ({_news_hours}시간 이내)", flush=True)
-    for t, s, lang in items[:6]:
+    for t, s, lang, *_ in items[:6]:
         print(f"    [{lang}] {t[:65]} ({s})")
     return items
 
@@ -752,7 +766,13 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
         return {}
     model = model_queue.pop(0)
 
-    headline_lines = [f"- {t} ({s}, {lang})" for t, s, lang in headlines[:15]]
+    def _fmt_item(item):
+        t, s, lang = item[0], item[1], item[2]
+        desc = item[3] if len(item) > 3 else ""
+        base = f"- [{s}] {t}"
+        return f"{base}\n  {desc}" if desc else base
+
+    headline_lines = [_fmt_item(item) for item in headlines[:12]]
     headline_text  = "\n".join(headline_lines) if headline_lines else "(헤드라인 없음)"
 
     rate_line = f"미 국채 10년물 {rate_10:.3f}%({chg_10:+.1f}bp)" if rate_10 else ""
@@ -760,21 +780,21 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
     mkt_data  = " / ".join(x for x in [rate_line, oil_line] if x)
 
     prompt = f"""당신은 한국 금융사 채권 운용 담당자를 위한 미국 채권시장 분석가입니다.
-아래 헤드라인과 시장 데이터를 바탕으로 어제 미국 채권시장에 영향을 준 주요 이슈 2가지를 분석하세요.
+아래 뉴스 기사(제목+요약)와 시장 데이터를 바탕으로 어제 미국 채권시장에 영향을 준 주요 이슈 2가지를 분석하세요.
 
 [시장 데이터]
 {mkt_data}
 
-[헤드라인 (최근 48시간 이내)]
+[뉴스 기사 (최근 48시간 이내, 제목+요약)]
 {headline_text}
 
 [응답 규칙]
 1. 아래 JSON 형식으로만 응답 (다른 텍스트·마크다운 없이)
 2. 한국어로 작성
-3. title: 15자 이내 핵심 제목 (예: "연준 매파 발언", "트럼프 관세 우려", "미 국채 입찰 약세")
-4. desc: 2문장 이내. 실제 뉴스 내용 + 채권금리 방향 영향 연결 필수 (예: "Fed 위원 X가 금리 인상 가능성을 시사해 단기물 중심으로 금리 상승 압력.")
-5. 채권과 무관하거나 뉴스 근거 없으면 null
-6. 헤드라인 영문 원문 그대로 사용 금지
+3. title: 15자 이내 핵심 제목
+4. desc: 2문장 이내. 위 기사에 나온 실제 인물명·수치·기관명 포함. 채권금리 방향 영향 연결 필수
+5. 위 기사에 근거 없는 내용 절대 창작 금지
+6. 채권과 무관하거나 기사 근거 없으면 null
 
 {{"issue2": {{"title": "...", "desc": "..."}}, "issue3": {{"title": "...", "desc": "..."}}}}"""
 
@@ -941,7 +961,8 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
     detected    = {}
     seen_titles = set()
     for cat, kws, label in _EVENT_KW:
-        for title, source, lang in all_headlines:
+        for item in all_headlines:
+            title, source, lang = item[0], item[1], item[2]
             if (lang == "ko"
                     and any(kw.lower() in title.lower() for kw in kws)
                     and title not in seen_titles):
@@ -950,7 +971,8 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
                                  "title": title, "source": source, "lang": "ko"}
                 break
         if cat not in detected:
-            for title, source, lang in all_headlines:
+            for item in all_headlines:
+                title, source, lang = item[0], item[1], item[2]
                 if (lang == "en"
                         and any(kw.lower() in title.lower() for kw in kws)
                         and title not in seen_titles):
@@ -1299,8 +1321,8 @@ def build_market_analysis(us_rates, all_headlines, kr_bond=None, night_futures=N
 
     # ── 국내 채권 뉴스 ────────────────────────────────────────────────
     event_titles = {ev["title"] for ev in top_events if ev.get("title")}
-    featured_kr  = [(t, s) for t, s, lang in all_headlines
-                    if lang == "ko" and t not in event_titles][:3]
+    featured_kr  = [(item[0], item[1]) for item in all_headlines
+                    if item[2] == "ko" and item[0] not in event_titles][:3]
 
     return {
         "chg_10":        chg_10,
