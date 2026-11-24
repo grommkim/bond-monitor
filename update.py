@@ -917,8 +917,8 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
             if not result:
                 print(f"  [Gemini] JSON 파싱 최종 실패")
                 return {}
-            print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
-            print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
+            print(f"  [Gemini] 이슈2: {(result.get('issue2') or {}).get('title','(null)')}")
+            print(f"  [Gemini] 이슈3: {(result.get('issue3') or {}).get('title','(null)')}")
             return result
         except Exception as e:
             print(f"  [Gemini] {model} 예외: {e} → 다음 모델 시도")
