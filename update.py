@@ -871,17 +871,31 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
                 if not _try_next_model():
                     break
                 continue
-            raw_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-            print(f"  [Gemini] {model} 성공: {raw_text[:120]}")
-            # 완전한 JSON 추출 시도
-            m2 = re.search(r'\{.*\}', raw_text, re.DOTALL)
+            resp_json = resp.json()
+            # finishReason 로그 (MAX_TOKENS이면 잘린 것)
+            finish = ""
+            try:
+                finish = resp_json["candidates"][0].get("finishReason", "")
+            except Exception:
+                pass
+            raw_text = resp_json["candidates"][0]["content"]["parts"][0]["text"].strip()
+            print(f"  [Gemini] {model} finishReason={finish} len={len(raw_text)}")
+            print(f"  [Gemini] raw[0:300]: {raw_text[:300]}")
             result = None
-            if m2:
-                try:
-                    result = json.loads(m2.group())
-                except json.JSONDecodeError:
-                    pass
-            # 잘린 JSON 복구 시도: 닫힌 중괄호 개수 맞춰 붙이기
+            # 1) response_mime_type=application/json이면 raw_text가 바로 JSON
+            try:
+                result = json.loads(raw_text)
+            except json.JSONDecodeError as e1:
+                print(f"  [Gemini] 직접 파싱 실패: {e1}")
+            # 2) markdown 코드블록 or 앞뒤 텍스트 제거 후 재시도
+            if result is None:
+                m2 = re.search(r'\{.*\}', raw_text, re.DOTALL)
+                if m2:
+                    try:
+                        result = json.loads(m2.group())
+                    except json.JSONDecodeError as e2:
+                        print(f"  [Gemini] regex 파싱 실패: {e2}")
+            # 3) 잘린 JSON 복구 (중괄호 개수 맞추기)
             if result is None:
                 try:
                     start = raw_text.index('{')
@@ -890,9 +904,9 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
                     repaired = fragment + '}' * max(open_count, 0)
                     result = json.loads(repaired)
                     print(f"  [Gemini] 잘린 JSON 복구 성공")
-                except Exception:
-                    pass
-            # 개별 issue 키 파싱 fallback
+                except Exception as e3:
+                    print(f"  [Gemini] 복구 실패: {e3}")
+            # 4) 개별 issue 키 추출 fallback
             if result is None:
                 result = {}
                 for key in ("issue2", "issue3"):
@@ -903,7 +917,7 @@ def generate_ai_issues(headlines, rate_10, chg_10, oil_price=None, oil_chg=0):
                     if m_k:
                         result[key] = {"title": m_k.group(1), "desc": m_k.group(2)}
             if not result:
-                print(f"  [Gemini] JSON 파싱 실패: {raw_text[:200]}")
+                print(f"  [Gemini] JSON 파싱 최종 실패")
                 return {}
             print(f"  [Gemini] 이슈2: {result.get('issue2',{}).get('title','(null)')}")
             print(f"  [Gemini] 이슈3: {result.get('issue3',{}).get('title','(null)')}")
